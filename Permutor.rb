@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2010
+# 2007-2013
 # :title: PermutationGroupBuilder
 
 # Permutation representation of a group element from the symmetric group.

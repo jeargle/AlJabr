@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2010
+# 2007-2013
 # :title: OperatorTable
 
 # This class holds the elements of a multplication table.
@@ -55,7 +55,7 @@ class OperatorTable
   # _i_ = row
   # _j_ = column
   # _element_ = value to set the element to
-  def setElement(i,j,element)
+  def set_element(i,j,element)
     if 0 <= i && i < @order && 0 <= j && j < @order && 0 <= element && element < @order
       @table[i][j] = element
     end
@@ -66,7 +66,7 @@ class OperatorTable
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def getElement(i,j)
+  def get_element(i,j)
     return @table[i][j]
   end
 
@@ -74,19 +74,19 @@ class OperatorTable
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def removeElement(i,j)
+  def remove_element(i,j)
     @table[i][j] = nil
   end
 
-  def checkElement(i,j)
+  def check_element(i,j)
     
   end
 
-  def checkRow(rowIndex,element)
+  def check_row(rowIndex,element)
     
   end
 
-  def checkColumn(columnIndex,element)
+  def check_column(columnIndex,element)
 
   end
 

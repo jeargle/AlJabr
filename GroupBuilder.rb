@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2010
+# 2007-2013
 # :title: GroupBuilder
 
 require 'OperatorTable'
@@ -14,11 +14,11 @@ class GroupBuilder
     @order = @elements.order
     @table = OperatorTable.new(@order)
 
-    # Set first column and row to identity @elements.getElement(0)
-    @table.setElement(0,0,0)
+    # Set first column and row to identity @elements.get_element(0)
+    @table.set_element(0,0,0)
     (1..@order-1).each do |i|
-      @table.setElement(0,i,i)
-      @table.setElement(i,0,i)
+      @table.set_element(0,i,i)
+      @table.set_element(i,0,i)
     end
   end
 
@@ -27,15 +27,15 @@ class GroupBuilder
   # _i_ = row
   # _j_ = column
   # _element_ = Element to assign to (i,j)
-  def setElement(i,j,element)
+  def set_element(i,j,element)
     if 0 < i && i < @order && 0 < j && j < @order && 0 <= element && element < @order
-      @table.setElement(i,j,element)
+      @table.set_element(i,j,element)
     end
     # XXX - else throw exception
   end
 
   # Build a group.
-  def buildGroup()
+  def build_group()
 
   end
 
@@ -60,7 +60,7 @@ class GroupBuilder
     (0..@order-1).each do |i|
       outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |"
       (0..@order-1).each do |j|
-	outString += " #{@elements.element(@table.getElement(i,j)).symbol.rjust(columnWidth)} |"
+	outString += " #{@elements.element(@table.get_element(i,j)).symbol.rjust(columnWidth)} |"
       end
       outString += "\n"
     end

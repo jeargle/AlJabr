@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2010
+# 2007-2013
 # :title: PermutationGroupBuilder
 
 require 'GroupBuilder'
@@ -15,21 +15,21 @@ class PermutationGroupBuilder
     @generators = generators
     @permutors = Array.new()
     @group = nil
-    # XXX - getValidGenerators
+    # XXX - get_valid_generators
     @permutorOrder = @generators[0].order
   end
 
   # Return a hash from generators to booleans (whether they're valid or not)
   #   A generator is valid if it has the largest order of a set of conflicting
   #   generators (e.g. r is valid compared with r^2 and r^3).
-  def getValidGenerators()
+  def get_valid_generators()
     
   end
 
   # Create a list of all elements with which to build the Group
   #   Breadth-first search using the generators and starting with the identity
   #   element.
-  def findElements()
+  def find_elements()
     # Walk each generator down the Permutor array, multiplying by the current
     # permutor and adding any new results to the end of the array.
     identityActionArray = Array.new()
@@ -50,9 +50,9 @@ class PermutationGroupBuilder
   end
 
   # Build a group from a set of permutor generators.
-  def buildGroup()
+  def build_group()
     if @permutors.length == 0
-      findElements
+      find_elements
     end
 
     # Create ElementSet corresponding to permutors
@@ -66,7 +66,7 @@ class PermutationGroupBuilder
     groupBuilder = GroupBuilder.new(elements)
     (1..@permutors.length-1).each do |i|
       (1..@permutors.length-1).each do |j|
-	groupBuilder.setElement(i,j,@permutors.index(@permutors[j].operate(@permutors[i])))
+	groupBuilder.set_element(i,j,@permutors.index(@permutors[j].operate(@permutors[i])))
       end
     end
     puts "group:"
@@ -76,15 +76,15 @@ class PermutationGroupBuilder
   # Retrieve the current group.
   # === Return
   # _group_ = Group
-  def getGroup()
+  def get_group()
     if @group == nil
-      buildGroup
+      build_group
     end
     return @group
   end
 
   # Print the permutors that generate the group.
-  def printPermutors()
+  def print_permutors()
     (0..@permutors.length-1).each do |i|
       print "#{i}: #{@permutors[i]}\n"
     end

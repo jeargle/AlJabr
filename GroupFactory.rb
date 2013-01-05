@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2010
+# 2007-2013
 # :title: GroupFactory
 
 require 'Permutor'
@@ -12,7 +12,7 @@ class GroupFactory
   # _order_ = order of the group
   # === Return
   # _cyclicGroup_ = built cyclic group
-  def buildCyclicGroup(order)
+  def build_cyclic_group(order)
     
     if order <= 0
       return nil
@@ -29,7 +29,7 @@ class GroupFactory
     end
     cycle = Permutor.new(cycleActionArray)
     cyclicGroupBuilder = PermutationGroupBuilder.new([cycle])
-    return cyclicGroupBuilder.getGroup
+    return cyclicGroupBuilder.get_group
     
   end
 
@@ -38,7 +38,7 @@ class GroupFactory
   # _degree_ = half of the order of the group
   # === Return
   # _dihedralGroup_ = built dihedral group
-  def buildDihedralGroup(degree)
+  def build_dihedral_group(degree)
 
     if degree <= 0
       return nil
@@ -64,7 +64,7 @@ class GroupFactory
     dihed1 = Permutor.new(dihedralActionArray1)
     dihed2 = Permutor.new(dihedralActionArray2)
     dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1,dihed2])
-    return dihedralGroupBuilder.getGroup
+    return dihedralGroupBuilder.get_group
 
   end
 
@@ -74,7 +74,7 @@ class GroupFactory
   # _degree_ = order of the group is degree!
   # === Return
   # _symmetryGroup_ = built symmetry group
-  def buildSymmetryGroup(degree)
+  def build_symmetry_group(degree)
 
     if degree <= 0
       return nil
@@ -111,7 +111,7 @@ class GroupFactory
 
     symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions)
 
-    return symmetryGroupBuilder.getGroup
+    return symmetryGroupBuilder.get_group
 
   end
 
@@ -121,7 +121,7 @@ class GroupFactory
   # _degree_ = order of the group is degree!/2
   # === Return
   # _alternatingGroup_ = built alternating group
-  def buildAlternatingGroup(degree)
+  def build_alternating_group(degree)
 
     if degree <= 1
       return nil
@@ -163,7 +163,7 @@ class GroupFactory
 
     alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions)
 
-    return alternatingGroupBuilder.getGroup
+    return alternatingGroupBuilder.get_group
 
   end
 

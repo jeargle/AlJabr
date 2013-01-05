@@ -66,16 +66,16 @@ print("matrix[1][2]: " + matrix[1][2].to_s + "\n")
 print "\n\n***** OperatorTable Test *****\n"
 
 table = OperatorTable.new(2)
-print("table.getElement(0,0): #{table.getElement(0,0)}\n")
+print("table.get_element(0,0): #{table.get_element(0,0)}\n")
 
-table.setElement(0,0,0)
-table.setElement(0,1,1)
-table.setElement(1,0,1)
-table.setElement(1,1,0)
-print("table.getElement(0,0): #{table.getElement(0,0)}\n")
-print("table.getElement(0,1): #{table.getElement(0,1)}\n")
-print("table.getElement(1,0): #{table.getElement(1,0)}\n")
-print("table.getElement(1,1): #{table.getElement(1,1)}\n")
+table.set_element(0,0,0)
+table.set_element(0,1,1)
+table.set_element(1,0,1)
+table.set_element(1,1,0)
+print("table.get_element(0,0): #{table.get_element(0,0)}\n")
+print("table.get_element(0,1): #{table.get_element(0,1)}\n")
+print("table.get_element(1,0): #{table.get_element(1,0)}\n")
+print("table.get_element(1,1): #{table.get_element(1,1)}\n")
 
 print "\n\n***** GroupBuilder Test *****\n"
 e = Element.new("0")
@@ -86,7 +86,7 @@ print(testSet1.order.to_s + "\n")
 print(testSet1.element(0).symbol + "\n")
 print(testSet1.element(1).symbol + "\n")
 groupBuilder1 = GroupBuilder.new(testSet1)
-groupBuilder1.setElement(1,1,0)
+groupBuilder1.set_element(1,1,0)
 print "groupBuilder1:\n"
 print groupBuilder1.to_s
 
@@ -96,22 +96,22 @@ c = Element.new("3")
 d = Element.new("4")
 testSet2 = ElementSet.new([e,a,b,c,d])
 groupBuilder2 = GroupBuilder.new(testSet2)
-groupBuilder2.setElement(1,1,2)
-groupBuilder2.setElement(1,2,3)
-groupBuilder2.setElement(1,3,4)
-groupBuilder2.setElement(1,4,0)
-groupBuilder2.setElement(2,1,3)
-groupBuilder2.setElement(2,2,4)
-groupBuilder2.setElement(2,3,0)
-groupBuilder2.setElement(2,4,1)
-groupBuilder2.setElement(3,1,4)
-groupBuilder2.setElement(3,2,0)
-groupBuilder2.setElement(3,3,1)
-groupBuilder2.setElement(3,4,2)
-groupBuilder2.setElement(4,1,0)
-groupBuilder2.setElement(4,2,1)
-groupBuilder2.setElement(4,3,2)
-groupBuilder2.setElement(4,4,3)
+groupBuilder2.set_element(1,1,2)
+groupBuilder2.set_element(1,2,3)
+groupBuilder2.set_element(1,3,4)
+groupBuilder2.set_element(1,4,0)
+groupBuilder2.set_element(2,1,3)
+groupBuilder2.set_element(2,2,4)
+groupBuilder2.set_element(2,3,0)
+groupBuilder2.set_element(2,4,1)
+groupBuilder2.set_element(3,1,4)
+groupBuilder2.set_element(3,2,0)
+groupBuilder2.set_element(3,3,1)
+groupBuilder2.set_element(3,4,2)
+groupBuilder2.set_element(4,1,0)
+groupBuilder2.set_element(4,2,1)
+groupBuilder2.set_element(4,3,2)
+groupBuilder2.set_element(4,4,3)
 print "groupBuilder2:\n"
 print groupBuilder2.to_s
 
@@ -179,25 +179,25 @@ puts "\n\n***** PermutationGroupBuilder Test *****"
 
 perm1 = Permutor.new([1,2,3,4,5,6,0])
 pgb1 = PermutationGroupBuilder.new([perm1])
-pgb1.buildGroup
-pgb1.printPermutors
+pgb1.build_group
+pgb1.print_permutors
 
 perm2 = Permutor.new([1,0,3,2])
 pgb2 = PermutationGroupBuilder.new([perm2])
-pgb2.buildGroup
-pgb2.printPermutors
+pgb2.build_group
+pgb2.print_permutors
 
 perm3 = Permutor.new([1,0,2,3])
 perm4 = Permutor.new([0,1,3,2])
 pgb3 = PermutationGroupBuilder.new([perm3,perm4])
-pgb3.buildGroup
-pgb3.printPermutors
+pgb3.build_group
+pgb3.print_permutors
 
 
 puts "\n\n***** GroupFactory Test *****"
 
 groupFactory1 = GroupFactory.new()
-groupFactory1.buildCyclicGroup(13)
-groupFactory1.buildDihedralGroup(7)
-groupFactory1.buildSymmetryGroup(4)
-groupFactory1.buildAlternatingGroup(4)
+groupFactory1.build_cyclic_group(13)
+groupFactory1.build_dihedral_group(7)
+groupFactory1.build_symmetry_group(4)
+groupFactory1.build_alternating_group(4)
