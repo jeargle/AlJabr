@@ -2,7 +2,7 @@
 # 2007-2013
 # :title: OperatorTable
 
-# This class holds the elements of a multplication table.
+# This class holds the elements of a multiplication table.
 class OperatorTable
 
   # The +new+ class method initializes the class.
@@ -120,66 +120,6 @@ class ElementSet
 
   def element(i)
     return @elementArray[i]
-  end
-
-end
-
-
-# Say hello.
-class Hello
-
-  attr_reader :msg
-  
-  def initialize
-    @msg = "Yo, holmes!"
-  end
-
-end
-
-
-# Throwaway test class.
-class Vector
-  
-  attr_reader :array
-
-  def initialize(array)
-    @array = array
-  end
-
-  def length
-    return @array.length
-  end
-
-  def add(vector)
-    if vector.length == @array.length
-      sum = Array.new([vector.array[0] + @array[0]])
-      for i in 1..(@array.length-1)
-	sum.push(vector.array[i] + @array[i])
-      end
-      return Vector.new(sum)
-    else
-      print "Error: Vectors should have same length"
-    end
-  end
-
-  def dot(vector)
-    if vector.length == @array.length
-      sum = 0
-      for i in 0..(@array.length-1)
-	sum += vector.array[i] * @array[i]
-      end
-      return sum
-    else
-      print "Error: Vectors should have same length"
-    end
-  end
-
-  def to_s()
-    str = @array[0].to_s
-    for i in 1..(@array.length-1)
-      str += " " + @array[i].to_s
-    end
-    return str
   end
 
 end

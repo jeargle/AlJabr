@@ -28,7 +28,9 @@ class GroupBuilder
   # _j_ = column
   # _element_ = Element to assign to (i,j)
   def set_element(i,j,element)
-    if 0 < i && i < @order && 0 < j && j < @order && 0 <= element && element < @order
+    if 0 < i && i < @order &&
+        0 < j && j < @order &&
+        0 <= element && element < @order
       @table.set_element(i,j,element)
     end
     # XXX - else throw exception

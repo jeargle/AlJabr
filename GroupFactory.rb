@@ -47,7 +47,7 @@ class GroupFactory
     dihedralActionArray1 = Array.new(degree+2)
     dihedralActionArray2 = Array.new(degree+2)
     if degree == 1 || degree == 2
-      return buildCyclicGroup(degree)
+      return build_cyclic_group(degree)
     else
       dihedralActionArray1.each_index do |i|
 	dihedralActionArray1[i] = i+1
@@ -81,7 +81,7 @@ class GroupFactory
     end
 
     if degree == 1 || degree == 2
-      return buildCyclicGroup(degree)
+      return build_cyclic_group(degree)
     end
 
     numActionArrays = (degree**2 - degree)/2
@@ -128,7 +128,7 @@ class GroupFactory
     end
 
     if degree == 2
-      return buildCyclicGroup(degree)
+      return build_cyclic_group(degree)
     end
 
     # Number generators = choose(degree,3)

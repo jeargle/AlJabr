@@ -7,62 +7,6 @@ require 'PermutationGroupBuilder'
 require 'GroupFactory'
 
 
-h = Hello.new
-puts h.msg
-print "Press RETURN"
-$stdin.gets
-
-v = Vector.new([1,2,3,4,5])
-w = Vector.new([1,1,1,1,1])
-x = v.add(w)
-
-print(v.dot(w))
-print("\n");
-print(x.dot(w))
-print("\n");
-print(v.to_s + "\n")
-print(w.to_s + "\n")
-print(x.to_s + "\n")
-
-w = w.add(w)
-print(w.to_s + "\n")
-w = w.add(w)
-print(w.to_s + "\n")
-
-print("loop it\n")
-[0,1,2,3].each {|i|
-  print(i.to_s + " ")
-}
-print("\n")
-
-array = Array.new([1,2,3,4,5])
-array.each {|i|
-  print("  array[i]: " + i.to_s + "\n")
-}
-array[1] = 3
-array.each {|i|
-  print("  array[i]: " + i.to_s + "\n")
-}
-
-matrix = Array.new([Array.new([1,2,3]),Array.new([4,5,6]),Array.new([7,8,9])])
-matrix.each {|i|
-  i.each {|j|
-    print("matrix[i][j]: " + j.to_s + "\n")
-  }
-}
-print("matrix[0][0]: " + matrix[0][0].to_s + "\n")
-print("matrix[0][1]: " + matrix[0][1].to_s + "\n")
-print("matrix[0][2]: " + matrix[0][2].to_s + "\n")
-print("matrix[1][0]: " + matrix[1][0].to_s + "\n")
-print("matrix[1][1]: " + matrix[1][1].to_s + "\n")
-print("matrix[1][2]: " + matrix[1][2].to_s + "\n")
-print("matrix[2][0]: " + matrix[2][0].to_s + "\n")
-print("matrix[2][1]: " + matrix[2][1].to_s + "\n")
-print("matrix[2][2]: " + matrix[2][2].to_s + "\n")
-matrix[1][2] = 3
-print("matrix[1][2]: " + matrix[1][2].to_s + "\n")
-
-
 print "\n\n***** OperatorTable Test *****\n"
 
 table = OperatorTable.new(2)
@@ -160,19 +104,19 @@ puts "x: " + x.to_s2
 puts "y: " + y.to_s2
 puts
 
-puts "blah: " + (1 == 2).to_s
-puts "blah: " + (1 == 1).to_s
-puts "blah: " + ([0,1,2] == [0,1,2]).to_s
-puts "blah: " + ([0,1,2] == [0,1,2,3]).to_s
+puts "(1 == 2): " + (1 == 2).to_s
+puts "(1 == 1): " + (1 == 1).to_s
+puts "([0,1,2] == [0,1,2]): " + ([0,1,2] == [0,1,2]).to_s
+puts "([0,1,2] == [0,1,2,3]): " + ([0,1,2] == [0,1,2,3]).to_s
 puts
 
 z = Permutor.new([1,2,0])
-puts "blah: " + (e == e).to_s
-puts "blah: " + (e == x).to_s
-puts "blah: " + (e == y).to_s
-puts "blah: " + (x == x).to_s
-puts "blah: " + (x == y).to_s
-puts "blah: " + (x == z).to_s
+puts "(e == e): " + (e == e).to_s
+puts "(e == x): " + (e == x).to_s
+puts "(e == y): " + (e == y).to_s
+puts "(x == x): " + (x == x).to_s
+puts "(x == y): " + (x == y).to_s
+puts "(x == z): " + (x == z).to_s
 
 
 puts "\n\n***** PermutationGroupBuilder Test *****"

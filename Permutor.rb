@@ -1,6 +1,6 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
 # 2007-2013
-# :title: PermutationGroupBuilder
+# :title: Permutor
 
 # Permutation representation of a group element from the symmetric group.
 class Permutor
@@ -9,7 +9,7 @@ class Permutor
   # === Parameters
   # _actionArray_ = permutor representation that takes an index and returns the index's value
   def initialize(actionArray)
-    @actionArray = actionArray    
+    @actionArray = actionArray
   end
 
   def ==(permutor)
