@@ -33,6 +33,7 @@ class GroupFactory
     
   end
 
+
   # Build a dihedral group.
   # === Parameters
   # _degree_ = half of the order of the group
@@ -46,6 +47,8 @@ class GroupFactory
 
     dihedralActionArray1 = Array.new(degree+2)
     dihedralActionArray2 = Array.new(degree+2)
+
+    # XXX - should throw an exception; no Dih1 or Dih2
     if degree == 1 || degree == 2
       return build_cyclic_group(degree)
     else
@@ -67,6 +70,7 @@ class GroupFactory
     return dihedralGroupBuilder.get_group
 
   end
+
 
   # Build a symmetry group.
   # XXX - using WAY more generators than are needed
@@ -114,6 +118,7 @@ class GroupFactory
     return symmetryGroupBuilder.get_group
 
   end
+
 
   # Build an alternating group.
   # XXX - using WAY more generators than are needed
