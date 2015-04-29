@@ -2,8 +2,8 @@
 # 2007-2013
 # :title: GroupFactory
 
-require 'Permutor'
-require 'PermutationGroupBuilder'
+require_relative 'Permutor'
+require_relative 'PermutationGroupBuilder'
 
 class GroupFactory
 

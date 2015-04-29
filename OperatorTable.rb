@@ -1,5 +1,5 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2013
+# 2007-2015
 # :title: OperatorTable
 
 # This class holds the elements of a multiplication table.

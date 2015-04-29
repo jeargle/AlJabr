@@ -1,10 +1,10 @@
 #!/usr/bin/ruby
 
-require 'OperatorTable'
-require 'GroupBuilder'
-require 'Permutor'
-require 'PermutationGroupBuilder'
-require 'GroupFactory'
+require_relative 'OperatorTable'
+require_relative 'GroupBuilder'
+require_relative 'Permutor'
+require_relative 'PermutationGroupBuilder'
+require_relative 'GroupFactory'
 
 
 def test_OperatorTable()

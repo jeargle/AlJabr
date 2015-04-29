@@ -1,8 +1,8 @@
 # Author:: John Eargle (mailto: jeargle at gmail.com)
-# 2007-2013
+# 2007-2015
 # :title: GroupBuilder
 
-require 'OperatorTable'
+require_relative 'OperatorTable'
 
 class GroupBuilder
 

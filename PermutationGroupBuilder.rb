@@ -2,8 +2,8 @@
 # 2007-2013
 # :title: PermutationGroupBuilder
 
-require 'GroupBuilder'
-require 'Permutor'
+require_relative 'GroupBuilder'
+require_relative 'Permutor'
 
 class PermutationGroupBuilder
 
