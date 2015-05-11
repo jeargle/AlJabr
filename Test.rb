@@ -4,7 +4,6 @@ require_relative 'OperatorTable'
 require_relative 'GroupBuilder'
 require_relative 'Permutor'
 require_relative 'PermutationGroupBuilder'
-require_relative 'GroupFactory'
 
 
 def test_OperatorTable()
@@ -136,66 +135,61 @@ def test_Permutor()
 end
 
 
-def test_GroupFactory()
-  puts "\n\n***** GroupFactory Test *****"
+def test_group_builders()
+  puts "\n\n***** Group Builder Function Tests *****"
   
-  groupFactory1 = GroupFactory.new()
-  groupFactory1.build_cyclic_group(13)
-  groupFactory1.build_dihedral_group(7)
-  groupFactory1.build_symmetry_group(4)
-  groupFactory1.build_alternating_group(4)
+  build_cyclic_group(13)
+  build_dihedral_group(7)
+  build_symmetry_group(4)
+  build_alternating_group(4)
 end
 
 
 def test_cyclic_groups()
   puts "\n\n***** Cyclic Group Test *****"
 
-  groupFactory1 = GroupFactory.new()
-  groupFactory1.build_cyclic_group(1)
-  groupFactory1.build_cyclic_group(2)
-  groupFactory1.build_cyclic_group(3)
-  groupFactory1.build_cyclic_group(4)
-  groupFactory1.build_cyclic_group(5)
-#  groupFactory1.build_cyclic_group(10)
-#  groupFactory1.build_cyclic_group(20)
-#  groupFactory1.build_cyclic_group(30)
-#  groupFactory1.build_cyclic_group(40)
+  build_cyclic_group(1)
+  build_cyclic_group(2)
+  build_cyclic_group(3)
+  build_cyclic_group(4)
+  build_cyclic_group(5)
+#  build_cyclic_group(10)
+#  build_cyclic_group(20)
+#  build_cyclic_group(30)
+#  build_cyclic_group(40)
 end
 
 
 def test_dihedral_groups()
   puts "\n\n***** Dihedral Group Test *****"
 
-  groupFactory1 = GroupFactory.new()
-  groupFactory1.build_dihedral_group(1)
-  groupFactory1.build_dihedral_group(2)
-  groupFactory1.build_dihedral_group(3)
-  groupFactory1.build_dihedral_group(4)
-  groupFactory1.build_dihedral_group(5)
+  build_dihedral_group(1)
+  build_dihedral_group(2)
+  build_dihedral_group(3)
+  build_dihedral_group(4)
+  build_dihedral_group(5)
 end
 
 
 def test_symmetry_groups()
   puts "\n\n***** Symmetry Group Test *****"
 
-  groupFactory1 = GroupFactory.new()
-  groupFactory1.build_symmetry_group(1)
-  groupFactory1.build_symmetry_group(2)
-  groupFactory1.build_symmetry_group(3)
-  groupFactory1.build_symmetry_group(4)
-#  groupFactory1.build_symmetry_group(5)
+  build_symmetry_group(1)
+  build_symmetry_group(2)
+  build_symmetry_group(3)
+  build_symmetry_group(4)
+#  build_symmetry_group(5)
 end
 
 
 def test_alternating_groups()
   puts "\n\n***** Alternating Group Test *****"
 
-  groupFactory1 = GroupFactory.new()
-  groupFactory1.build_alternating_group(1)
-  groupFactory1.build_alternating_group(2)
-  groupFactory1.build_alternating_group(3)
-  groupFactory1.build_alternating_group(4)
-#  groupFactory1.build_alternating_group(5)
+  build_alternating_group(1)
+  build_alternating_group(2)
+  build_alternating_group(3)
+  build_alternating_group(4)
+#  build_alternating_group(5)
 end
 
 
@@ -203,7 +197,7 @@ end
 test_OperatorTable()
 test_GroupBuilder()
 test_Permutor()
-test_GroupFactory()
+test_group_builders()
 test_cyclic_groups()
 test_dihedral_groups()
 test_symmetry_groups()
