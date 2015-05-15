@@ -3,49 +3,30 @@
 # :title: OperatorTable
 
 # This class holds the elements of a multiplication table.
+# The table only contains ints or nil; the ints are indices
+# into an ElementSet array.
+# OperatorTables are generic so they may be used for Groups,
+# Rings, Fields, etc.  No validation is done in this class
+# for element placement, that happens in the corresponding
+# Builder classes.
 class OperatorTable
 
   # The +new+ class method initializes the class.
   # === Parameters
-  # * _order_ = number of rows and columns in the table
+  # * _order_ = number of rows (and columns) in the table
   def initialize(order)
     @order = order
     @table = Array.new(@order)
 
     for i in 0..(@order-1) do
       @table[i] = Array.new(@order)
-      for j in 0..(order-1) do
+      for j in 0..(@order-1) do
 	@table[i][j] = nil
       end
     end
-
-    #@table.each do |i|
-    #  i = Array.new(order)
-    #  i.each do |j|
-#	j = @elementSet.element(0)
-#	puts "j: " + j.symbol
-#      end
-#      i.each do |k|
-#	puts "k: " + k.symbol
-#      end
-#    end
-
-#    @table.each do |i|
-#      i.each do |j|
-#	puts "blah: " + j.to_s
-#      end
-#    end
-
-    #print("@table.length: " + @table.length.to_s + "\n")
-    #print("@table[0].length: " + @table[0].length.to_s + "\n")
-
-#    (0..(order-1)).each do |i|
-#      (0..(order-1)).each do |j|
-#	print("total[" + i.to_s + "][" + j.to_s + "]\n")
-#      end
-#    end
   end
 
+  # Number of Elements in the OperatorTable.
   def order
     return @order
   end
@@ -54,7 +35,7 @@ class OperatorTable
   # === Parameters
   # _i_ = row
   # _j_ = column
-  # _element_ = value to set the element to
+  # _element_ = value to set the element to (int)
   def set_element(i,j,element)
     if 0 <= i && i < @order && 0 <= j && j < @order && 0 <= element && element < @order
       @table[i][j] = element
@@ -62,7 +43,7 @@ class OperatorTable
     # XXX - else throw exception
   end
 
-  # Get element from the table.
+  # Get element index from the table.
   # === Parameters
   # _i_ = row
   # _j_ = column
@@ -70,7 +51,7 @@ class OperatorTable
     return @table[i][j]
   end
 
-  # Remove an element from the table.
+  # Remove an element index from the table.
   # === Parameters
   # _i_ = row
   # _j_ = column
@@ -78,48 +59,56 @@ class OperatorTable
     @table[i][j] = nil
   end
 
-  def check_element(i,j)
-    
-  end
-
-  def check_row(rowIndex,element)
-    
-  end
-
-  def check_column(columnIndex,element)
-
-  end
-
 end
 
 
-# Symbol representation of a Group element.
+# Symbol representation of an element.
 class Element
 
+  # The +new+ class method initializes the class.
+  # === Parameters
+  # _symbol_ = string representation of an element
   def initialize(symbol)
     @symbol = symbol
   end
 
+  # Return the string representation.
   def symbol
     return @symbol
   end
 
+  def to_s
+    return @symbol
+  end
+  
 end
 
 
-# Set of Elements that make up a Group.
+# Array holding a set of Elements.
 class ElementSet
 
+  # The +new+ class method initializes the class.
+  # === Parameters
+  # _elementArray_ = array of Elements
   def initialize(elementArray)
     @elementArray = elementArray
   end
 
+  # Number of Elements in the ElementSet.
   def order
     return @elementArray.length
   end
 
+  # Retrieve the Element at a given index.
+  # === Parameters
+  # _i_ = index
   def element(i)
     return @elementArray[i]
+  end
+
+  # First Element is always the identity.
+  def identity
+    return @elementArray[0]
   end
 
 end

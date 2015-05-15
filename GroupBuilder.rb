@@ -4,6 +4,10 @@
 
 require_relative 'OperatorTable'
 
+# This class holds an intermediate representation for a Group that
+# has not been fully built.  It should allow for the placement
+# of Elements in an OperatorTable as long as they maintain the
+# possibility of creating a valid Group.
 class GroupBuilder
 
   # The +new+ class method initializes the class.
@@ -36,13 +40,20 @@ class GroupBuilder
     # XXX - else throw exception
   end
 
-  # Build a group.
-  def build_group()
+  # Validate and build a corresponding Group.
+  def build_group
+    # Identity was set in initialize()
+
+    # Must have full OperatorTable
+
+    # Check inverses
+
+    # Check associativity
 
   end
 
   # Create a String representation of the current table.
-  def to_s()
+  def to_s
     # Set column width to size of largest element symbol
     columnWidth = 0
     (0..@order-1).each do |i|
@@ -235,4 +246,10 @@ def build_alternating_group(degree)
 
   return alternatingGroupBuilder.get_group
 
+end
+
+
+# Immutable, validated Group.
+class Group
+  
 end
