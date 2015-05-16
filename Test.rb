@@ -2,7 +2,6 @@
 
 require_relative 'OperatorTable'
 require_relative 'GroupBuilder'
-require_relative 'Permutor'
 require_relative 'PermutationGroupBuilder'
 
 
