@@ -84,7 +84,9 @@ class Element
 end
 
 
-# Array holding a set of Elements.
+# XXX - is this class really needed?
+# Immutable array holding a set of Elements.
+# Mapping from 0-indexed integers to Elements.
 class ElementSet
 
   # The +new+ class method initializes the class.
@@ -106,9 +108,10 @@ class ElementSet
     return @elementArray[i]
   end
 
-  # First Element is always the identity.
-  def identity
-    return @elementArray[0]
-  end
+  # XXX - defined in structures that have identity elements.
+  # Get identity Element.
+  # def identity
+  #   return @elementArray[@identity_index]
+  # end
 
 end

@@ -72,12 +72,10 @@ def test_Permutor()
   puts a.op(1)
   puts a.op(5)
   
-  b = [0,1,2]
-  puts "b: " + b.to_s
-  puts
-  
   e = Permutor.new([0,1,2])
   puts "e: " + e.to_s
+  puts "ee: " + e.operate(e).to_s
+  puts "eee: " + e.operate(e.operate(e)).to_s
   
   x = Permutor.new([1,2,0])
   puts "x: " + x.to_s
