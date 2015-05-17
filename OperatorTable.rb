@@ -16,7 +16,11 @@ class OperatorTable
   # * _order_ = number of rows (and columns) in the table
   def initialize(order)
     @order = order
-    @table = Array.new(@order, Array.new(@order, nil))
+    @emptyCellCount = @order*@order
+    @table = Array.new(@order)
+    (0..@order-1).each do |i|
+      @table[i] = Array.new(@order)
+    end
   end
 
   # Number of Elements in the OperatorTable.
@@ -31,6 +35,9 @@ class OperatorTable
   # _element_ = value to set the element to (int)
   def set_element(i, j, element)
     if 0 <= i && i < @order && 0 <= j && j < @order && 0 <= element && element < @order
+      if @table[i][j] == nil
+        @emptyCellCount -= 1
+      end
       @table[i][j] = element
     end
     # XXX - else throw exception
@@ -52,6 +59,10 @@ class OperatorTable
     @table[i][j] = nil
   end
 
+  def complete?
+    return @emptyCellCount == 0
+  end
+  
 end
 
 

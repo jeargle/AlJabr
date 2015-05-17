@@ -28,10 +28,12 @@ def test_GroupBuilder()
   a = Element.new("1")
   print(e.symbol + "\n")
   testSet1 = ElementSet.new([e, a])
-  print(testSet1.order.to_s + "\n")
-  print(testSet1.element(0).symbol + "\n")
-  print(testSet1.element(1).symbol + "\n")
+  print("order: #{testSet1.order}\n")
+  print("0: #{testSet1.element(0).symbol}\n")
+  print("1: #{testSet1.element(1).symbol}\n")
   groupBuilder1 = GroupBuilder.new(testSet1)
+  print "groupBuilder1:\n"
+  # print groupBuilder1.to_s
   groupBuilder1.set_element(1, 1, 0)
   print "groupBuilder1:\n"
   print groupBuilder1.to_s

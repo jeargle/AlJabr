@@ -20,21 +20,36 @@ class GroupBuilder
     @elements = elements
     @order = @elements.order
     @table = OperatorTable.new(@order)
+
+    print "order: #{@order}\n"
     
     # Table with bool arrays showing which elements are allowed in a cell
-    @openTable = Array.new(@order, Array.new(@order, (0..@order-1).to_set))
+    @openTable = Array.new(@order)
+    (0..@order-1).each do |i|
+      @openTable[i] = Array.new(@order)
+      (0..@order-1).each do |j|
+        @openTable[i][j] = (0..@order-1).to_set
+      end
+    end
+
+    # print "--- @openTable:\n"
+    # print_openTable
 
     # Table with associations that declare pairs of cells equal
     @associationTable = Array.new(@order, Array.new(@order, nil))
 
     # Set first column and row to identity @elements.get_element(0)
     @table.set_element(0, 0, 0)
+    @openTable[0][0].clear
     (1..@order-1).each do |i|
       @table.set_element(0, i, i)
       @table.set_element(i, 0, i)
-      @openTable[0][i] = [].to_set
-      @openTable[i][0] = [].to_set
+      @openTable[0][i].clear
+      @openTable[i][0].clear
     end
+
+    # print "XXX @openTable:\n"
+    # print_openTable
   end
 
   # Get a specific element.
@@ -52,11 +67,31 @@ class GroupBuilder
   # _j_ = column
   # _element_ = Element to assign to (i, j)
   def set_element(i, j, element)
+    # print "set_element(#{i}, #{j}, #{element})"
     if 0 < i && i < @order &&
        0 < j && j < @order &&
        0 <= element && element < @order
 
+      if @openTable[i][j].size == 0
+        if element != @table.get_element(i, j)
+          print "Error: cannot change (#{i}, #{j}): #{@table.get_element(i, j)} to #{element}\n"
+        else
+          # print "Already set\n"
+        end
+        return nil
+      end
+      
       # Check against openTable
+      if !@openTable[i][j].include?(element)
+        print "Error: element #{element} is not allowed at (#{i}, #{j})\n"
+        print "@openTable[i][j]:"
+        @openTable[i][j].each do |x|
+          print "#{x} "
+        end
+        print "\n"
+        return nil
+      end
+      
       markQueue = []
       markQueue.push([i, j, element])
       while markQueue.length > 0
@@ -128,6 +163,24 @@ class GroupBuilder
       outString += "\n"
     end
     return outString
+  end
+
+  def print_openTable
+    (0..@order-1).each do |i|
+      print "row #{i}\n"
+      (0..@order-1).each do |j|
+        print "   col #{j}\n"
+        print "      "
+        # print "openTable[#{i}][#{j}].class: #{@openTable[i][j].class}\n"
+        # print "openTable[#{i}][#{j}].size: #{@openTable[i][j].size}\n"
+        # print "openTable[0][0].size: #{@openTable[0][0].size}\n"
+        @openTable[i][j].each do |el|
+          # print "#{el.class} "
+          print "#{el} "
+        end
+        print "\n"
+      end
+    end
   end
 
 end
