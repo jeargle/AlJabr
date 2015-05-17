@@ -3,6 +3,9 @@
 # :title: GroupBuilder
 
 require_relative 'OperatorTable'
+require_relative 'Group'
+
+require 'set'
 
 # This class holds an intermediate representation for a Group that
 # has not been fully built.  It should allow for the placement
@@ -18,26 +21,28 @@ class GroupBuilder
     @order = @elements.order
     @table = OperatorTable.new(@order)
     
-    # Set first column and row to identity @elements.get_element(0)
-    @table.set_element(0,0,0)
-    (1..@order-1).each do |i|
-      @table.set_element(0,i,i)
-      @table.set_element(i,0,i)
-    end
-    
     # Table with bool arrays showing which elements are allowed in a cell
-    @openTable = []
+    @openTable = Array.new(@order, Array.new(@order, (0..@order-1).to_set))
 
     # Table with associations that declare pairs of cells equal
-    @associationTable = []
+    @associationTable = Array.new(@order, Array.new(@order, nil))
+
+    # Set first column and row to identity @elements.get_element(0)
+    @table.set_element(0, 0, 0)
+    (1..@order-1).each do |i|
+      @table.set_element(0, i, i)
+      @table.set_element(i, 0, i)
+      @openTable[0][i] = [].to_set
+      @openTable[i][0] = [].to_set
+    end
   end
 
   # Get a specific element.
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def get_element(i,j,element)
-    return @table.get_element(i,j)
+  def get_element(i, j, element)
+    return @table.get_element(i, j)
   end
 
   # Set a specific element.
@@ -45,13 +50,42 @@ class GroupBuilder
   # === Parameters
   # _i_ = row
   # _j_ = column
-  # _element_ = Element to assign to (i,j)
-  def set_element(i,j,element)
+  # _element_ = Element to assign to (i, j)
+  def set_element(i, j, element)
     if 0 < i && i < @order &&
        0 < j && j < @order &&
        0 <= element && element < @order
+
       # Check against openTable
-      @table.set_element(i,j,element)
+      markQueue = []
+      markQueue.push([i, j, element])
+      while markQueue.length > 0
+        row, col, el = markQueue.shift
+        @table.set_element(row, col, el)
+
+        # Remove element from other cells in this row and column
+        @openTable[row][col].clear()
+        for x in (0..@order-1)
+          # Remove from column
+          if @openTable[x][col].include?(el)
+            @openTable[x][col].delete(el)
+            if @openTable[x][col].size == 1
+              @openTable[x][col].each do |lastEl|
+                markQueue.push([x, col, lastEl])
+              end
+            end
+          end
+          # Remove from row
+          if @openTable[row][x].include?(el)
+            @openTable[row][x].delete(el)
+            if @openTable[row][x].size == 1
+              @openTable[row][x].each do |lastEl|
+                markQueue.push([row, x, lastEl])
+              end
+            end
+          end
+        end
+      end
     end
     # XXX - else throw exception
   end
@@ -60,11 +94,11 @@ class GroupBuilder
   def build_group
     # Identity was set in initialize()
     # Inverses guaranteed by e in every column and every row
+    # Associativity guaranteed by association checks
 
     # Must have full OperatorTable
 
 
-    # Check associativity
 
   end
 
@@ -83,13 +117,13 @@ class GroupBuilder
     end
     outString += "\n"
     (0..@order).each do |i|
-      outString += "-#{"-".rjust(columnWidth,"-")}-|"
+      outString += "-#{"-".rjust(columnWidth, "-")}-|"
     end
     outString += "\n"
     (0..@order-1).each do |i|
       outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |"
       (0..@order-1).each do |j|
-	outString += " #{@elements.element(@table.get_element(i,j)).symbol.rjust(columnWidth)} |"
+	outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
       end
       outString += "\n"
     end
@@ -158,7 +192,7 @@ def build_dihedral_group(degree)
   end
   dihed1 = Permutor.new(dihedralActionArray1)
   dihed2 = Permutor.new(dihedralActionArray2)
-  dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1,dihed2])
+  dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1, dihed2])
   return dihedralGroupBuilder.get_group
 
 end
@@ -182,7 +216,7 @@ def build_symmetry_group(degree)
 
   numActionArrays = (degree**2 - degree)/2
   symmetryActionArrays = Array.new(numActionArrays)
-  # Build actionArrays like [0,1,2,...] then switch
+  # Build actionArrays like [0, 1, 2, ...] then switch
   # elements at indices num1 and num2
   num1 = 0
   num2 = 1
@@ -208,7 +242,6 @@ def build_symmetry_group(degree)
   symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions)
 
   return symmetryGroupBuilder.get_group
-
 end
 
 
@@ -228,11 +261,11 @@ def build_alternating_group(degree)
     return build_cyclic_group(degree)
   end
 
-  # Number generators = choose(degree,3)
+  # Number generators = choose(degree, 3)
   numActionArrays = degree * (degree-1) * (degree-2) / 6
   alternatingActionArrays = Array.new(numActionArrays)
 
-  # Build actionArrays like [0,1,2,...]
+  # Build actionArrays like [0, 1, 2, ...]
   alternatingActionArrays.each_index do |i|
     alternatingActionArrays[i] = Array.new(degree)
     alternatingActionArrays[i].each_index do |j|
@@ -261,11 +294,4 @@ def build_alternating_group(degree)
   alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions)
 
   return alternatingGroupBuilder.get_group
-
-end
-
-
-# Immutable, validated Group.
-class Group
-  
 end

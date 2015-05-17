@@ -5,6 +5,7 @@
 require_relative 'OperatorTable'
 
 
+# Immutable, validated Group.
 class Group
 
   # The +new+ class method initializes the class.
@@ -18,15 +19,15 @@ class Group
 
   # Get the identity element.
   def get_identity
-    return @table.get_element(0,0)
+    return @table.get_element(0, 0)
   end
 
   # Get a specific element.
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def get_element(i,j,element)
-    return @table.get_element(i,j)
+  def get_element(i, j, element)
+    return @table.get_element(i, j)
   end
 
   # Create a String representation of the current table.
@@ -44,13 +45,13 @@ class Group
     end
     outString += "\n"
     (0..@order).each do |i|
-      outString += "-#{"-".rjust(columnWidth,"-")}-|"
+      outString += "-#{"-".rjust(columnWidth, "-")}-|"
     end
     outString += "\n"
     (0..@order-1).each do |i|
       outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |"
       (0..@order-1).each do |j|
-	outString += " #{@elements.element(@table.get_element(i,j)).symbol.rjust(columnWidth)} |"
+	outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
       end
       outString += "\n"
     end

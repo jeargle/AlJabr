@@ -16,14 +16,7 @@ class OperatorTable
   # * _order_ = number of rows (and columns) in the table
   def initialize(order)
     @order = order
-    @table = Array.new(@order)
-
-    for i in 0..(@order-1) do
-      @table[i] = Array.new(@order)
-      for j in 0..(@order-1) do
-	@table[i][j] = nil
-      end
-    end
+    @table = Array.new(@order, Array.new(@order, nil))
   end
 
   # Number of Elements in the OperatorTable.
@@ -36,7 +29,7 @@ class OperatorTable
   # _i_ = row
   # _j_ = column
   # _element_ = value to set the element to (int)
-  def set_element(i,j,element)
+  def set_element(i, j, element)
     if 0 <= i && i < @order && 0 <= j && j < @order && 0 <= element && element < @order
       @table[i][j] = element
     end
@@ -47,7 +40,7 @@ class OperatorTable
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def get_element(i,j)
+  def get_element(i, j)
     return @table[i][j]
   end
 
@@ -55,7 +48,7 @@ class OperatorTable
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def remove_element(i,j)
+  def remove_element(i, j)
     @table[i][j] = nil
   end
 

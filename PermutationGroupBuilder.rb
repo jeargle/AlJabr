@@ -54,12 +54,12 @@ class Permutor
   end
 
   # Size of actionArray.
-  def order()
+  def order
     return @actionArray.length
   end
 
   # Return a string representation of actionArray.
-  def to_s2()
+  def to_s2
     str = "["
     @actionArray.each do |i|
       str += i.to_s + " "
@@ -71,7 +71,7 @@ class Permutor
   end
 
   # Return a string representation of actionArray.
-  def to_s()
+  def to_s
     str = ""
     markArray = Array.new(@actionArray.length)
 
@@ -119,14 +119,14 @@ class PermutationGroupBuilder
   # Return a hash from generators to booleans (whether they're valid or not)
   #   A generator is valid if it has the largest order of a set of conflicting
   #   generators (e.g. r is valid compared with r^2 and r^3).
-  def get_valid_generators()
+  def get_valid_generators
     
   end
 
   # Create a list of all elements with which to build the Group
   #   Breadth-first search using the generators and starting with the identity
   #   element.
-  def find_elements()
+  def find_elements
     # Walk each generator down the Permutor array, multiplying by the current
     # permutor and adding any new results to the end of the array.
     identityActionArray = Array.new()
@@ -147,7 +147,7 @@ class PermutationGroupBuilder
   end
 
   # Build a group from a set of permutor generators.
-  def build_group()
+  def build_group
     if @permutors.length == 0
       find_elements
     end
@@ -163,7 +163,7 @@ class PermutationGroupBuilder
     groupBuilder = GroupBuilder.new(elements)
     (1..@permutors.length-1).each do |i|
       (1..@permutors.length-1).each do |j|
-	groupBuilder.set_element(i,j,@permutors.index(@permutors[j].operate(@permutors[i])))
+	groupBuilder.set_element(i, j, @permutors.index(@permutors[j].operate(@permutors[i])))
       end
     end
     puts "group:"
@@ -173,7 +173,7 @@ class PermutationGroupBuilder
   # Retrieve the current group.
   # === Return
   # _group_ = Group
-  def get_group()
+  def get_group
     if @group == nil
       build_group
     end
@@ -181,7 +181,7 @@ class PermutationGroupBuilder
   end
 
   # Print the permutors that generate the group.
-  def print_permutors()
+  def print_permutors
     (0..@permutors.length-1).each do |i|
       print "#{i}: #{@permutors[i]}\n"
     end
