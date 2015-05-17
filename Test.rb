@@ -152,10 +152,10 @@ def test_cyclic_groups()
   build_cyclic_group(3)
   build_cyclic_group(4)
   build_cyclic_group(5)
-#  build_cyclic_group(10)
-#  build_cyclic_group(20)
-#  build_cyclic_group(30)
-#  build_cyclic_group(40)
+  build_cyclic_group(10)
+  build_cyclic_group(20)
+  # build_cyclic_group(30)  # order 30
+  # build_cyclic_group(40)  # order 40
 end
 
 
@@ -167,6 +167,8 @@ def test_dihedral_groups()
   build_dihedral_group(3)
   build_dihedral_group(4)
   build_dihedral_group(5)
+  build_dihedral_group(6)
+  build_dihedral_group(7)  # order 14
 end
 
 
@@ -177,7 +179,7 @@ def test_symmetry_groups()
   build_symmetry_group(2)
   build_symmetry_group(3)
   build_symmetry_group(4)
-#  build_symmetry_group(5)
+  # build_symmetry_group(5)  # order 120
 end
 
 
@@ -188,7 +190,7 @@ def test_alternating_groups()
   build_alternating_group(2)
   build_alternating_group(3)
   build_alternating_group(4)
-#  build_alternating_group(5)
+  # build_alternating_group(5)  # order 60
 end
 
 

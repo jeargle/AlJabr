@@ -21,8 +21,6 @@ class GroupBuilder
     @order = @elements.order
     @table = OperatorTable.new(@order)
 
-    print "order: #{@order}\n"
-    
     # Table with bool arrays showing which elements are allowed in a cell
     @openTable = Array.new(@order)
     (0..@order-1).each do |i|
@@ -32,24 +30,16 @@ class GroupBuilder
       end
     end
 
-    # print "--- @openTable:\n"
-    # print_openTable
-
     # Table with associations that declare pairs of cells equal
     @associationTable = Array.new(@order, Array.new(@order, nil))
 
     # Set first column and row to identity @elements.get_element(0)
-    @table.set_element(0, 0, 0)
-    @openTable[0][0].clear
-    (1..@order-1).each do |i|
-      @table.set_element(0, i, i)
-      @table.set_element(i, 0, i)
-      @openTable[0][i].clear
-      @openTable[i][0].clear
+    set_element(0, 0, 0)
+    # Last element is automatically set by set_element()
+    (1..@order-2).each do |i|
+      set_element(0, i, i)
+      set_element(i, 0, i)
     end
-
-    # print "XXX @openTable:\n"
-    # print_openTable
   end
 
   # Get a specific element.
@@ -67,9 +57,9 @@ class GroupBuilder
   # _j_ = column
   # _element_ = Element to assign to (i, j)
   def set_element(i, j, element)
-    # print "set_element(#{i}, #{j}, #{element})"
-    if 0 < i && i < @order &&
-       0 < j && j < @order &&
+    # print "set_element(#{i}, #{j}, #{element})\n"
+    if 0 <= i && i < @order &&
+       0 <= j && j < @order &&
        0 <= element && element < @order
 
       if @openTable[i][j].size == 0
@@ -123,6 +113,10 @@ class GroupBuilder
       end
     end
     # XXX - else throw exception
+  end
+
+  def complete?
+    return @table.complete?
   end
 
   # Validate and build a corresponding Group.

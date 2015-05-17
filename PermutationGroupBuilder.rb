@@ -164,6 +164,14 @@ class PermutationGroupBuilder
     (1..@permutors.length-1).each do |i|
       (1..@permutors.length-1).each do |j|
 	groupBuilder.set_element(i, j, @permutors.index(@permutors[j].operate(@permutors[i])))
+        if groupBuilder.complete?
+          # print "COMPLETE\n"
+          break
+        end
+      end
+      if groupBuilder.complete?
+        # print "COMPLETE\n"
+        break
       end
     end
     puts "group:"
