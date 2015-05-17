@@ -17,24 +17,40 @@ class GroupBuilder
     @elements = elements
     @order = @elements.order
     @table = OperatorTable.new(@order)
-
+    
     # Set first column and row to identity @elements.get_element(0)
     @table.set_element(0,0,0)
     (1..@order-1).each do |i|
       @table.set_element(0,i,i)
       @table.set_element(i,0,i)
     end
+    
+    # Table with bool arrays showing which elements are allowed in a cell
+    @openTable = []
+
+    # Table with associations that declare pairs of cells equal
+    @associationTable = []
+  end
+
+  # Get a specific element.
+  # === Parameters
+  # _i_ = row
+  # _j_ = column
+  def get_element(i,j,element)
+    return @table.get_element(i,j)
   end
 
   # Set a specific element.
+  # XXX - can an element be overwritten or just set once?
   # === Parameters
   # _i_ = row
   # _j_ = column
   # _element_ = Element to assign to (i,j)
   def set_element(i,j,element)
     if 0 < i && i < @order &&
-        0 < j && j < @order &&
-        0 <= element && element < @order
+       0 < j && j < @order &&
+       0 <= element && element < @order
+      # Check against openTable
       @table.set_element(i,j,element)
     end
     # XXX - else throw exception
@@ -43,10 +59,10 @@ class GroupBuilder
   # Validate and build a corresponding Group.
   def build_group
     # Identity was set in initialize()
+    # Inverses guaranteed by e in every column and every row
 
     # Must have full OperatorTable
 
-    # Check inverses
 
     # Check associativity
 
