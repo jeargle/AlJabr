@@ -31,9 +31,13 @@ class GroupBuilder
     end
 
     # Table with associations that declare pairs of cells equal
-    @associationTable = Array.new(@order, Array.new(@order, nil))
+    @associationTable = Array.new(@order)
+    @associationTable = Array.new(@order)
+    (0..@order-1).each do |i|
+      @associationTable[i] = Array.new(@order)
+    end
 
-    # Set first column and row to identity @elements.get_element(0)
+    # Set first column and row to identity
     set_element(0, 0, 0)
     # Last element is automatically set by set_element()
     (1..@order-2).each do |i|
@@ -71,7 +75,7 @@ class GroupBuilder
         return nil
       end
       
-      # Check against openTable
+      # Is this element still allowed to be placed here?
       if !@openTable[i][j].include?(element)
         print "Error: element #{element} is not allowed at (#{i}, #{j})\n"
         print "@openTable[i][j]:"
@@ -86,7 +90,9 @@ class GroupBuilder
       markQueue.push([i, j, element])
       while markQueue.length > 0
         row, col, el = markQueue.shift
+        checkAssociativityRules(row, col)
         @table.set_element(row, col, el)
+        addAssociativityRules(row, col, el)
 
         # Remove element from other cells in this row and column
         @openTable[row][col].clear()
@@ -113,6 +119,55 @@ class GroupBuilder
       end
     end
     # XXX - else throw exception
+  end
+
+  # Check associativity rules for this position.
+  # === Parameters
+  # _i_ = row
+  # _j_ = column
+  def checkAssociativityRules(row, col)
+    if @associationTable[row][col] != nil
+      # print "Association rule: #{@associationTable[row][col]}\n"
+    end
+  end
+
+  # Add any new associativity rules that result from the addition
+  # of this element ad this position.
+  # === Parameters
+  # _i_ = row
+  # _j_ = column
+  # _el_ = element index to assign to (i, j)
+  def addAssociativityRules(row, col, el)
+    if row == col
+      # a(aa) = (aa)a
+      # aa = b
+      # => ab = ba
+      @associationTable[row][el] = [el, row]
+      @associationTable[el][row] = [row, el]
+    else
+      if el == @table.get_element(row, col)
+        # a(ba) = (ab)a
+        # ba = c, ab = c (a and b commute)
+        # => ac = ca, bc = cb
+        @associationTable[row][el] = [el, row]
+        @associationTable[el][row] = [row, el]
+        @associationTable[col][el] = [el, col]
+        @associationTable[el][col] = [col, el]
+      end
+
+      # b(aa) = (ba)a
+      # aa = c, ba = d
+      # bc = da
+      
+      # a(ba) = (ab)a
+      # ba = c, ab = d
+      # ac = da
+      
+      # Most general case
+      # c(ba) = (cb)a
+      # ba = d, cb = f
+      # cd = fa
+    end
   end
 
   def complete?
