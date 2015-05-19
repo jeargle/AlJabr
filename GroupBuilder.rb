@@ -127,8 +127,6 @@ class GroupBuilder
 
     # Must have full OperatorTable
 
-
-
   end
 
   # Create a String representation of the current table.
@@ -152,7 +150,11 @@ class GroupBuilder
     (0..@order-1).each do |i|
       outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |"
       (0..@order-1).each do |j|
-	outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+        if @table.get_element(i, j) == nil
+	  outString += " #{'.'.rjust(columnWidth)} |"
+        else
+	  outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+        end
       end
       outString += "\n"
     end

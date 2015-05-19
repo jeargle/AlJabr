@@ -24,8 +24,8 @@ end
 
 def test_GroupBuilder()
   print "\n\n***** GroupBuilder Test *****\n"
-  e = Element.new("0")
-  a = Element.new("1")
+  e = Element.new("e")
+  a = Element.new("a")
   print(e.symbol + "\n")
   testSet1 = ElementSet.new([e, a])
   print("order: #{testSet1.order}\n")
@@ -33,17 +33,19 @@ def test_GroupBuilder()
   print("1: #{testSet1.element(1).symbol}\n")
   groupBuilder1 = GroupBuilder.new(testSet1)
   print "groupBuilder1:\n"
-  # print groupBuilder1.to_s
+  print groupBuilder1.to_s
   groupBuilder1.set_element(1, 1, 0)
   print "groupBuilder1:\n"
   print groupBuilder1.to_s
   
   print "\n"
-  b = Element.new("2")
-  c = Element.new("3")
-  d = Element.new("4")
+  b = Element.new("b")
+  c = Element.new("c")
+  d = Element.new("d")
   testSet2 = ElementSet.new([e, a, b, c, d])
   groupBuilder2 = GroupBuilder.new(testSet2)
+  print "groupBuilder2:\n"
+  print groupBuilder2.to_s
   groupBuilder2.set_element(1, 1, 2)
   groupBuilder2.set_element(1, 2, 3)
   groupBuilder2.set_element(1, 3, 4)
