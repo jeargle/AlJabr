@@ -51,7 +51,12 @@ class Group
     (0..@order-1).each do |i|
       outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |"
       (0..@order-1).each do |j|
-	outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+	# outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+        if @table.get_element(i, j) == nil
+	  outString += " #{'.'.rjust(columnWidth)} |"
+        else
+	  outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+        end
       end
       outString += "\n"
     end

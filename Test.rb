@@ -120,18 +120,18 @@ def test_Permutor()
   
   perm1 = Permutor.new([1, 2, 3, 4, 5, 6, 0])
   pgb1 = PermutationGroupBuilder.new([perm1])
-  pgb1.build_group
+  g1 = pgb1.build_group
   pgb1.print_permutors
 
   perm2 = Permutor.new([1, 0, 3, 2])
   pgb2 = PermutationGroupBuilder.new([perm2])
-  pgb2.build_group
+  g2 = pgb2.build_group
   pgb2.print_permutors
   
   perm3 = Permutor.new([1, 0, 2, 3])
   perm4 = Permutor.new([0, 1, 3, 2])
   pgb3 = PermutationGroupBuilder.new([perm3, perm4])
-  pgb3.build_group
+  g3 = pgb3.build_group
   pgb3.print_permutors
 end
 
@@ -139,60 +139,88 @@ end
 def test_group_builders()
   puts "\n\n***** Group Builder Function Tests *****"
   
-  build_cyclic_group(13)
-  build_dihedral_group(7)
-  build_symmetry_group(4)
-  build_alternating_group(4)
+  g13 = build_cyclic_group(13)
+  g7 = build_dihedral_group(7)
+  g3 = build_symmetry_group(3)
+  g4 = build_alternating_group(4)
+  print g13.to_s + "\n"
+  print g7.to_s + "\n"
+  print g3.to_s + "\n"
+  print g4.to_s + "\n"
 end
 
 
 def test_cyclic_groups()
   puts "\n\n***** Cyclic Group Test *****"
 
-  build_cyclic_group(1)
-  build_cyclic_group(2)
-  build_cyclic_group(3)
-  build_cyclic_group(4)
-  build_cyclic_group(5)
-  build_cyclic_group(10)
-  build_cyclic_group(20)
-  # build_cyclic_group(30)  # order 30
-  # build_cyclic_group(40)  # order 40
+  g1 = build_cyclic_group(1)
+  g2 = build_cyclic_group(2)
+  g3 = build_cyclic_group(3)
+  g4 = build_cyclic_group(4)
+  g5 = build_cyclic_group(5)
+  g10 = build_cyclic_group(10)
+  g20 = build_cyclic_group(20)
+  # g30 = build_cyclic_group(30)  # order 30
+  # g40 = build_cyclic_group(40)  # order 40
+  print g1.to_s + "\n"
+  print g2.to_s + "\n"
+  print g3.to_s + "\n"
+  print g4.to_s + "\n"
+  print g5.to_s + "\n"
+  print g10.to_s + "\n"
+  print g20.to_s + "\n"
 end
 
 
 def test_dihedral_groups()
   puts "\n\n***** Dihedral Group Test *****"
 
-  build_dihedral_group(1)
-  build_dihedral_group(2)
-  build_dihedral_group(3)
-  build_dihedral_group(4)
-  build_dihedral_group(5)
-  build_dihedral_group(6)
-  build_dihedral_group(7)  # order 14
+  g1 = build_dihedral_group(1)
+  g2 = build_dihedral_group(2)
+  g3 = build_dihedral_group(3)
+  g4 = build_dihedral_group(4)
+  g5 = build_dihedral_group(5)
+  g6 = build_dihedral_group(6)
+  g7 = build_dihedral_group(7)  # order 14
+  print g1.to_s + "\n"
+  print g2.to_s + "\n"
+  print g3.to_s + "\n"
+  print g4.to_s + "\n"
+  print g5.to_s + "\n"
+  print g6.to_s + "\n"
+  print g7.to_s + "\n"
 end
 
 
 def test_symmetry_groups()
   puts "\n\n***** Symmetry Group Test *****"
 
-  build_symmetry_group(1)
-  build_symmetry_group(2)
-  build_symmetry_group(3)
-  build_symmetry_group(4)
-  # build_symmetry_group(5)  # order 120
+  g1 = build_symmetry_group(1)
+  g2 = build_symmetry_group(2)
+  g3 = build_symmetry_group(3)
+  g4 = build_symmetry_group(4)
+  # g5 = build_symmetry_group(5)  # order 120
+  print g1.to_s + "\n"
+  print g2.to_s + "\n"
+  print g3.to_s + "\n"
+  print g4.to_s + "\n"
+  # print g5.to_s + "\n"
 end
 
 
 def test_alternating_groups()
   puts "\n\n***** Alternating Group Test *****"
 
-  build_alternating_group(1)
-  build_alternating_group(2)
-  build_alternating_group(3)
-  build_alternating_group(4)
-  # build_alternating_group(5)  # order 60
+  g1 = build_alternating_group(1)
+  g2 = build_alternating_group(2)
+  g3 = build_alternating_group(3)
+  g4 = build_alternating_group(4)
+  # g5 = build_alternating_group(5)  # order 60
+  print g1.to_s + "\n"
+  print g2.to_s + "\n"
+  print g3.to_s + "\n"
+  print g4.to_s + "\n"
+  # print g5.to_s + "\n"
 end
 
 

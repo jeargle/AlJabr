@@ -174,8 +174,14 @@ class PermutationGroupBuilder
         break
       end
     end
-    puts "group:"
-    puts groupBuilder
+    # puts "group:"
+    # puts groupBuilder
+    if !groupBuilder.complete?
+      print "Error: groupBuilder is not complete"
+    end
+
+    @group = groupBuilder.build_group
+    return @group
   end
 
   # Retrieve the current group.

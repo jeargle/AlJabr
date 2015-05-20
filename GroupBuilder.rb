@@ -181,7 +181,9 @@ class GroupBuilder
     # Associativity guaranteed by association checks
 
     # Must have full OperatorTable
-
+    if complete?
+      return Group.new(@elements, @table)
+    end
   end
 
   # Create a String representation of the current table.
