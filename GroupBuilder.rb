@@ -50,7 +50,9 @@ class GroupBuilder
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def get_element(i, j, element)
+  # === Return
+  # _element_ = the element at position (i, j)
+  def get_element(i, j)
     return @table.get_element(i, j)
   end
 
@@ -155,13 +157,13 @@ class GroupBuilder
         @associationTable[el][col] = [col, el]
       end
 
-      # b(aa) = (ba)a
-      # aa = c, ba = d
-      # bc = da
+      # b(aa) = (ba)a, a(ab) = (aa)b
+      # aa = c, ba = d, ab = f
+      # => bc = da, af = cb
       
-      # a(ba) = (ab)a
+      # a(ba) = (ab)a, b(ab) = (ba)b
       # ba = c, ab = d
-      # ac = da
+      # => ac = da, bd = cb
       
       # Most general case
       # c(ba) = (cb)a
@@ -170,6 +172,7 @@ class GroupBuilder
     end
   end
 
+  # Whether the operator table is completely filled out or not
   def complete?
     return @table.complete?
   end
@@ -186,7 +189,9 @@ class GroupBuilder
     end
   end
 
-  # Create a String representation of the current table.
+  # Create a String representation of the current (maybe incomplete) table.
+  # === Return
+  # _s_ = string representation of the operator table
   def to_s
     # Set column width to size of largest element symbol
     columnWidth = 0

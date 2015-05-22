@@ -18,6 +18,8 @@ class Group
   end
 
   # Get the identity element.
+  # === Return
+  # _element_ = the identity element
   def get_identity
     return @table.get_element(0, 0)
   end
@@ -26,11 +28,15 @@ class Group
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def get_element(i, j, element)
+  # === Return
+  # _element_ = the element at position (i, j)
+  def get_element(i, j)
     return @table.get_element(i, j)
   end
 
-  # Create a String representation of the current table.
+  # Create a String representation of the current operator table.
+  # === Return
+  # _s_ = string representation of the operator table
   def to_s
     # Set column width to size of largest element symbol
     columnWidth = 0
