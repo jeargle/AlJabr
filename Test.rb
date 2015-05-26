@@ -37,8 +37,8 @@ def test_GroupBuilder()
   groupBuilder1.set_element(1, 1, 0)
   print "groupBuilder1:\n"
   print groupBuilder1.to_s
-  
   print "\n"
+
   b = Element.new("b")
   c = Element.new("c")
   d = Element.new("d")
@@ -64,6 +64,53 @@ def test_GroupBuilder()
   groupBuilder2.set_element(4, 4, 3)
   print "groupBuilder2:\n"
   print groupBuilder2.to_s
+  print "\n"
+
+  o = Element.new("1")
+  om = Element.new("-1")
+  i = Element.new("i")
+  im = Element.new("-i")
+  j = Element.new("j")
+  jm = Element.new("-j")
+  k = Element.new("k")
+  km = Element.new("-k")
+  testSet3 = ElementSet.new([o, om, i, im, j, jm, k, km])
+  groupBuilder3 = GroupBuilder.new(testSet3)
+  print "quaternion group:\n"
+  print groupBuilder3.to_s
+  groupBuilder3.set_element(1, 1, 0)
+  groupBuilder3.set_element(1, 2, 3)
+  groupBuilder3.set_element(2, 1, 3)
+  groupBuilder3.set_element(1, 3, 2)
+  groupBuilder3.set_element(3, 1, 2)
+  groupBuilder3.set_element(1, 4, 5)
+  groupBuilder3.set_element(4, 1, 5)
+  groupBuilder3.set_element(1, 5, 4)
+  groupBuilder3.set_element(5, 1, 4)
+  groupBuilder3.set_element(1, 6, 7)
+  groupBuilder3.set_element(6, 1, 7)
+  groupBuilder3.set_element(1, 7, 6)
+  groupBuilder3.set_element(7, 1, 6)
+  groupBuilder3.set_element(2, 2, 1)
+  groupBuilder3.set_element(3, 3, 1)
+  groupBuilder3.set_element(4, 4, 1)
+  groupBuilder3.set_element(5, 5, 1)
+  groupBuilder3.set_element(6, 6, 1)
+  groupBuilder3.set_element(7, 7, 1)
+  groupBuilder3.set_element(2, 3, 0)
+  groupBuilder3.set_element(3, 2, 0)
+  groupBuilder3.set_element(4, 5, 0)
+  # groupBuilder3.set_element(5, 4, 0)
+  # groupBuilder3.set_element(6, 7, 0)
+  # groupBuilder3.set_element(7, 6, 0)
+  groupBuilder3.set_element(6, 4, 2)
+  groupBuilder3.set_element(4, 6, 3)
+  groupBuilder3.set_element(4, 2, 6)
+  groupBuilder3.set_element(2, 4, 7)
+  groupBuilder3.set_element(2, 6, 4)
+  groupBuilder3.set_element(6, 2, 5)
+  print "quaternion group:\n"
+  print groupBuilder3.to_s
 end
   
 
