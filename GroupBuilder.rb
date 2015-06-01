@@ -132,7 +132,7 @@ class GroupBuilder
     if el == 0
       return 1
     elsif el >= @order
-      print "Errror: element index too large"
+      print "Error: element index too large"
       return 0
     end
 

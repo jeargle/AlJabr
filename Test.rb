@@ -205,9 +205,17 @@ def test_group_builders()
   g7 = build_dihedral_group(7)
   g3 = build_symmetry_group(3)
   g4 = build_alternating_group(4)
+  print "g13 order 1: #{g13.element_order?(1)}\n"
+  print "g13 index 1: #{g13.element_index?(1)}\n"
   print g13.to_s + "\n"
+  print "g7 order 1: #{g7.element_order?(1)}\n"
+  print "g7 index 1: #{g7.element_index?(1)}\n"
   print g7.to_s + "\n"
+  print "g3 order 1: #{g3.element_order?(1)}\n"
+  print "g3 index 1: #{g3.element_index?(1)}\n"
   print g3.to_s + "\n"
+  print "g4 order 1: #{g4.element_order?(1)}\n"
+  print "g4 index 1: #{g4.element_index?(1)}\n"
   print g4.to_s + "\n"
 end
 

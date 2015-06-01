@@ -43,7 +43,7 @@ class Group
     if el == 0
       return 1
     elsif el >= @order
-      print "Errror: element index too large"
+      print "Error: element index too large"
       return 0
     end
 
@@ -60,6 +60,27 @@ class Group
     end
 
     return order
+  end
+
+  # Get the group index of an element.
+  # === Parameters
+  # _el_ = index into element array
+  # === Return
+  # _index_ = index of the element
+  def element_index?(el)
+    if el == 0
+      return @order
+    elsif el >= @order
+      print "Error: element index too large"
+      return 0
+    end
+
+    order = element_order?(el)
+    if order == 0
+      print "Error: element order is 0"
+    end
+
+    return @order/order
   end
 
   # Create a String representation of the current operator table.
