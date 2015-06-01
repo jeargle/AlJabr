@@ -38,6 +38,8 @@ def test_GroupBuilder()
   print "groupBuilder1:\n"
   print groupBuilder1.to_s
   print "\n"
+  print "order e: #{groupBuilder1.element_order?(0)}\n"
+  print "order a: #{groupBuilder1.element_order?(1)}\n"
 
   b = Element.new("b")
   c = Element.new("c")
@@ -65,6 +67,11 @@ def test_GroupBuilder()
   print "groupBuilder2:\n"
   print groupBuilder2.to_s
   print "\n"
+  print "order e: #{groupBuilder2.element_order?(0)}\n"
+  print "order a: #{groupBuilder2.element_order?(1)}\n"
+  print "order b: #{groupBuilder2.element_order?(2)}\n"
+  print "order c: #{groupBuilder2.element_order?(3)}\n"
+  print "order d: #{groupBuilder2.element_order?(4)}\n"
 
   o = Element.new("1")
   om = Element.new("-1")
@@ -111,6 +118,14 @@ def test_GroupBuilder()
   groupBuilder3.set_element(6, 2, 5)
   print "quaternion group:\n"
   print groupBuilder3.to_s
+  print "order 1: #{groupBuilder3.element_order?(0)}\n"
+  print "order -1: #{groupBuilder3.element_order?(1)}\n"
+  print "order i: #{groupBuilder3.element_order?(2)}\n"
+  print "order -i: #{groupBuilder3.element_order?(3)}\n"
+  print "order j: #{groupBuilder3.element_order?(4)}\n"
+  print "order -j: #{groupBuilder3.element_order?(5)}\n"
+  print "order k: #{groupBuilder3.element_order?(6)}\n"
+  print "order -k: #{groupBuilder3.element_order?(7)}\n"
 end
   
 

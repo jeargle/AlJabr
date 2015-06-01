@@ -92,9 +92,9 @@ class GroupBuilder
       markQueue.push([i, j, element])
       while markQueue.length > 0
         row, col, el = markQueue.shift
-        checkAssociativityRules(row, col)
+        check_associativity_rules(row, col)
         @table.set_element(row, col, el)
-        addAssociativityRules(row, col, el)
+        add_associativity_rules(row, col, el)
 
         # Remove element from other cells in this row and column
         @openTable[row][col].clear()
@@ -123,11 +123,39 @@ class GroupBuilder
     # XXX - else throw exception
   end
 
+  # Get the order of an element.
+  # === Parameters
+  # _el_ = element index
+  # === Return
+  # _order_ = order of the element
+  def element_order?(el)
+    if el == 0
+      return 1
+    elsif el >= @order
+      print "Errror: element index too large"
+      return 0
+    end
+
+    order = 1
+    el_power = el
+    # Loop through powers of el
+    while el_power != nil and el_power != 0
+      el_power = @table.get_element(el_power, el)
+      order += 1
+    end
+
+    if el_power == nil
+      return 0
+    end
+
+    return order
+  end
+
   # Check associativity rules for this position.
   # === Parameters
   # _i_ = row
   # _j_ = column
-  def checkAssociativityRules(row, col)
+  def check_associativity_rules(row, col)
     if @associationTable[row][col] != nil
       # print "Association rule: #{@associationTable[row][col]}\n"
     end
@@ -139,7 +167,7 @@ class GroupBuilder
   # _i_ = row
   # _j_ = column
   # _el_ = element index to assign to (i, j)
-  def addAssociativityRules(row, col, el)
+  def add_associativity_rules(row, col, el)
     if row == col
       # a(aa) = (aa)a
       # aa = b

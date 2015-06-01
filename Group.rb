@@ -34,6 +34,34 @@ class Group
     return @table.get_element(i, j)
   end
 
+  # Get the order of an element.
+  # === Parameters
+  # _el_ = element index
+  # === Return
+  # _order_ = order of the element
+  def element_order?(el)
+    if el == 0
+      return 1
+    elsif el >= @order
+      print "Errror: element index too large"
+      return 0
+    end
+
+    order = 1
+    el_power = el
+    # Loop through powers of el
+    while el_power != nil and el_power != 0
+      el_power = @table.get_element(el_power, el)
+      order += 1
+    end
+
+    if el_power == nil
+      return 0
+    end
+
+    return order
+  end
+
   # Create a String representation of the current operator table.
   # === Return
   # _s_ = string representation of the operator table
