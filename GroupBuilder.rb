@@ -151,6 +151,25 @@ class GroupBuilder
     return order
   end
 
+  # Get a table showing where an element can be placed.
+  # === Parameters
+  # _el_ = element index
+  # === Return
+  # _table_ = boolean mask of @openTable showing open positions
+  def open_positions?(el)
+    # Table with bool arrays showing which elements are allowed in a cell
+    open = Array.new(@order)
+    (0..@order-1).each do |i|
+      open[i] = Array.new(@order, false)
+      (0..@order-1).each do |j|
+        if @openTable[i][j].size > 0 and @openTable[i][j].member?(el)
+          open[i][j] = true
+        end
+      end
+    end
+    return open
+  end
+
   # Check associativity rules for this position.
   # === Parameters
   # _i_ = row

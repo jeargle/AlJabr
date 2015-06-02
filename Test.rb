@@ -52,6 +52,16 @@ def test_GroupBuilder()
   groupBuilder2.set_element(1, 2, 3)
   groupBuilder2.set_element(1, 3, 4)
   groupBuilder2.set_element(1, 4, 0)
+  print "groupBuilder2:\n"
+  print groupBuilder2.to_s
+  print "open positions 1:\n"
+  print bool_table_to_s(groupBuilder2.open_positions?(1))
+  print "open positions 2:\n"
+  print bool_table_to_s(groupBuilder2.open_positions?(2))
+  print "open positions 3:\n"
+  print bool_table_to_s(groupBuilder2.open_positions?(3))
+  print "open positions 4:\n"
+  print bool_table_to_s(groupBuilder2.open_positions?(4))
   groupBuilder2.set_element(2, 1, 3)
   groupBuilder2.set_element(2, 2, 4)
   groupBuilder2.set_element(2, 3, 0)
@@ -98,6 +108,16 @@ def test_GroupBuilder()
   groupBuilder3.set_element(6, 1, 7)
   groupBuilder3.set_element(1, 7, 6)
   groupBuilder3.set_element(7, 1, 6)
+  print "quaternion group:\n"
+  print groupBuilder3.to_s
+  print "open positions 1:\n"
+  print bool_table_to_s(groupBuilder3.open_positions?(1))
+  print "open positions 2:\n"
+  print bool_table_to_s(groupBuilder3.open_positions?(2))
+  print "open positions 3:\n"
+  print bool_table_to_s(groupBuilder3.open_positions?(3))
+  print "open positions 4:\n"
+  print bool_table_to_s(groupBuilder3.open_positions?(4))
   groupBuilder3.set_element(2, 2, 1)
   groupBuilder3.set_element(3, 3, 1)
   groupBuilder3.set_element(4, 4, 1)
@@ -293,6 +313,33 @@ def test_alternating_groups()
   # print g5.to_s + "\n"
 end
 
+
+def bool_table_to_s(table)
+  # Set column width to size of largest element symbol
+  order = table.length
+  columnWidth = 1
+  outString = " #{" ".rjust(columnWidth)} |"
+  (0..order-1).each do |i|
+    outString += " #{i} |"
+  end
+  outString += "\n"
+  (0..order).each do |i|
+    outString += "-#{"-".rjust(columnWidth, "-")}-|"
+  end
+  outString += "\n"
+  (0..order-1).each do |i|
+    outString += " #{i} |"
+    (0..order-1).each do |j|
+      if table[i][j]
+	outString += " 1 |"
+      else
+	outString += " 0 |"
+      end
+    end
+    outString += "\n"
+  end
+  return outString
+end
 
 
 test_OperatorTable()
