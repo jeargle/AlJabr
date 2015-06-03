@@ -453,3 +453,34 @@ def build_alternating_group(degree)
 
   return alternatingGroupBuilder.get_group
 end
+
+# Build the direct product group of two existing groups.
+# === Parameters
+# _group1_ = first group
+# _group2_ = second group
+# === Return
+# _directProduct_ = direct product of group1 and group2
+def direct_product(group1, group2)
+
+  elArray = []
+  backMap = []
+  # Create new ElementSet
+  for i in (0..group1.order-1)
+    for j in (0..group2.order-1)
+      elArray.push(Element.new("(#{group1.elements[i].symbol},#{group2.elements[j].symbol})"))
+      backMap.push([i,j])
+    end
+  end
+
+  elements = ElementSet.new(elArray)
+  productBuilder = GroupBuilder.new(elements)
+
+  # Loop through Groups
+  for i in (0..productBuilder.order-1)
+    for j in (0..productBuilder.order-1)
+      # productBuilder.set_element(i, j, )
+    end
+  end
+  
+  return
+end
