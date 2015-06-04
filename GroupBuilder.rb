@@ -13,6 +13,8 @@ require 'set'
 # possibility of creating a valid Group.
 class GroupBuilder
 
+  attr_reader :order
+
   # The +new+ class method initializes the class.
   # === Parameters
   # _elements_ = ElementSet with all the group elements
@@ -463,12 +465,17 @@ end
 def direct_product(group1, group2)
 
   elArray = []
-  backMap = []
+  elCount = 0
+  backMap = Array.new(group1.order)
+  backMap2 = []
   # Create new ElementSet
   for i in (0..group1.order-1)
+    backMap[i] = Array.new(group2.order)
     for j in (0..group2.order-1)
-      elArray.push(Element.new("(#{group1.elements[i].symbol},#{group2.elements[j].symbol})"))
-      backMap.push([i,j])
+      elArray.push(Element.new("(#{group1.elements.element(i).symbol},#{group2.elements.element(j).symbol})"))
+      backMap[i][j] = elCount
+      elCount += 1
+      backMap2.push([i, j])
     end
   end
 
@@ -478,9 +485,11 @@ def direct_product(group1, group2)
   # Loop through Groups
   for i in (0..productBuilder.order-1)
     for j in (0..productBuilder.order-1)
-      # productBuilder.set_element(i, j, )
+      el1 = group1.get_element(backMap2[i][0], backMap2[j][0])
+      el2 = group2.get_element(backMap2[i][1], backMap2[j][1])
+      productBuilder.set_element(i, j, backMap[el1][el2])
     end
   end
   
-  return
+  return productBuilder.build_group
 end

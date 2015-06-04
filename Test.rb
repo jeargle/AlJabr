@@ -225,6 +225,8 @@ def test_group_builders()
   g7 = build_dihedral_group(7)
   g3 = build_symmetry_group(3)
   g4 = build_alternating_group(4)
+  g2 = build_cyclic_group(2)
+  g2x2 = direct_product(g2, g2)
   print "g13 order 1: #{g13.element_order?(1)}\n"
   print "g13 index 1: #{g13.element_index?(1)}\n"
   print g13.to_s + "\n"
@@ -237,6 +239,9 @@ def test_group_builders()
   print "g4 order 1: #{g4.element_order?(1)}\n"
   print "g4 index 1: #{g4.element_index?(1)}\n"
   print g4.to_s + "\n"
+  print "g2x2 order 1: #{g2x2.element_order?(1)}\n"
+  print "g2x2 index 1: #{g2x2.element_index?(1)}\n"
+  print g2x2.to_s + "\n"
 end
 
 

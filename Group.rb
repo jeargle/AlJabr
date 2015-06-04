@@ -8,6 +8,9 @@ require_relative 'OperatorTable'
 # Immutable, validated Group.
 class Group
 
+  attr_reader :order
+  attr_reader :elements
+
   # The +new+ class method initializes the class.
   # === Parameters
   # _elements_ = ElementSet with all the group elements
