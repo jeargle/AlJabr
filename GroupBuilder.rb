@@ -456,13 +456,14 @@ def build_alternating_group(degree)
   return alternatingGroupBuilder.get_group
 end
 
+
 # Build the direct product group of two existing groups.
 # === Parameters
 # _group1_ = first group
 # _group2_ = second group
 # === Return
 # _directProduct_ = direct product of group1 and group2
-def direct_product(group1, group2)
+def build_product_group(group1, group2)
 
   elArray = []
   elCount = 0
