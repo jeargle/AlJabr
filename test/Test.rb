@@ -1,8 +1,8 @@
 #!/usr/bin/ruby
 
-require_relative 'OperatorTable'
-require_relative 'GroupBuilder'
-require_relative 'PermutationGroupBuilder'
+require_relative '../src/OperatorTable'
+require_relative '../src/GroupBuilder'
+require_relative '../src/PermutationGroupBuilder'
 
 
 def test_OperatorTable()
