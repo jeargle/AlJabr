@@ -28,7 +28,7 @@ aljabr.OperatorTable = {
 
         model = this;
         model.order = order;
-        model.emptyCellCount = model.order*model.order;
+        model.emptyCellCount = model.order * model.order;
         model.table = Array.new(model.order);
         _.each([0..model.order-1], function(i) {
             model.table[i] = Array.new(model.order)
@@ -154,6 +154,149 @@ aljabr.ElementSet = {
 };
 
 
+
+/**
+ * Immutable, validated Group.
+ */
+aljabr.Group = {
+    order: 0,
+    elements: null,
+
+  /**
+   * The +new+ class method initializes the class.
+   * @param elements - ElementSet with all the group elements
+   */
+    initialize: function(elements, table) {
+        'use strict';
+        var model;
+
+        model =  this;
+        model.elements = elements;
+        model.order = model.elements.order;
+        model.table = table;
+    },
+    /**
+     * Get the identity element.
+     * @returns the identity element
+     */
+    get_identity: function() {
+        'use strict';
+        return this.table.get_element(0, 0);
+    },
+    /**
+     * Get a specific element.
+     * @param i - row
+     * @param j - column
+     * @returns the element at position (i, j)
+     */
+    get_element: function(i, j) {
+        'use strict';
+        return this.table.get_element(i, j);
+    },
+  /**
+   * Get the order of an element.
+   * @param el - element index
+   * @returns order of the element
+   */
+    element_order?: function(el) {
+        'use strict';
+        var model, order, el_power;
+
+        model = this;
+            
+        if (el == 0) {
+            return 1;
+        }
+        else if (el >= model.order) {
+            print "Error: element index too large";
+            return 0;
+        }
+
+        order = 1;
+        el_power = el;
+        // Loop through powers of el
+        while (el_power != nil and el_power != 0) {
+            el_power = model.table.get_element(el_power, el);
+            order += 1;
+        }
+
+        if (el_power == nil) {
+            return 0;
+        }
+
+        return order;
+    },
+  /**
+   * Get the group index of an element.
+   * @param el - index into element array
+   * @returns index of the element
+   */
+    element_index?: function(el) {
+        'use strict';
+        var model, order;
+
+        model = this;
+        if (el == 0) {
+            return model.order;
+        }
+        else if (el >= model.order) {
+            print "Error: element index too large";
+            return 0;
+        }
+
+        order = element_order?(el);
+        if (order == 0) {
+            print "Error: element order is 0";
+        }
+
+        return model.order/order;
+    },
+  /**
+   * Create a String representation of the current operator table.
+   * @returns string representation of the operator table
+   */
+    to_s: function() {
+        'use strict';
+        var model, columnWidth, outString, i, j;
+
+        model = this;
+        
+        // Set column width to size of largest element symbol
+        columnWidth = 0;
+        for (i in [0..model.order-1]) {
+            if (columnWidth < model.elements.element(i).symbol.length) {
+	        columnWidth = model.elements.element(i).symbol.length;
+            }
+        }
+        
+        outString = " #{" ".rjust(columnWidth)} |";
+        for (i in [0..model.order-1]) {
+            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
+        }
+        outString += "\n";
+
+        for (i in [0..model.order]) {
+            outString += "-#{"-".rjust(columnWidth, "-")}-|";
+        }
+        outString += "\n";
+
+        for (i in [0..model.order-1]) {
+            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
+            for (j in [0..model.order-1]) {
+                // outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |"
+                if (model.table.get_element(i, j) == nil) {
+	            outString += " #{'.'.rjust(columnWidth)} |";
+                }
+                else {
+	            outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |";
+                }
+            }
+            outString += "\n";
+        }
+        
+        return outString;
+    }
+};
 
 
 
