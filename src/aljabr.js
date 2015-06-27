@@ -469,80 +469,78 @@ aljabr.GroupBuilder = {
 
 /**
  * Build a cyclic group.
- * === Parameters
- * _order_ = order of the group
- * === Return
- * _cyclicGroup_ = built cyclic group
+ * @param order - order of the group
+ * @returns built cyclic group
  */
-build_cyclic_group(order)
+aljabr.build_cyclic_group = function(order) {
+    'use strict';
   
-  if order <= 0
-    return nil
-  }
-
-  cycleActionArray = Array.new(order)
-  if order == 1
-    cycleActionArray[0] = 0
-  else
-    cycleActionArray.each_index function(i) {
-      cycleActionArray[i] = i+1
+    if (order <= 0) {
+        return nil;
     }
-    cycleActionArray[order-1] = 0
-  }
-  cycle = Permutor.new(cycleActionArray)
-  cyclicGroupBuilder = PermutationGroupBuilder.new([cycle])
-  return cyclicGroupBuilder.get_group
-  
-}
+
+    cycleActionArray = Array.new(order);
+    if (order == 1) {
+        cycleActionArray[0] = 0;
+    }
+    else {
+        for (i in cycleActionArray) {
+            cycleActionArray[i] = i+1;
+        }
+        cycleActionArray[order-1] = 0;
+    }
+    cycle = Permutor.new(cycleActionArray);
+    cyclicGroupBuilder = PermutationGroupBuilder.new([cycle]);
+
+    return cyclicGroupBuilder.get_group;
+};
 
 
 /**
- *  Build a dihedral group.
- * === Parameters
- * _degree_ = half of the order of the group
- * === Return
- * _dihedralGroup_ = built dihedral group
+ * Build a dihedral group.
+ * @param degree - half of the order of the group
+ * @returns built dihedral group
  */
-build_dihedral_group(degree)
+aljabr.build_dihedral_group = function(degree) {
+    'use strict';
 
-  if degree <= 0
-    return nil
-  }
-
-  dihedralActionArray1 = Array.new(degree+2)
-  dihedralActionArray2 = Array.new(degree+2)
-
-  // XXX - should throw an exception; no Dih1 or Dih2
-  if degree == 1 || degree == 2
-    return build_cyclic_group(degree)
-  else
-    dihedralActionArray1.each_index function(i) {
-      dihedralActionArray1[i] = i+1
+    if (degree <= 0) {
+        return nil;
     }
-    dihedralActionArray1[degree-1] = 0
-    dihedralActionArray1[degree] = degree
-    dihedralActionArray1[degree+1] = degree+1
-    dihedralActionArray2.each_index function(i) {
-      dihedralActionArray2[i] = i
-    }
-    dihedralActionArray2[degree] = degree+1
-    dihedralActionArray2[degree+1] = degree
-  }
-  dihed1 = Permutor.new(dihedralActionArray1)
-  dihed2 = Permutor.new(dihedralActionArray2)
-  dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1, dihed2])
-  return dihedralGroupBuilder.get_group
 
-}
+    dihedralActionArray1 = Array.new(degree+2);
+    dihedralActionArray2 = Array.new(degree+2);
+
+    // XXX - should throw an exception; no Dih1 or Dih2
+    if (degree == 1 || degree == 2) {
+        return build_cyclic_group(degree);
+    }
+    else {
+        for (i in dihedralActionArray1) {
+            dihedralActionArray1[i] = i+1;
+        }
+        dihedralActionArray1[degree-1] = 0;
+        dihedralActionArray1[degree] = degree;
+        dihedralActionArray1[degree+1] = degree+1;
+        for (i in dihedralActionArray2) {
+            dihedralActionArray2[i] = i;
+        }
+        dihedralActionArray2[degree] = degree+1;
+        dihedralActionArray2[degree+1] = degree;
+    }
+    dihed1 = Permutor.new(dihedralActionArray1);
+    dihed2 = Permutor.new(dihedralActionArray2);
+    dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1, dihed2]);
+    
+    return dihedralGroupBuilder.get_group;
+};
 
 
 /**
  * Build a symmetry group.
  * XXX - using WAY more generators than are needed
- * === Parameters
- * _degree_ = order of the group is degree!
- * === Return
- * _symmetryGroup_ = built symmetry group
+ * @param degree - order of the group is degree!
+ * @returns built symmetry group
  */
 aljabr.build_symmetry_group = function(degree) {
     'use strict';
@@ -561,122 +559,120 @@ aljabr.build_symmetry_group = function(degree) {
     // elements at indices num1 and num2
     num1 = 0;
     num2 = 1;
-    symmetryActionArrays.each_index function(i) {
-    symmetryActionArrays[i] = Array.new(degree)
-    symmetryActionArrays[i].each_index function(j) {
-      symmetryActionArrays[i][j] = j
+    for (i in symmetryActionArrays) {
+        symmetryActionArrays[i] = Array.new(degree);
+        for (j in symmetryActionArrays[i]) {
+            symmetryActionArrays[i][j] = j;
+        }
+        symmetryActionArrays[i][num1] = num2;
+        symmetryActionArrays[i][num2] = num1;
+        num2 += 1;
+        if (num2 == degree) {
+            num1 += 1;
+            num2 = num1 + 1;
+        }
     }
-    symmetryActionArrays[i][num1] = num2
-    symmetryActionArrays[i][num2] = num1
-    num2 += 1
-    if num2 == degree
-      num1 += 1
-      num2 = num1 + 1
-    }
-  }
   
-  transpositions = Array.new(numActionArrays)
-  transpositions.each_index function(i) {
-    transpositions[i] = Permutor.new(symmetryActionArrays[i])
-  }
+    transpositions = Array.new(numActionArrays);
+    for (i in transpositions) {
+        transpositions[i] = Permutor.new(symmetryActionArrays[i]);
+    }
 
-  symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions)
+    symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions);
 
-  return symmetryGroupBuilder.get_group
-}
+    return symmetryGroupBuilder.get_group;
+};
 
 
 /**
  * Build an alternating group.
  * XXX - using WAY more generators than are needed
- * === Parameters
- * _degree_ = order of the group is degree!/2
- * === Return
- * _alternatingGroup_ = built alternating group
+ * @param degree - order of the group is degree!/2
+ * @returns built alternating group
  */
-build_alternating_group = function(degree) {
+aljabr.build_alternating_group = function(degree) {
     'use strict';
 
-  if degree <= 1
-    return nil
-  }
+    if (degree <= 1) {
+        return nil;
+    }
 
-  if degree == 2
-    return build_cyclic_group(degree)
-  }
+    if (degree == 2) {
+        return build_cyclic_group(degree);
+    }
 
-  // Number generators = choose(degree, 3)
-  numActionArrays = degree * (degree-1) * (degree-2) / 6
-  alternatingActionArrays = Array.new(numActionArrays)
+    // Number generators = choose(degree, 3)
+    numActionArrays = degree * (degree-1) * (degree-2) / 6;
+    alternatingActionArrays = Array.new(numActionArrays);
 
   // Build actionArrays like [0, 1, 2, ...]
-  alternatingActionArrays.each_index function(i) {
-    alternatingActionArrays[i] = Array.new(degree)
-    alternatingActionArrays[i].each_index function(j) {
-      alternatingActionArrays[i][j] = j
+    for (i in alternatingActionArrays) {
+        alternatingActionArrays[i] = Array.new(degree);
+        for (j in alternatingActionArrays[i]) {
+            alternatingActionArrays[i][j] = j;
+        }
     }
-  }
 
-  // Switch elements at indices num1, num2, and num3
-  arrayCount = 0
-  (0..degree-3).each function(i) {
-    (i+1..degree-2).each function(j) {
-      (j+1..degree-1).each do |k|
-	alternatingActionArrays[arrayCount][i] = j
-	alternatingActionArrays[arrayCount][j] = k
-	alternatingActionArrays[arrayCount][k] = i
-	arrayCount += 1
-      }
+    // Switch elements at indices num1, num2, and num3
+    arrayCount = 0;
+    for (i in [0..degree-3]) {
+        for (j in [i+1..degree-2]) {
+            for (k in [j+1..degree-1]) {
+	        alternatingActionArrays[arrayCount][i] = j;
+	        alternatingActionArrays[arrayCount][j] = k;
+	        alternatingActionArrays[arrayCount][k] = i;
+	        arrayCount += 1;
+            }
+        }
     }
-  }
   
-  transpositions = Array.new(numActionArrays)
-  transpositions.each_index function(i) {
-    transpositions[i] = Permutor.new(alternatingActionArrays[i])
-  }
+    transpositions = Array.new(numActionArrays);
+    for (i in transpositions) {
+        transpositions[i] = Permutor.new(alternatingActionArrays[i]);
+    }
 
-  alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions)
+    alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions);
 
-  return alternatingGroupBuilder.get_group
-}
+    return alternatingGroupBuilder.get_group;
+};
 
 
 /**
  * Build the direct product group of two existing groups.
- * === Parameters
- * _group1_ = first group
- * _group2_ = second group
- * === Return
- * _directProduct_ = direct product of group1 and group2
+ * @param group1 - first group
+ * @param group2 - second group
+ * @returns direct product of group1 and group2
  */
-build_product_group = function(group1, group2) {
-
-  elArray = []
-  elCount = 0
-  backMap = Array.new(group1.order)
-  backMap2 = []
-  // Create new ElementSet
-  for i in (0..group1.order-1)
-    backMap[i] = Array.new(group2.order)
-    for j in (0..group2.order-1)
-      elArray.push(Element.new("(#{group1.elements.element(i).symbol},#{group2.elements.element(j).symbol})"))
-      backMap[i][j] = elCount
-      elCount += 1
-      backMap2.push([i, j])
+aljabr.build_product_group = function(group1, group2) {
+    'use strict';
+    var elArray, elCount, backMap, backMap2, elements, productBuilder, el1, el2;
+    
+    elArray = [];
+    elCount = 0;
+    backMap = Array.new(group1.order);
+    backMap2 = [];
+    // Create new ElementSet
+    for (i in [0..group1.order-1]) {
+        backMap[i] = Array.new(group2.order);
+        for (j in [0..group2.order-1]) {
+            elArray.push(Element.new("(#{group1.elements.element(i).symbol},#{group2.elements.element(j).symbol})"));
+            backMap[i][j] = elCount;
+            elCount += 1;
+            backMap2.push([i, j]);
+        }
     }
-  }
 
-  elements = ElementSet.new(elArray)
-  productBuilder = GroupBuilder.new(elements)
+    elements = ElementSet.new(elArray);
+    productBuilder = GroupBuilder.new(elements);
 
-  // Loop through Groups
-  for i in (0..productBuilder.order-1)
-    for j in (0..productBuilder.order-1)
-      el1 = group1.get_element(backMap2[i][0], backMap2[j][0])
-      el2 = group2.get_element(backMap2[i][1], backMap2[j][1])
-      productBuilder.set_element(i, j, backMap[el1][el2])
+    // Loop through Groups
+    for (i in [0..productBuilder.order-1]) {
+        for (j in [0..productBuilder.order-1]) {
+            el1 = group1.get_element(backMap2[i][0], backMap2[j][0]);
+            el2 = group2.get_element(backMap2[i][1], backMap2[j][1]);
+            productBuilder.set_element(i, j, backMap[el1][el2]);
+        }
     }
-  }
   
-  return productBuilder.build_group
-}
+    return productBuilder.build_group;
+};
