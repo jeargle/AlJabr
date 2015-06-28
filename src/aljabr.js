@@ -4,7 +4,6 @@
  * :title: OperatorTable
  */
 
-require_relative 'Group'
 require 'set'
 
 /**
@@ -19,8 +18,7 @@ require 'set'
 aljabr.OperatorTable = {
     /**
      * The +new+ class method initializes the class.
-     * === Parameters
-     * _order_ = number of rows (and columns) in the table
+     * @param order - number of rows (and columns) in the table
      */
     initialize: function(order) {
         'use strict';
@@ -83,7 +81,7 @@ aljabr.OperatorTable = {
     /**
      * @returns 
      */
-    complete?: function() {
+    isComplete: function() {
         'use strict';
         return this.emptyCellCount == 0
     }
@@ -114,7 +112,7 @@ aljabr.Element = {
         'use strict';
         return this.symbol;
     }
-}
+};
 
 
 /**
@@ -161,11 +159,10 @@ aljabr.ElementSet = {
 aljabr.Group = {
     order: 0,
     elements: null,
-
-  /**
-   * The +new+ class method initializes the class.
-   * @param elements - ElementSet with all the group elements
-   */
+    /**
+     * The +new+ class method initializes the class.
+     * @param elements - ElementSet with all the group elements
+     */
     initialize: function(elements, table) {
         'use strict';
         var model;
@@ -193,12 +190,12 @@ aljabr.Group = {
         'use strict';
         return this.table.get_element(i, j);
     },
-  /**
-   * Get the order of an element.
-   * @param el - element index
-   * @returns order of the element
-   */
-    element_order?: function(el) {
+    /**
+     * Get the order of an element.
+     * @param el - element index
+     * @returns order of the element
+     */
+    element_order: function(el) {
         'use strict';
         var model, order, el_power;
 
@@ -226,11 +223,11 @@ aljabr.Group = {
 
         return order;
     },
-  /**
-   * Get the group index of an element.
-   * @param el - index into element array
-   * @returns index of the element
-   */
+    /**
+     * Get the group index of an element.
+     * @param el - index into element array
+     * @returns index of the element
+     */
     element_index?: function(el) {
         'use strict';
         var model, order;
@@ -244,21 +241,21 @@ aljabr.Group = {
             return 0;
         }
 
-        order = element_order?(el);
+        order = element_order(el);
         if (order == 0) {
             print "Error: element order is 0";
         }
 
         return model.order/order;
     },
-  /**
-   * Create a String representation of the current operator table.
-   * @returns string representation of the operator table
-   */
+    /**
+     * Create a String representation of the current operator table.
+     * @returns string representation of the operator table
+     */
     to_s: function() {
         'use strict';
         var model, columnWidth, outString, i, j;
-
+        
         model = this;
         
         // Set column width to size of largest element symbol
@@ -299,7 +296,6 @@ aljabr.Group = {
 };
 
 
-
 /**
  * This class holds an intermediate representation for a Group that
  * has not been fully built.  It should allow for the placement
@@ -307,7 +303,7 @@ aljabr.Group = {
  * possibility of creating a valid Group.
  */
 aljabr.GroupBuilder = {
-    attr_reader :order,
+    order: 0,
     /**
      * The +new+ class method initializes the class.
      * @param elements - ElementSet with all the group elements
@@ -358,14 +354,13 @@ aljabr.GroupBuilder = {
     /**
      * Set a specific element.
      * XXX - can an element be overwritten or just set once?
-     * === Parameters
-     * _i_ = row
-     * _j_ = column
-     * _element_ = Element to assign to (i, j)
+     * @param i - row
+     * @param j - column
+     * @param element - Element to assign to (i, j)
      */
     set_element: function(i, j, element) {
         'use strict';
-        var model;
+        var model, markQueue, row, col, el;
 
         model = this;
         // print "set_element(#{i}, #{j}, #{element})\n"
@@ -433,8 +428,9 @@ aljabr.GroupBuilder = {
      * @param el - element index
      * @returns order of the element
      */
-    element_order?: function(el) {
+    element_order: function(el) {
         'use strict';
+        var order, el_power;
         
         if (el == 0) {
             return 1;
@@ -461,7 +457,7 @@ aljabr.GroupBuilder = {
     /**
      * Get a table showing where an element can be placed.
      * @param el - element index
-     * @returns table - boolean mask of @openTable showing open positions
+     * @returns table - boolean mask of openTable showing open positions
      */
     open_positions?: function(el) {
         'use strict';
@@ -487,8 +483,8 @@ aljabr.GroupBuilder = {
      * @param j - column
      */
     check_associativity_rules: function(row, col) {
-        if (@associationTable[row][col] != nil) {
-            // print "Association rule: #{@associationTable[row][col]}\n";
+        if (this.associationTable[row][col] != nil) {
+            // print "Association rule: #{this.associationTable[row][col]}\n";
         }
     },
     /**
@@ -538,68 +534,85 @@ aljabr.GroupBuilder = {
     /**
      * Whether the operator table is completely filled out or not
      */
-    complete?: function() {
-        return this.table.complete?;
+    isComplete: function() {
+        'use strict';
+        return this.table.isComplete;
     },
     /**
      * Validate and build a corresponding Group.
      */
     build_group: function() {
+        'use strict';
+        var model;
+
+        model = this;
         // Identity was set in initialize()
         // Inverses guaranteed by e in every column and every row
         // Associativity guaranteed by association checks
         
         // Must have full OperatorTable
-        if (complete?) {
-            return Group.new(@elements, @table);
+        if (isComplete) {
+            return Group.new(model.elements, model.table);
         }
     },
     /**
      * Create a String representation of the current (maybe incomplete) table.
-     * === Return
-     * _s_ = string representation of the operator table
+     * @returns string representation of the operator table
      */
     to_s: function() {
+        'use strict';
+        var model;
+
+        model = this;
+        
         // Set column width to size of largest element symbol
         columnWidth = 0
-        _.each([0..@order-1], function(i) {
-            if (columnWidth < @elements.element(i).symbol.length) {
-	        columnWidth = @elements.element(i).symbol.length;
+        _.each([0..model.order-1], function(i) {
+            if (columnWidth < model.elements.element(i).symbol.length) {
+	        columnWidth = model.elements.element(i).symbol.length;
             }
         });
         outString = " #{" ".rjust(columnWidth)} |";
-        _.each([0..@order-1], function(i) {
-            outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |";
+        _.each([0..model.order-1], function(i) {
+            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
         });
         outString += "\n";
-        _.each([0..@order], function(i) {
+        _.each([0..model.order], function(i) {
             outString += "-#{"-".rjust(columnWidth, "-")}-|";
         });
         outString += "\n";
-        _.each([0..@order-1], function(i) {
-            outString += " #{@elements.element(i).symbol.rjust(columnWidth)} |";
-            _.each([0..@order-1], function(j) {
-                if (@table.get_element(i, j) == nil) {
+        _.each([0..model.order-1], function(i) {
+            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
+            _.each([0..model.order-1], function(j) {
+                if (model.table.get_element(i, j) == nil) {
 	            outString += " #{'.'.rjust(columnWidth)} |";
                 }
                 else {
-	            outString += " #{@elements.element(@table.get_element(i, j)).symbol.rjust(columnWidth)} |";
+	            outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |";
                 }
             });
             outString += "\n";
         });
         return outString;
     },
+    /**
+     *
+     */
     print_openTable: function() {
-        _.each([0..@order-1], function(i) {
+        'use strict';
+        var model;
+
+        model = this;
+        
+        _.each([0..model.order-1], function(i) {
             print "row #{i}\n";
-            _.each([0..@order-1], function(j) {
+            _.each([0..model.order-1], function(j) {
                 print "   col #{j}\n";
                 print "      ";
-                // print "openTable[#{i}][#{j}].class: #{@openTable[i][j].class}\n";
-                // print "openTable[#{i}][#{j}].size: #{@openTable[i][j].size}\n";
-                // print "openTable[0][0].size: #{@openTable[0][0].size}\n";
-                _.each(@openTable[i][j], function(el) {
+                // print "openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n";
+                // print "openTable[#{i}][#{j}].size: #{model.openTable[i][j].size}\n";
+                // print "openTable[0][0].size: #{model.openTable[0][0].size}\n";
+                _.each(model.openTable[i][j], function(el) {
                     // print "#{el.class} ";
                     print "#{el} ";
                 });
@@ -607,7 +620,246 @@ aljabr.GroupBuilder = {
             });
         });
     }
-}
+};
+
+
+/**
+ * Permutation representation of a group element from the symmetric group.
+ */
+aljabr.Permutor = {
+    /**
+     * The +new+ class method initializes the class.
+     * @param actionArray - permutor representation
+     */
+    initialize: function(actionArray) {
+        'use strict';
+        var i;
+
+        // Validate actionArray
+        // actionArray must be an array of integers from 0..actionArray.length-1
+        // each integer appears only once
+        // the array is a map from integer i to the integer actionArray[i]
+        for (i in [0..(actionArray.length-1)]) {
+            if (!actionArray.include?(i)) {
+                print 'Error: bad actionArray';
+            }
+        }
+        this.actionArray = actionArray;
+    },
+    /**
+     * Equality (was "==")
+     * @param permutor - permutor to compare against
+     */
+    eq: function(permutor) {
+        'use strict';
+        return (to_s == permutor.to_s);
+    },
+    /**
+     * 
+     * @param permutor - 
+     */
+    operate: function(permutor) {
+        'use strict';
+
+        if (order != permutor.order) {
+            return nil;
+        }
+        tempActionArray = Array.new(this.actionArray.length);
+        for (i in [0..(tempActionArray.length-1)]) {
+            tempActionArray[i] = op(permutor.op(i));
+        }
+        return Permutor.new(tempActionArray);
+    },
+    /**
+     * Return an element of actionArray.
+     * @param num - index into actionArray
+     */
+    op: function(num) {
+        'use strict';
+
+        //puts "op num: " + num.to_s
+        return this.actionArray[num];
+    },
+    /**
+     * Size of actionArray.
+     */
+    order: function() {
+        'use strict';
+        return this.actionArray.length;
+    },
+    /**
+     * Return a string representation of actionArray.
+     */
+    to_s2: function() {
+        'use strict';
+
+        str = "["
+        for (i in this.actionArray) {
+            str += i.to_s + " ";
+        }
+
+        str = str.chop;
+        str += "]";
+        return str;
+    },
+    /**
+     * Return a string representation of actionArray.
+     */
+    to_s: function() {
+        'use strict';
+
+        str = "";
+        markArray = Array.new(this.actionArray.length);
+
+        for (i in [0..(this.actionArray.length-1)]) {
+            if (!markArray[i] && this.actionArray[i] != i) {
+                markArray[i] = 1;
+                str += "(" + i.to_s + " ";
+                j = this.actionArray[i];
+                str += j.to_s + " ";
+                while (!markArray[j] && this.actionArray[j] != i) {
+                    markArray[j] = 1;
+                    j = this.actionArray[j];
+                    str += j.to_s + " ";
+                }
+                markArray[j] = 1;
+                str = str.chop + ") ";
+            }
+        }
+
+        // Identity element represented as 'e'
+        str = str.chop;
+        if (str.length == 0) {
+            return "e";
+        }
+        return str;
+    }
+};
+
+
+aljabr.PermutationGroupBuilder = {
+    /**
+     * The +new+ class method initializes the class.
+     * Pass in array of Permutors
+     * @param generators - array of generators represented as +Permutors+
+     */
+    initialize: function(generators) {
+        'use strict';
+        var model;
+
+        model = this;
+
+        model.generators = generators;
+        model.permutors = Array.new();
+        model.group = nil;
+        // XXX - get_valid_generators
+        model.permutorOrder = model.generators[0].order;
+    },
+    /**
+     * Return a hash from generators to booleans (whether they're valid or not)
+     *   A generator is valid if it has the largest order of a set of conflicting
+     *   generators (e.g. r is valid compared with r^2 and r^3).
+     */
+    get_valid_generators: function() {
+        'use strict';
+        
+    },
+    /**
+     * Create a list of all elements with which to build the Group
+     *   Breadth-first search using the generators and starting with the identity
+     *   element.
+     */
+    find_elements: function() {
+        'use strict';
+        // Walk each generator down the Permutor array, multiplying by the current
+        // permutor and adding any new results to the end of the array.
+        identityActionArray = Array.new();
+        for (i in [0..this.permutorOrder-1]) {
+            identityActionArray.push(i);
+        }
+        this.permutors.push(Permutor.new(identityActionArray));
+
+        for (i in this.permutors) {
+            for (j in this.generators) {
+	        tempPermutor = j.operate(i)
+                if (!this.permutors.include?(tempPermutor)) {
+                    this.permutors.push(tempPermutor);
+                }
+            }
+        }
+    },
+    /**
+     * Build a group from a set of permutor generators.
+     */
+    build_group: function() {
+        'use strict';
+        var model;
+
+        model = this;
+        if (model.permutors.length == 0) {
+            find_elements;
+        }
+
+        // Create ElementSet corresponding to permutors
+        elementArray = Array.new();
+        for (i in [(0..model.permutors.length-1)]) {
+            elementArray.push(Element.new("#{i}"));
+        }
+        elements = ElementSet.new(elementArray);
+
+        // Loop through elements and fill out GroupBuilder
+        groupBuilder = GroupBuilder.new(elements);
+        for (i in [(1..model.permutors.length-1)]) {
+            for (j in [1..model.permutors.length-1]) {
+                groupBuilder.set_element(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
+                if (groupBuilder.isComplete) {
+                    // print "COMPLETE\n";
+                    break;
+                }
+            }
+            if (groupBuilder.isComplete) {
+                // print "COMPLETE\n";
+                break;
+            }
+        }
+        // puts "group:";
+        // puts groupBuilder;
+        if (!groupBuilder.isComplete) {
+            print "Error: groupBuilder is not complete";
+        }
+
+        model.group = groupBuilder.build_group;
+        return model.group;
+    },
+    /**
+     * Retrieve the current group.
+     * @returns Group
+     */
+    get_group: function() {
+        'use strict';
+        var model;
+
+        model = this;
+        if (model.group == nil) {
+            model.build_group();
+        }
+        return model.group;
+    },
+    /**
+     * Print the permutors that generate the group.
+     */
+    print_permutors: function() {
+        'use strict';
+        var model, i;
+
+        model = this;
+        
+        for (i in [0..model.permutors.length-1]) {
+            print "#{i}: #{model.permutors[i]}\n";
+        }
+    }
+};
+
 
 
 /**
