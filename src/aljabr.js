@@ -1,14 +1,14 @@
 /**
- * Author:: John Eargle (mailto: jeargle at gmail.com)
+ * John Eargle (mailto: jeargle at gmail.com)
  * 2007-2015
- * :title: OperatorTable
+ * aljabr
  */
 
 require 'set'
 
 /**
  * This class holds the elements of a multiplication table.
- * The table only contains ints or nil; the ints are indices
+ * The table only contains ints or null; the ints are indices
  * into an ElementSet array.
  * OperatorTables are generic so they may be used for Groups,
  * Rings, Fields, etc.  No validation is done in this class
@@ -29,7 +29,7 @@ aljabr.OperatorTable = {
         model.emptyCellCount = model.order * model.order;
         model.table = Array.new(model.order);
         _.each([0..model.order-1], function(i) {
-            model.table[i] = Array.new(model.order)
+            model.table[i] = Array.new(model.order);
         });
     },
     /**
@@ -51,10 +51,10 @@ aljabr.OperatorTable = {
         model = this;
         
         if 0 <= i && i < model.order && 0 <= j && j < model.order && 0 <= element && element < model.order {
-            if model.table[i][j] == nil {
-                model.emptyCellCount -= 1
+            if model.table[i][j] === null {
+                model.emptyCellCount -= 1;
             }
-            model.table[i][j] = element
+            model.table[i][j] = element;
         }
         // XXX - else throw exception
     },
@@ -76,14 +76,14 @@ aljabr.OperatorTable = {
      */
     remove_element: function(i, j) {
         'use strict';
-        this.table[i][j] = nil;
+        this.table[i][j] = null;
     },
     /**
      * @returns 
      */
     isComplete: function() {
         'use strict';
-        return this.emptyCellCount == 0
+        return this.emptyCellCount === 0;
     }
 };
 
@@ -157,8 +157,9 @@ aljabr.ElementSet = {
  * Immutable, validated Group.
  */
 aljabr.Group = {
-    order: 0,
     elements: null,
+    order: 0,
+    table: null,
     /**
      * The +new+ class method initializes the class.
      * @param elements - ElementSet with all the group elements
@@ -201,23 +202,23 @@ aljabr.Group = {
 
         model = this;
             
-        if (el == 0) {
+        if (el === 0) {
             return 1;
         }
         else if (el >= model.order) {
-            print "Error: element index too large";
+            console.log("Error: element index too large");
             return 0;
         }
 
         order = 1;
         el_power = el;
         // Loop through powers of el
-        while (el_power != nil and el_power != 0) {
+        while (el_power !== null and el_power !== 0) {
             el_power = model.table.get_element(el_power, el);
             order += 1;
         }
 
-        if (el_power == nil) {
+        if (el_power === null) {
             return 0;
         }
 
@@ -233,17 +234,17 @@ aljabr.Group = {
         var model, order;
 
         model = this;
-        if (el == 0) {
+        if (el === 0) {
             return model.order;
         }
         else if (el >= model.order) {
-            print "Error: element index too large";
+            console.log("Error: element index too large");
             return 0;
         }
 
         order = element_order(el);
-        if (order == 0) {
-            print "Error: element order is 0";
+        if (order === 0) {
+            console.log("Error: element order is 0");
         }
 
         return model.order/order;
@@ -281,7 +282,7 @@ aljabr.Group = {
             outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
             for (j in [0..model.order-1]) {
                 // outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |"
-                if (model.table.get_element(i, j) == nil) {
+                if (model.table.get_element(i, j) === null) {
 	            outString += " #{'.'.rjust(columnWidth)} |";
                 }
                 else {
@@ -313,9 +314,9 @@ aljabr.GroupBuilder = {
         var model;
         
         model = this;
-        model.elements = elements
-        model.order = model.elements.order
-        model.table = OperatorTable.new(model.order)
+        model.elements = elements;
+        model.order = model.elements.order;
+        model.table = OperatorTable.new(model.order);
         
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = Array.new(model.order)
@@ -335,6 +336,7 @@ aljabr.GroupBuilder = {
 
         // Set first column and row to identity
         set_element(0, 0, 0);
+
         // Last element is automatically set by set_element()
         _.each([1..model.order-2], function(i) {
             set_element(0, i, i);
@@ -363,34 +365,34 @@ aljabr.GroupBuilder = {
         var model, markQueue, row, col, el;
 
         model = this;
-        // print "set_element(#{i}, #{j}, #{element})\n"
+        // console.log("set_element(#{i}, #{j}, #{element})\n");
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
             0 <= element && element < model.order) {
 
-            if (model.openTable[i][j].size == 0) {
-                if (element != model.table.get_element(i, j)) {
-                    print "Error: cannot change (#{i}, #{j}): #{model.table.get_element(i, j)} to #{element}\n";
+            if (model.openTable[i][j].size === 0) {
+                if (element !== model.table.get_element(i, j)) {
+                    console.log("Error: cannot change (#{i}, #{j}): #{model.table.get_element(i, j)} to #{element}\n");
                 }
                 else {
-                    // print "Already set\n"
+                    // console.log("Already set\n");
                 }
-                return nil
+                return null;
             }
       
             // Is this element still allowed to be placed here?
             if (!model.openTable[i][j].include?(element)) {
-                print "Error: element #{element} is not allowed at (#{i}, #{j})\n"
-                print "model.openTable[i][j]:"
+                console.log("Error: element #{element} is not allowed at (#{i}, #{j})\n");
+                console.log("model.openTable[i][j]:");
                 _.each(model.openTable[i][j], function(x) {
-                    print "#{x} ";
+                    console.log("#{x} ");
                 });
-                print "\n"
-                return nil
+                console.log("\n");
+                return null;
             }
       
-            markQueue = []
-            markQueue.push([i, j, element])
+            markQueue = [];
+            markQueue.push([i, j, element]);
             while (markQueue.length > 0) {
                 row, col, el = markQueue.shift;
                 check_associativity_rules(row, col);
@@ -398,12 +400,12 @@ aljabr.GroupBuilder = {
                 add_associativity_rules(row, col, el);
                 
                 // Remove element from other cells in this row and column
-                model.openTable[row][col].clear()
+                model.openTable[row][col].clear();
                 for (x in (0..model.order-1)) {
                     // Remove from column
                     if (model.openTable[x][col].include?(el)) {
                         model.openTable[x][col].delete(el);
-                        if (model.openTable[x][col].size == 1) {
+                        if (model.openTable[x][col].size === 1) {
                             _.each(model.openTable[x][col], function(lastEl) {
                                 markQueue.push([x, col, lastEl]);
                             });
@@ -412,7 +414,7 @@ aljabr.GroupBuilder = {
                     // Remove from row
                     if (model.openTable[row][x].include?(el)) {
                         model.openTable[row][x].delete(el);
-                        if (model.openTable[row][x].size == 1) {
+                        if (model.openTable[row][x].size === 1) {
                             _.each(model.openTable[row][x], function(lastEl) {
                                 markQueue.push([row, x, lastEl]);
                             });
@@ -432,23 +434,23 @@ aljabr.GroupBuilder = {
         'use strict';
         var order, el_power;
         
-        if (el == 0) {
+        if (el === 0) {
             return 1;
         }
         else if (el >= model.order) {
-            print "Error: element index too large";
+            console.log("Error: element index too large");
             return 0;
         }
 
         order = 1;
         el_power = el;
         // Loop through powers of el
-        while (el_power != nil and el_power != 0) {
+        while (el_power !== null and el_power !== 0) {
             el_power = model.table.get_element(el_power, el);
             order += 1;
         }
 
-        if (el_power == nil) {
+        if (el_power === null) {
             return 0;
         }
 
@@ -483,8 +485,8 @@ aljabr.GroupBuilder = {
      * @param j - column
      */
     check_associativity_rules: function(row, col) {
-        if (this.associationTable[row][col] != nil) {
-            // print "Association rule: #{this.associationTable[row][col]}\n";
+        if (this.associationTable[row][col] !== null) {
+            // console.log("Association rule: #{this.associationTable[row][col]}\n");
         }
     },
     /**
@@ -499,22 +501,22 @@ aljabr.GroupBuilder = {
         var model;
 
         model = this;
-        if (row == col) {
+        if (row === col) {
             // a(aa) = (aa)a
             // aa = b
             // => ab = ba
-            model.associationTable[row][el] = [el, row]
-            model.associationTable[el][row] = [row, el]
+            model.associationTable[row][el] = [el, row];
+            model.associationTable[el][row] = [row, el];
         }
         else {
-            if (el == model.table.get_element(row, col)) {
+            if (el === model.table.get_element(row, col)) {
                 // a(ba) = (ab)a
                 // ba = c, ab = c (a and b commute)
                 // => ac = ca, bc = cb
-                model.associationTable[row][el] = [el, row]
-                model.associationTable[el][row] = [row, el]
-                model.associationTable[col][el] = [el, col]
-                model.associationTable[el][col] = [col, el]
+                model.associationTable[row][el] = [el, row];
+                model.associationTable[el][row] = [row, el];
+                model.associationTable[col][el] = [el, col];
+                model.associationTable[el][col] = [col, el];
             }
 
             // b(aa) = (ba)a, a(ab) = (aa)b
@@ -584,7 +586,7 @@ aljabr.GroupBuilder = {
         _.each([0..model.order-1], function(i) {
             outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
             _.each([0..model.order-1], function(j) {
-                if (model.table.get_element(i, j) == nil) {
+                if (model.table.get_element(i, j) === null) {
 	            outString += " #{'.'.rjust(columnWidth)} |";
                 }
                 else {
@@ -605,18 +607,18 @@ aljabr.GroupBuilder = {
         model = this;
         
         _.each([0..model.order-1], function(i) {
-            print "row #{i}\n";
+            console.log("row #{i}\n");
             _.each([0..model.order-1], function(j) {
-                print "   col #{j}\n";
-                print "      ";
-                // print "openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n";
-                // print "openTable[#{i}][#{j}].size: #{model.openTable[i][j].size}\n";
-                // print "openTable[0][0].size: #{model.openTable[0][0].size}\n";
+                console.log("   col #{j}\n");
+                console.log("      ");
+                // console.log("openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n");
+                // console.log("openTable[#{i}][#{j}].size: #{model.openTable[i][j].size}\n");
+                // console.log("openTable[0][0].size: #{model.openTable[0][0].size}\n");
                 _.each(model.openTable[i][j], function(el) {
-                    // print "#{el.class} ";
-                    print "#{el} ";
+                    // console.log("#{el.class} ");
+                    console.log("#{el} ");
                 });
-                print "\n";
+                console.log("\n");
             });
         });
     }
@@ -641,18 +643,18 @@ aljabr.Permutor = {
         // the array is a map from integer i to the integer actionArray[i]
         for (i in [0..(actionArray.length-1)]) {
             if (!actionArray.include?(i)) {
-                print 'Error: bad actionArray';
+                console.log('Error: bad actionArray');
             }
         }
         this.actionArray = actionArray;
     },
     /**
-     * Equality (was "==")
+     * Equality (was "===")
      * @param permutor - permutor to compare against
      */
     eq: function(permutor) {
         'use strict';
-        return (to_s == permutor.to_s);
+        return (to_s === permutor.to_s);
     },
     /**
      * 
@@ -661,8 +663,8 @@ aljabr.Permutor = {
     operate: function(permutor) {
         'use strict';
 
-        if (order != permutor.order) {
-            return nil;
+        if (order !== permutor.order) {
+            return null;
         }
         tempActionArray = Array.new(this.actionArray.length);
         for (i in [0..(tempActionArray.length-1)]) {
@@ -712,12 +714,12 @@ aljabr.Permutor = {
         markArray = Array.new(this.actionArray.length);
 
         for (i in [0..(this.actionArray.length-1)]) {
-            if (!markArray[i] && this.actionArray[i] != i) {
+            if (!markArray[i] && this.actionArray[i] !== i) {
                 markArray[i] = 1;
                 str += "(" + i.to_s + " ";
                 j = this.actionArray[i];
                 str += j.to_s + " ";
-                while (!markArray[j] && this.actionArray[j] != i) {
+                while (!markArray[j] && this.actionArray[j] !== i) {
                     markArray[j] = 1;
                     j = this.actionArray[j];
                     str += j.to_s + " ";
@@ -729,7 +731,7 @@ aljabr.Permutor = {
 
         // Identity element represented as 'e'
         str = str.chop;
-        if (str.length == 0) {
+        if (str.length === 0) {
             return "e";
         }
         return str;
@@ -751,7 +753,7 @@ aljabr.PermutationGroupBuilder = {
 
         model.generators = generators;
         model.permutors = Array.new();
-        model.group = nil;
+        model.group = null;
         // XXX - get_valid_generators
         model.permutorOrder = model.generators[0].order;
     },
@@ -796,7 +798,7 @@ aljabr.PermutationGroupBuilder = {
         var model;
 
         model = this;
-        if (model.permutors.length == 0) {
+        if (model.permutors.length === 0) {
             find_elements;
         }
 
@@ -813,19 +815,19 @@ aljabr.PermutationGroupBuilder = {
             for (j in [1..model.permutors.length-1]) {
                 groupBuilder.set_element(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
                 if (groupBuilder.isComplete) {
-                    // print "COMPLETE\n";
+                    // console.log("COMPLETE\n");
                     break;
                 }
             }
             if (groupBuilder.isComplete) {
-                // print "COMPLETE\n";
+                // console.log("COMPLETE\n");
                 break;
             }
         }
         // puts "group:";
         // puts groupBuilder;
         if (!groupBuilder.isComplete) {
-            print "Error: groupBuilder is not complete";
+            console.log("Error: groupBuilder is not complete");
         }
 
         model.group = groupBuilder.build_group;
@@ -840,7 +842,7 @@ aljabr.PermutationGroupBuilder = {
         var model;
 
         model = this;
-        if (model.group == nil) {
+        if (model.group === null) {
             model.build_group();
         }
         return model.group;
@@ -855,7 +857,7 @@ aljabr.PermutationGroupBuilder = {
         model = this;
         
         for (i in [0..model.permutors.length-1]) {
-            print "#{i}: #{model.permutors[i]}\n";
+            console.log("#{i}: #{model.permutors[i]}\n");
         }
     }
 };
@@ -871,11 +873,11 @@ aljabr.build_cyclic_group = function(order) {
     'use strict';
   
     if (order <= 0) {
-        return nil;
+        return null;
     }
 
     cycleActionArray = Array.new(order);
-    if (order == 1) {
+    if (order === 1) {
         cycleActionArray[0] = 0;
     }
     else {
@@ -900,14 +902,14 @@ aljabr.build_dihedral_group = function(degree) {
     'use strict';
 
     if (degree <= 0) {
-        return nil;
+        return null;
     }
 
     dihedralActionArray1 = Array.new(degree+2);
     dihedralActionArray2 = Array.new(degree+2);
 
     // XXX - should throw an exception; no Dih1 or Dih2
-    if (degree == 1 || degree == 2) {
+    if (degree === 1 || degree === 2) {
         return build_cyclic_group(degree);
     }
     else {
@@ -941,10 +943,10 @@ aljabr.build_symmetry_group = function(degree) {
     'use strict';
 
     if (degree <= 0) {
-        return nil;
+        return null;
     }
 
-    if (degree == 1 || degree == 2) {
+    if (degree === 1 || degree === 2) {
         return build_cyclic_group(degree);
     }
 
@@ -962,7 +964,7 @@ aljabr.build_symmetry_group = function(degree) {
         symmetryActionArrays[i][num1] = num2;
         symmetryActionArrays[i][num2] = num1;
         num2 += 1;
-        if (num2 == degree) {
+        if (num2 === degree) {
             num1 += 1;
             num2 = num1 + 1;
         }
@@ -989,10 +991,10 @@ aljabr.build_alternating_group = function(degree) {
     'use strict';
 
     if (degree <= 1) {
-        return nil;
+        return null;
     }
 
-    if (degree == 2) {
+    if (degree === 2) {
         return build_cyclic_group(degree);
     }
 
