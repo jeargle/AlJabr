@@ -22,7 +22,7 @@ aljabr.OperatorTable = {
      */
     initialize: function(order) {
         'use strict';
-        var model;
+        var model, i;
 
         model = this;
         model.order = order;
@@ -36,6 +36,7 @@ aljabr.OperatorTable = {
      * Number of Elements in the OperatorTable.
      */
     order: function() {
+        'use strict';
         return this.order;
     },
     /**
@@ -108,7 +109,7 @@ aljabr.Element = {
         'use strict';
         return this.symbol;
     },
-    to_s: function() {
+    toStr: function() {
         'use strict';
         return this.symbol;
     }
@@ -196,7 +197,7 @@ aljabr.Group = {
      * @param el - element index
      * @returns order of the element
      */
-    element_order: function(el) {
+    elementOrder: function(el) {
         'use strict';
         var model, order, el_power;
 
@@ -229,7 +230,7 @@ aljabr.Group = {
      * @param el - index into element array
      * @returns index of the element
      */
-    element_index?: function(el) {
+    elementIndex: function(el) {
         'use strict';
         var model, order;
 
@@ -242,7 +243,7 @@ aljabr.Group = {
             return 0;
         }
 
-        order = element_order(el);
+        order = elementOrder(el);
         if (order === 0) {
             console.log("Error: element order is 0");
         }
@@ -253,7 +254,7 @@ aljabr.Group = {
      * Create a String representation of the current operator table.
      * @returns string representation of the operator table
      */
-    to_s: function() {
+    toStr: function() {
         'use strict';
         var model, columnWidth, outString, i, j;
         
@@ -430,7 +431,7 @@ aljabr.GroupBuilder = {
      * @param el - element index
      * @returns order of the element
      */
-    element_order: function(el) {
+    elementOrder: function(el) {
         'use strict';
         var order, el_power;
         
@@ -461,7 +462,7 @@ aljabr.GroupBuilder = {
      * @param el - element index
      * @returns table - boolean mask of openTable showing open positions
      */
-    open_positions?: function(el) {
+    openPositions: function(el) {
         'use strict';
         var model;
 
@@ -561,7 +562,7 @@ aljabr.GroupBuilder = {
      * Create a String representation of the current (maybe incomplete) table.
      * @returns string representation of the operator table
      */
-    to_s: function() {
+    toStr: function() {
         'use strict';
         var model;
 
@@ -654,7 +655,7 @@ aljabr.Permutor = {
      */
     eq: function(permutor) {
         'use strict';
-        return (to_s === permutor.to_s);
+        return (toStr() === permutor.toStr());
     },
     /**
      * 
@@ -679,7 +680,7 @@ aljabr.Permutor = {
     op: function(num) {
         'use strict';
 
-        //puts "op num: " + num.to_s
+        //puts "op num: " + num.toStr()
         return this.actionArray[num];
     },
     /**
@@ -692,12 +693,13 @@ aljabr.Permutor = {
     /**
      * Return a string representation of actionArray.
      */
-    to_s2: function() {
+    toStr2: function() {
         'use strict';
+        var str, i;
 
-        str = "["
+        str = "[";
         for (i in this.actionArray) {
-            str += i.to_s + " ";
+            str += i.toStr() + " ";
         }
 
         str = str.chop;
@@ -707,8 +709,9 @@ aljabr.Permutor = {
     /**
      * Return a string representation of actionArray.
      */
-    to_s: function() {
+    toStr: function() {
         'use strict';
+        var str, markArray, i, j;
 
         str = "";
         markArray = Array.new(this.actionArray.length);
@@ -716,13 +719,13 @@ aljabr.Permutor = {
         for (i in [0..(this.actionArray.length-1)]) {
             if (!markArray[i] && this.actionArray[i] !== i) {
                 markArray[i] = 1;
-                str += "(" + i.to_s + " ";
+                str += "(" + i.toStr() + " ";
                 j = this.actionArray[i];
-                str += j.to_s + " ";
+                str += j.toStr() + " ";
                 while (!markArray[j] && this.actionArray[j] !== i) {
                     markArray[j] = 1;
                     j = this.actionArray[j];
-                    str += j.to_s + " ";
+                    str += j.toStr() + " ";
                 }
                 markArray[j] = 1;
                 str = str.chop + ") ";
@@ -734,6 +737,7 @@ aljabr.Permutor = {
         if (str.length === 0) {
             return "e";
         }
+
         return str;
     }
 };
