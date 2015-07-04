@@ -45,7 +45,7 @@ aljabr.OperatorTable = {
      * @param j - column
      * @param element - value to set the element to (int)
      */
-    set_element: function(i, j, element) {
+    setElement: function(i, j, element) {
         'use strict';
         var model;
 
@@ -65,7 +65,7 @@ aljabr.OperatorTable = {
      * @param j - column
      * @returns 
      */
-    get_element: function(i, j) {
+    getElement: function(i, j) {
         'use strict';
         
         return this.table[i][j];
@@ -75,7 +75,7 @@ aljabr.OperatorTable = {
      * @param i - row
      * @param j - column
      */
-    remove_element: function(i, j) {
+    removeElement: function(i, j) {
         'use strict';
         this.table[i][j] = null;
     },
@@ -178,9 +178,9 @@ aljabr.Group = {
      * Get the identity element.
      * @returns the identity element
      */
-    get_identity: function() {
+    getIdentity: function() {
         'use strict';
-        return this.table.get_element(0, 0);
+        return this.table.getElement(0, 0);
     },
     /**
      * Get a specific element.
@@ -188,9 +188,9 @@ aljabr.Group = {
      * @param j - column
      * @returns the element at position (i, j)
      */
-    get_element: function(i, j) {
+    getElement: function(i, j) {
         'use strict';
-        return this.table.get_element(i, j);
+        return this.table.getElement(i, j);
     },
     /**
      * Get the order of an element.
@@ -215,7 +215,7 @@ aljabr.Group = {
         el_power = el;
         // Loop through powers of el
         while (el_power !== null and el_power !== 0) {
-            el_power = model.table.get_element(el_power, el);
+            el_power = model.table.getElement(el_power, el);
             order += 1;
         }
 
@@ -282,12 +282,12 @@ aljabr.Group = {
         for (i in [0..model.order-1]) {
             outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
             for (j in [0..model.order-1]) {
-                // outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |"
-                if (model.table.get_element(i, j) === null) {
+                // outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |"
+                if (model.table.getElement(i, j) === null) {
 	            outString += " #{'.'.rjust(columnWidth)} |";
                 }
                 else {
-	            outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |";
+	            outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |";
                 }
             }
             outString += "\n";
@@ -336,12 +336,12 @@ aljabr.GroupBuilder = {
         });
 
         // Set first column and row to identity
-        set_element(0, 0, 0);
+        setElement(0, 0, 0);
 
-        // Last element is automatically set by set_element()
+        // Last element is automatically set by setElement()
         _.each([1..model.order-2], function(i) {
-            set_element(0, i, i);
-            set_element(i, 0, i);
+            setElement(0, i, i);
+            setElement(i, 0, i);
         });
     },
     /**
@@ -350,9 +350,9 @@ aljabr.GroupBuilder = {
      * @param j - column
      * @returns the element at position (i, j)
      */
-    get_element: function(i, j) {
+    getElement: function(i, j) {
         'use strict';
-        return this.table.get_element(i, j);
+        return this.table.getElement(i, j);
     },
     /**
      * Set a specific element.
@@ -361,19 +361,19 @@ aljabr.GroupBuilder = {
      * @param j - column
      * @param element - Element to assign to (i, j)
      */
-    set_element: function(i, j, element) {
+    setElement: function(i, j, element) {
         'use strict';
         var model, markQueue, row, col, el;
 
         model = this;
-        // console.log("set_element(#{i}, #{j}, #{element})\n");
+        // console.log("setElement(#{i}, #{j}, #{element})\n");
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
             0 <= element && element < model.order) {
 
             if (model.openTable[i][j].size === 0) {
-                if (element !== model.table.get_element(i, j)) {
-                    console.log("Error: cannot change (#{i}, #{j}): #{model.table.get_element(i, j)} to #{element}\n");
+                if (element !== model.table.getElement(i, j)) {
+                    console.log("Error: cannot change (#{i}, #{j}): #{model.table.getElement(i, j)} to #{element}\n");
                 }
                 else {
                     // console.log("Already set\n");
@@ -396,9 +396,9 @@ aljabr.GroupBuilder = {
             markQueue.push([i, j, element]);
             while (markQueue.length > 0) {
                 row, col, el = markQueue.shift;
-                check_associativity_rules(row, col);
-                model.table.set_element(row, col, el);
-                add_associativity_rules(row, col, el);
+                checkAssociativityRules(row, col);
+                model.table.setElement(row, col, el);
+                addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
                 model.openTable[row][col].clear();
@@ -447,7 +447,7 @@ aljabr.GroupBuilder = {
         el_power = el;
         // Loop through powers of el
         while (el_power !== null and el_power !== 0) {
-            el_power = model.table.get_element(el_power, el);
+            el_power = model.table.getElement(el_power, el);
             order += 1;
         }
 
@@ -485,7 +485,7 @@ aljabr.GroupBuilder = {
      * @param i - row
      * @param j - column
      */
-    check_associativity_rules: function(row, col) {
+    checkAssociativityRules: function(row, col) {
         if (this.associationTable[row][col] !== null) {
             // console.log("Association rule: #{this.associationTable[row][col]}\n");
         }
@@ -497,7 +497,7 @@ aljabr.GroupBuilder = {
      * @param j - column
      * @param el - element index to assign to (i, j)
      */
-    add_associativity_rules: function(row, col, el) {
+    addAssociativityRules: function(row, col, el) {
         'use strict';
         var model;
 
@@ -510,7 +510,7 @@ aljabr.GroupBuilder = {
             model.associationTable[el][row] = [row, el];
         }
         else {
-            if (el === model.table.get_element(row, col)) {
+            if (el === model.table.getElement(row, col)) {
                 // a(ba) = (ab)a
                 // ba = c, ab = c (a and b commute)
                 // => ac = ca, bc = cb
@@ -544,7 +544,7 @@ aljabr.GroupBuilder = {
     /**
      * Validate and build a corresponding Group.
      */
-    build_group: function() {
+    buildGroup: function() {
         'use strict';
         var model;
 
@@ -587,11 +587,11 @@ aljabr.GroupBuilder = {
         _.each([0..model.order-1], function(i) {
             outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
             _.each([0..model.order-1], function(j) {
-                if (model.table.get_element(i, j) === null) {
+                if (model.table.getElement(i, j) === null) {
 	            outString += " #{'.'.rjust(columnWidth)} |";
                 }
                 else {
-	            outString += " #{model.elements.element(model.table.get_element(i, j)).symbol.rjust(columnWidth)} |";
+	            outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |";
                 }
             });
             outString += "\n";
@@ -797,7 +797,7 @@ aljabr.PermutationGroupBuilder = {
     /**
      * Build a group from a set of permutor generators.
      */
-    build_group: function() {
+    buildGroup: function() {
         'use strict';
         var model;
 
@@ -817,7 +817,7 @@ aljabr.PermutationGroupBuilder = {
         groupBuilder = GroupBuilder.new(elements);
         for (i in [(1..model.permutors.length-1)]) {
             for (j in [1..model.permutors.length-1]) {
-                groupBuilder.set_element(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
+                groupBuilder.setElement(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
                 if (groupBuilder.isComplete) {
                     // console.log("COMPLETE\n");
                     break;
@@ -834,20 +834,20 @@ aljabr.PermutationGroupBuilder = {
             console.log("Error: groupBuilder is not complete");
         }
 
-        model.group = groupBuilder.build_group;
+        model.group = groupBuilder.buildGroup();
         return model.group;
     },
     /**
      * Retrieve the current group.
      * @returns Group
      */
-    get_group: function() {
+    getGroup: function() {
         'use strict';
         var model;
 
         model = this;
         if (model.group === null) {
-            model.build_group();
+            model.buildGroup();
         }
         return model.group;
     },
@@ -873,7 +873,7 @@ aljabr.PermutationGroupBuilder = {
  * @param order - order of the group
  * @returns built cyclic group
  */
-aljabr.build_cyclic_group = function(order) {
+aljabr.buildCyclicGroup = function(order) {
     'use strict';
   
     if (order <= 0) {
@@ -893,7 +893,7 @@ aljabr.build_cyclic_group = function(order) {
     cycle = Permutor.new(cycleActionArray);
     cyclicGroupBuilder = PermutationGroupBuilder.new([cycle]);
 
-    return cyclicGroupBuilder.get_group;
+    return cyclicGroupBuilder.getGroup();
 };
 
 
@@ -902,7 +902,7 @@ aljabr.build_cyclic_group = function(order) {
  * @param degree - half of the order of the group
  * @returns built dihedral group
  */
-aljabr.build_dihedral_group = function(degree) {
+aljabr.buildDihedralGroup = function(degree) {
     'use strict';
 
     if (degree <= 0) {
@@ -914,7 +914,7 @@ aljabr.build_dihedral_group = function(degree) {
 
     // XXX - should throw an exception; no Dih1 or Dih2
     if (degree === 1 || degree === 2) {
-        return build_cyclic_group(degree);
+        return buildCyclicGroup(degree);
     }
     else {
         for (i in dihedralActionArray1) {
@@ -933,7 +933,7 @@ aljabr.build_dihedral_group = function(degree) {
     dihed2 = Permutor.new(dihedralActionArray2);
     dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1, dihed2]);
     
-    return dihedralGroupBuilder.get_group;
+    return dihedralGroupBuilder.getGroup();
 };
 
 
@@ -943,7 +943,7 @@ aljabr.build_dihedral_group = function(degree) {
  * @param degree - order of the group is degree!
  * @returns built symmetry group
  */
-aljabr.build_symmetry_group = function(degree) {
+aljabr.buildSymmetryGroup = function(degree) {
     'use strict';
 
     if (degree <= 0) {
@@ -951,7 +951,7 @@ aljabr.build_symmetry_group = function(degree) {
     }
 
     if (degree === 1 || degree === 2) {
-        return build_cyclic_group(degree);
+        return buildCyclicGroup(degree);
     }
 
     numActionArrays = (degree**2 - degree)/2;
@@ -981,7 +981,7 @@ aljabr.build_symmetry_group = function(degree) {
 
     symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions);
 
-    return symmetryGroupBuilder.get_group;
+    return symmetryGroupBuilder.getGroup();
 };
 
 
@@ -991,7 +991,7 @@ aljabr.build_symmetry_group = function(degree) {
  * @param degree - order of the group is degree!/2
  * @returns built alternating group
  */
-aljabr.build_alternating_group = function(degree) {
+aljabr.buildAlternatingGroup = function(degree) {
     'use strict';
 
     if (degree <= 1) {
@@ -999,7 +999,7 @@ aljabr.build_alternating_group = function(degree) {
     }
 
     if (degree === 2) {
-        return build_cyclic_group(degree);
+        return buildCyclicGroup(degree);
     }
 
     // Number generators = choose(degree, 3)
@@ -1034,7 +1034,7 @@ aljabr.build_alternating_group = function(degree) {
 
     alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions);
 
-    return alternatingGroupBuilder.get_group;
+    return alternatingGroupBuilder.getGroup();
 };
 
 
@@ -1044,7 +1044,7 @@ aljabr.build_alternating_group = function(degree) {
  * @param group2 - second group
  * @returns direct product of group1 and group2
  */
-aljabr.build_product_group = function(group1, group2) {
+aljabr.buildProductGroup = function(group1, group2) {
     'use strict';
     var elArray, elCount, backMap, backMap2, elements, productBuilder, el1, el2;
     
@@ -1069,11 +1069,11 @@ aljabr.build_product_group = function(group1, group2) {
     // Loop through Groups
     for (i in [0..productBuilder.order-1]) {
         for (j in [0..productBuilder.order-1]) {
-            el1 = group1.get_element(backMap2[i][0], backMap2[j][0]);
-            el2 = group2.get_element(backMap2[i][1], backMap2[j][1]);
-            productBuilder.set_element(i, j, backMap[el1][el2]);
+            el1 = group1.getElement(backMap2[i][0], backMap2[j][0]);
+            el2 = group2.getElement(backMap2[i][1], backMap2[j][1]);
+            productBuilder.setElement(i, j, backMap[el1][el2]);
         }
     }
   
-    return productBuilder.build_group;
+    return productBuilder.buildGroup();
 };
