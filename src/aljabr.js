@@ -33,12 +33,12 @@ aljabr.OperatorTable = {
         model.order = order;
         model.emptyCellCount = model.order * model.order;
         model.table = [];
-        for (i=0; i<model.order, i++) {
+        for (i=0; i<model.order; i++) {
             model.table[i] = [];
             for (j=0; j<model.order; j++) {
                 model.table[i][j] = null;
             }
-        });
+        }
     },
     /**
      * Number of Elements in the OperatorTable.
@@ -62,7 +62,7 @@ aljabr.OperatorTable = {
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
             0 <= element && element < model.order) {
-            if model.table[i][j] === null {
+            if (model.table[i][j] === null) {
                 model.emptyCellCount -= 1;
             }
             model.table[i][j] = element;
@@ -227,7 +227,7 @@ aljabr.Group = {
         order = 1;
         elPower = el;
         // Loop through powers of el
-        while (elPower !== null and elPower !== 0) {
+        while (elPower !== null && elPower !== 0) {
             elPower = model.table.getElement(elPower, el);
             order += 1;
         }
@@ -330,14 +330,17 @@ aljabr.Group = {
  * possibility of creating a valid Group.
  */
 aljabr.GroupBuilder = {
+    elements: undefined,
     order: 0,
+    table: undefined,
+    openTable: undefined,
     /**
      * The +new+ class method initializes the class.
      * @param elements - ElementSet with all the group elements
      */
     initialize: function(elements) {
         'use strict';
-        var model;
+        var model, i, j;
         
         model = this;
         model.elements = elements;
@@ -345,29 +348,35 @@ aljabr.GroupBuilder = {
         model.table = OperatorTable.new(model.order);
         
         // Table with bool arrays showing which elements are allowed in a cell
-        model.openTable = Array.new(model.order)
-        _.each([-0..model.order-1], function(i) {
-            model.openTable[i] = Array.new(model.order);
-        });
-        _.each([0..model.order-1], function(j) {
+        model.openTable = [];
+        for (i=0; i<model.order; i++) {
+            model.openTable[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.openTable[i][j] = null;
+            }
+        }
+
+        for (i=0; i<model.order; i++) {
             model.openTable[i][j] = (0..model.order-1).to_set;
-        });
+        }
 
         // Table with associations that declare pairs of cells equal
-        model.associationTable = Array.new(model.order);
-        model.associationTable = Array.new(model.order);
-        _.each([0..model.order-1], function(i) {
-            model.associationTable[i] = Array.new(model.order);
-        });
+        model.associationTable = [];
+        for (i=0; i<model.order; i++) {
+            model.associationTable[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.associationTable[i][j] = null;
+            }
+        }
 
         // Set first column and row to identity
-        setElement(0, 0, 0);
+        model.setElement(0, 0, 0);
 
         // Last element is automatically set by setElement()
-        _.each([1..model.order-2], function(i) {
-            setElement(0, i, i);
-            setElement(i, 0, i);
-        });
+        for (i=0; i<model.order-1; i++) {
+            model.setElement(0, i, i);
+            model.setElement(i, 0, i);
+        }
     },
     /**
      * Get a specific element.
@@ -391,29 +400,32 @@ aljabr.GroupBuilder = {
         var model, markQueue, row, col, el;
 
         model = this;
-        // console.log("setElement(#{i}, #{j}, #{element})\n");
+        // console.log('setElement(#{i}, #{j}, #{element})\n');
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
             0 <= element && element < model.order) {
 
             if (model.openTable[i][j].size === 0) {
                 if (element !== model.table.getElement(i, j)) {
-                    console.log("Error: cannot change (#{i}, #{j}): #{model.table.getElement(i, j)} to #{element}\n");
+                    console.log('Error: cannot change (' + i +
+                                ', ' + j + '): ' +
+                                model.table.getElement(i, j) +
+                                ' to ' + element + '\n');
                 }
                 else {
-                    // console.log("Already set\n");
+                    // console.log('Already set\n');
                 }
                 return null;
             }
       
             // Is this element still allowed to be placed here?
             if (!model.openTable[i][j].include?(element)) {
-                console.log("Error: element #{element} is not allowed at (#{i}, #{j})\n");
-                console.log("model.openTable[i][j]:");
+                console.log('Error: element #{element} is not allowed at (#{i}, #{j})\n');
+                console.log('model.openTable[i][j]:');
                 _.each(model.openTable[i][j], function(x) {
-                    console.log("#{x} ");
+                    console.log('#{x} ');
                 });
-                console.log("\n");
+                console.log('\n');
                 return null;
             }
       
@@ -464,14 +476,14 @@ aljabr.GroupBuilder = {
             return 1;
         }
         else if (el >= model.order) {
-            console.log("Error: element index too large");
+            console.log('Error: element index too large');
             return 0;
         }
 
         order = 1;
         elPower = el;
         // Loop through powers of el
-        while (elPower !== null and elPower !== 0) {
+        while (elPower !== null && elPower !== 0) {
             elPower = model.table.getElement(elPower, el);
             order += 1;
         }
@@ -485,23 +497,26 @@ aljabr.GroupBuilder = {
     /**
      * Get a table showing where an element can be placed.
      * @param el - element index
-     * @returns table - boolean mask of openTable showing open positions
+     * @returns boolean mask of openTable showing open positions
      */
     openPositions: function(el) {
         'use strict';
-        var model;
+        var model, open, i, j;
 
         model = this;
+
         // Table with bool arrays showing which elements are allowed in a cell
-        open = Array.new(model.order);
-        _.each([0..model.order-1], function(i) {
-            open[i] = Array.new(model.order, false);
-            _.each([0..model.order-1], function(j) {
-                if (model.openTable[i][j].size > 0 and model.openTable[i][j].member?(el)) {
+        open = [];
+        for (i=0; i<model.order; i++) {
+            open[i] = [];
+            for (j=0; j<model.order; j++) {
+                open[i][j] = false;
+                if (model.openTable[i][j].length > 0 &&
+                    model.openTable[i][j].indexOf(el) >= 0) {
                     open[i][j] = true;
                 }
-            });
-        });
+            }
+        }
         
         return open;
     },
@@ -512,7 +527,7 @@ aljabr.GroupBuilder = {
      */
     checkAssociativityRules: function(row, col) {
         if (this.associationTable[row][col] !== null) {
-            // console.log("Association rule: #{this.associationTable[row][col]}\n");
+            // console.log('Association rule: #{this.associationTable[row][col]}\n');
         }
     },
     /**
@@ -647,18 +662,18 @@ aljabr.GroupBuilder = {
         model = this;
         
         _.each([0..model.order-1], function(i) {
-            console.log("row #{i}\n");
+            console.log('row #{i}\n');
             _.each([0..model.order-1], function(j) {
-                console.log("   col #{j}\n");
-                console.log("      ");
-                // console.log("openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n");
-                // console.log("openTable[#{i}][#{j}].size: #{model.openTable[i][j].size}\n");
-                // console.log("openTable[0][0].size: #{model.openTable[0][0].size}\n");
+                console.log('   col ' + j + '\n');
+                console.log('      ');
+                // console.log('openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n');
+                // console.log('openTable[#{i}][#{j}].size: #{model.openTable[i][j].size}\n');
+                // console.log('openTable[0][0].size: #{model.openTable[0][0].size}\n');
                 _.each(model.openTable[i][j], function(el) {
-                    // console.log("#{el.class} ");
-                    console.log("#{el} ");
+                    // console.log('#{el.class} ');
+                    console.log('#{el} ');
                 });
-                console.log("\n");
+                console.log('\n');
             });
         });
     }
@@ -689,7 +704,7 @@ aljabr.Permutor = {
         this.actionArray = actionArray;
     },
     /**
-     * Equality (was "===")
+     * Equality (was '===')
      * @param permutor - permutor to compare against
      */
     eq: function(permutor) {
@@ -719,7 +734,7 @@ aljabr.Permutor = {
     op: function(num) {
         'use strict';
 
-        //puts "op num: " + num.toStr()
+        //puts 'op num: ' + num.toStr()
         return this.actionArray[num];
     },
     /**
@@ -736,13 +751,13 @@ aljabr.Permutor = {
         'use strict';
         var str, i;
 
-        str = "[";
+        str = '[';
         for (i in this.actionArray) {
-            str += i.toStr() + " ";
+            str += i.toStr() + ' ';
         }
 
         str = str.chop;
-        str += "]";
+        str += ']';
         return str;
     },
     /**
@@ -752,29 +767,29 @@ aljabr.Permutor = {
         'use strict';
         var str, markArray, i, j;
 
-        str = "";
+        str = '';
         markArray = Array.new(this.actionArray.length);
 
         for (i in [0..(this.actionArray.length-1)]) {
             if (!markArray[i] && this.actionArray[i] !== i) {
                 markArray[i] = 1;
-                str += "(" + i.toStr() + " ";
+                str += '(' + i.toStr() + ' ';
                 j = this.actionArray[i];
-                str += j.toStr() + " ";
+                str += j.toStr() + ' ';
                 while (!markArray[j] && this.actionArray[j] !== i) {
                     markArray[j] = 1;
                     j = this.actionArray[j];
-                    str += j.toStr() + " ";
+                    str += j.toStr() + ' ';
                 }
                 markArray[j] = 1;
-                str = str.chop + ") ";
+                str = str.chop + ') ';
             }
         }
 
         // Identity element represented as 'e'
         str = str.chop;
         if (str.length === 0) {
-            return "e";
+            return 'e';
         }
 
         return str;
@@ -848,29 +863,29 @@ aljabr.PermutationGroupBuilder = {
         // Create ElementSet corresponding to permutors
         elementArray = Array.new();
         for (i in [(0..model.permutors.length-1)]) {
-            elementArray.push(Element.new("#{i}"));
+            elementArray.push(new aljabr.Element(i));
         }
-        elements = ElementSet.new(elementArray);
+        elements = new aljabr.ElementSet(elementArray);
 
         // Loop through elements and fill out GroupBuilder
-        groupBuilder = GroupBuilder.new(elements);
+        groupBuilder = new aljabr.GroupBuilder(elements);
         for (i in [(1..model.permutors.length-1)]) {
             for (j in [1..model.permutors.length-1]) {
                 groupBuilder.setElement(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
                 if (groupBuilder.isComplete) {
-                    // console.log("COMPLETE\n");
+                    // console.log('COMPLETE\n');
                     break;
                 }
             }
             if (groupBuilder.isComplete) {
-                // console.log("COMPLETE\n");
+                // console.log('COMPLETE\n');
                 break;
             }
         }
-        // puts "group:";
+        // puts 'group:';
         // puts groupBuilder;
         if (!groupBuilder.isComplete) {
-            console.log("Error: groupBuilder is not complete");
+            console.log('Error: groupBuilder is not complete');
         }
 
         model.group = groupBuilder.buildGroup();
@@ -920,12 +935,16 @@ aljabr.buildCyclicGroup = function(order) {
         return null;
     }
 
-    cycleActionArray = Array.new(order);
+    cycleActionArray = [];
+    for (i=0; i<order; i++) {
+        cycleAction[i] = null;
+    }
+    
     if (order === 1) {
         cycleActionArray[0] = 0;
     }
     else {
-        for (i in cycleActionArray) {
+        for (i=0; i<order; i++) {
             cycleActionArray[i] = i+1;
         }
         cycleActionArray[order-1] = 0;
