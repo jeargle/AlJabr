@@ -4,7 +4,9 @@
  * aljabr
  */
 
-require 'set'
+// require 'set'
+
+var aljabr = aljabr || {};
 
 /**
  * This class holds the elements of a multiplication table.
@@ -16,29 +18,35 @@ require 'set'
  * Builder classes.
  */
 aljabr.OperatorTable = {
+    order: 0,
+    emptyCellCount: 0,
+    table: undefined,
     /**
      * The +new+ class method initializes the class.
      * @param order - number of rows (and columns) in the table
      */
     initialize: function(order) {
         'use strict';
-        var model, i;
+        var model, i, j;
 
         model = this;
         model.order = order;
         model.emptyCellCount = model.order * model.order;
-        model.table = Array.new(model.order);
-        _.each([0..model.order-1], function(i) {
-            model.table[i] = Array.new(model.order);
+        model.table = [];
+        for (i=0; i<model.order, i++) {
+            model.table[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.table[i][j] = null;
+            }
         });
     },
     /**
      * Number of Elements in the OperatorTable.
      */
-    order: function() {
-        'use strict';
-        return this.order;
-    },
+    // order: function() {
+    //     'use strict';
+    //     return this.order;
+    // },
     /**
      * Set the element for a given position in the table.
      * @param i - row
@@ -51,7 +59,9 @@ aljabr.OperatorTable = {
 
         model = this;
         
-        if 0 <= i && i < model.order && 0 <= j && j < model.order && 0 <= element && element < model.order {
+        if (0 <= i && i < model.order &&
+            0 <= j && j < model.order &&
+            0 <= element && element < model.order) {
             if model.table[i][j] === null {
                 model.emptyCellCount -= 1;
             }
@@ -77,6 +87,7 @@ aljabr.OperatorTable = {
      */
     removeElement: function(i, j) {
         'use strict';
+        
         this.table[i][j] = null;
     },
     /**
@@ -84,6 +95,7 @@ aljabr.OperatorTable = {
      */
     isComplete: function() {
         'use strict';
+        
         return this.emptyCellCount === 0;
     }
 };
@@ -122,6 +134,7 @@ aljabr.Element = {
  * Mapping from 0-indexed integers to Elements.
  */
 aljabr.ElementSet = {
+    elementArray: undefined,
     /**
      * The +new+ class method initializes the class.
      * @param elementArray - array of Elements
@@ -199,7 +212,7 @@ aljabr.Group = {
      */
     elementOrder: function(el) {
         'use strict';
-        var model, order, el_power;
+        var model, order, elPower;
 
         model = this;
             
@@ -212,14 +225,14 @@ aljabr.Group = {
         }
 
         order = 1;
-        el_power = el;
+        elPower = el;
         // Loop through powers of el
-        while (el_power !== null and el_power !== 0) {
-            el_power = model.table.getElement(el_power, el);
+        while (elPower !== null and elPower !== 0) {
+            elPower = model.table.getElement(elPower, el);
             order += 1;
         }
 
-        if (el_power === null) {
+        if (elPower === null) {
             return 0;
         }
 
@@ -256,41 +269,53 @@ aljabr.Group = {
      */
     toStr: function() {
         'use strict';
-        var model, columnWidth, outString, i, j;
+        var model, colWidth, outString, i, j;
         
         model = this;
         
         // Set column width to size of largest element symbol
-        columnWidth = 0;
-        for (i in [0..model.order-1]) {
-            if (columnWidth < model.elements.element(i).symbol.length) {
-	        columnWidth = model.elements.element(i).symbol.length;
+        colWidth = 0;
+        for (i=0; i<model.order; i++) {
+            if (colWidth < model.elements.element(i).symbol.length) {
+	        colWidth = model.elements.element(i).symbol.length;
             }
         }
         
-        outString = " #{" ".rjust(columnWidth)} |";
-        for (i in [0..model.order-1]) {
-            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
+        outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
+        for (i=0; i<model.order; i++) {
+            outString += ' ' +
+                aljabr.rJust(model.elements.element(i).symbol,
+                             colWidth) +
+                ' |';
         }
-        outString += "\n";
+        outString += '\n';
 
-        for (i in [0..model.order]) {
-            outString += "-#{"-".rjust(columnWidth, "-")}-|";
+        for (i=0; i<model.order; i++) {
+            outString += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
         }
-        outString += "\n";
+        outString += '\n';
 
-        for (i in [0..model.order-1]) {
-            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
-            for (j in [0..model.order-1]) {
-                // outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |"
+        for (i=0; i<model.order; i++) {
+            outString += ' ' +
+                aljabr.rJust(model.elements.element(i).symbol,
+                             colWidth) +
+                ' |';
+            for (j=0; j<model.order; j++) {
+                // outString += ' #{model.elements.element(model.table.getElement(i, j)).symbol.aljabr.rJust(colWidth)} |'
                 if (model.table.getElement(i, j) === null) {
-	            outString += " #{'.'.rjust(columnWidth)} |";
+	            outString += ' ' + aljabr.rJust('.', colWidth) + ' |';
                 }
                 else {
-	            outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |";
+	            outString += ' ' +
+                        aljabr.rJust(
+                            model.elements.element(
+                                model.table.getElement(i, j)
+                            ).symbol,
+                            colWidth) +
+                        ' |';
                 }
             }
-            outString += "\n";
+            outString += '\n';
         }
         
         return outString;
@@ -433,7 +458,7 @@ aljabr.GroupBuilder = {
      */
     elementOrder: function(el) {
         'use strict';
-        var order, el_power;
+        var order, elPower;
         
         if (el === 0) {
             return 1;
@@ -444,14 +469,14 @@ aljabr.GroupBuilder = {
         }
 
         order = 1;
-        el_power = el;
+        elPower = el;
         // Loop through powers of el
-        while (el_power !== null and el_power !== 0) {
-            el_power = model.table.getElement(el_power, el);
+        while (elPower !== null and elPower !== 0) {
+            elPower = model.table.getElement(elPower, el);
             order += 1;
         }
 
-        if (el_power === null) {
+        if (elPower === null) {
             return 0;
         }
 
@@ -564,44 +589,58 @@ aljabr.GroupBuilder = {
      */
     toStr: function() {
         'use strict';
-        var model;
+        var model, elements, colWidth, outStr;
 
         model = this;
+        elements = model.elements;
         
         // Set column width to size of largest element symbol
-        columnWidth = 0
-        _.each([0..model.order-1], function(i) {
-            if (columnWidth < model.elements.element(i).symbol.length) {
-	        columnWidth = model.elements.element(i).symbol.length;
+        colWidth = 0
+        for (i=0; i<model.order; i++) {
+            if (colWidth < elements.element(i).symbol.length) {
+	        colWidth = elements.element(i).symbol.length;
             }
-        });
-        outString = " #{" ".rjust(columnWidth)} |";
-        _.each([0..model.order-1], function(i) {
-            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
-        });
-        outString += "\n";
-        _.each([0..model.order], function(i) {
-            outString += "-#{"-".rjust(columnWidth, "-")}-|";
-        });
-        outString += "\n";
-        _.each([0..model.order-1], function(i) {
-            outString += " #{model.elements.element(i).symbol.rjust(columnWidth)} |";
-            _.each([0..model.order-1], function(j) {
+        }
+        outStr = ' ' + aljabr.rJust(' ', colWidth) + ' |';
+
+        for (i=0; i<model.order; i++) {
+            outStr += ' ' +
+                aljabr.rJust(elements.element(i).symbol, colWidth) +
+                ' |';
+        }
+        outStr += '\n';
+
+        for (i=0; i<model.order; i++) {
+            outStr += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
+        }
+        outStr += '\n';
+
+        for (i=0; i<model.order; i++) {
+            outStr += ' ' +
+                aljabr.rJust(elements.element(i).symbol, colWidth) +
+                ' |';
+            for (j=0; j<model.order; j++) {
                 if (model.table.getElement(i, j) === null) {
-	            outString += " #{'.'.rjust(columnWidth)} |";
+	            outStr += ' ' + aljabr.rJust('.', colWidth) + ' |';
                 }
                 else {
-	            outString += " #{model.elements.element(model.table.getElement(i, j)).symbol.rjust(columnWidth)} |";
+	            outStr += ' ' +
+                        aljabr.rJust(
+                            elements.element(model.table.getElement(i, j)).symbol,
+                            colWidth
+                        ) +
+                        ' |';
                 }
-            });
-            outString += "\n";
-        });
-        return outString;
+            }
+            outStr += '\n';
+        }
+
+        return outStr;
     },
     /**
      *
      */
-    print_openTable: function() {
+    printOpenTable: function() {
         'use strict';
         var model;
 
@@ -854,14 +893,14 @@ aljabr.PermutationGroupBuilder = {
     /**
      * Print the permutors that generate the group.
      */
-    print_permutors: function() {
+    printPermutors: function() {
         'use strict';
         var model, i;
 
         model = this;
         
-        for (i in [0..model.permutors.length-1]) {
-            console.log("#{i}: #{model.permutors[i]}\n");
+        for (i=0; i<model.permutors.length; i++) {
+            console.log(i + ': ' + model.permutors[i]);
         }
     }
 };
@@ -875,6 +914,7 @@ aljabr.PermutationGroupBuilder = {
  */
 aljabr.buildCyclicGroup = function(order) {
     'use strict';
+    var cycleActionArray, i, cycle, cyclicGroupBuilder;
   
     if (order <= 0) {
         return null;
@@ -890,8 +930,8 @@ aljabr.buildCyclicGroup = function(order) {
         }
         cycleActionArray[order-1] = 0;
     }
-    cycle = Permutor.new(cycleActionArray);
-    cyclicGroupBuilder = PermutationGroupBuilder.new([cycle]);
+    cycle = new aljabr.Permutor(cycleActionArray);
+    cyclicGroupBuilder = new aljabr.PermutationGroupBuilder([cycle]);
 
     return cyclicGroupBuilder.getGroup();
 };
@@ -904,6 +944,7 @@ aljabr.buildCyclicGroup = function(order) {
  */
 aljabr.buildDihedralGroup = function(degree) {
     'use strict';
+    var dihedralActionArray1, dihedralActionArray2, i, dihed1, dihed2, dihedralGroupBuilder;
 
     if (degree <= 0) {
         return null;
@@ -929,9 +970,9 @@ aljabr.buildDihedralGroup = function(degree) {
         dihedralActionArray2[degree] = degree+1;
         dihedralActionArray2[degree+1] = degree;
     }
-    dihed1 = Permutor.new(dihedralActionArray1);
-    dihed2 = Permutor.new(dihedralActionArray2);
-    dihedralGroupBuilder = PermutationGroupBuilder.new([dihed1, dihed2]);
+    dihed1 = new aljabr.Permutor(dihedralActionArray1);
+    dihed2 = new aljabr.Permutor(dihedralActionArray2);
+    dihedralGroupBuilder = new aljabr.PermutationGroupBuilder([dihed1, dihed2]);
     
     return dihedralGroupBuilder.getGroup();
 };
@@ -945,24 +986,29 @@ aljabr.buildDihedralGroup = function(degree) {
  */
 aljabr.buildSymmetryGroup = function(degree) {
     'use strict';
+    var numActionArrays, symmetryActionArrays, num1, num2, i, j, transpositions, symmetryGroupBuilder;
 
     if (degree <= 0) {
         return null;
     }
 
     if (degree === 1 || degree === 2) {
-        return buildCyclicGroup(degree);
+        return aljabr.buildCyclicGroup(degree);
     }
 
     numActionArrays = (degree**2 - degree)/2;
-    symmetryActionArrays = Array.new(numActionArrays);
+    symmetryActionArrays = [];
+    for (i=0; i<numActionArrays; i++) {
+        symmetryActionArrays[i] = null;
+    }
+
     // Build actionArrays like [0, 1, 2, ...] then switch
     // elements at indices num1 and num2
     num1 = 0;
     num2 = 1;
-    for (i in symmetryActionArrays) {
-        symmetryActionArrays[i] = Array.new(degree);
-        for (j in symmetryActionArrays[i]) {
+    for (i=0; i<numActionArrays; i++) {
+        symmetryActionArrays[i] = [];
+        for (j=0; j<degree; j++) {
             symmetryActionArrays[i][j] = j;
         }
         symmetryActionArrays[i][num1] = num2;
@@ -974,12 +1020,12 @@ aljabr.buildSymmetryGroup = function(degree) {
         }
     }
   
-    transpositions = Array.new(numActionArrays);
-    for (i in transpositions) {
-        transpositions[i] = Permutor.new(symmetryActionArrays[i]);
+    transpositions = [];
+    for (i=0; i<numActionArrays; i++) {
+        transpositions[i] = new aljabr.Permutor(symmetryActionArrays[i]);
     }
 
-    symmetryGroupBuilder = PermutationGroupBuilder.new(transpositions);
+    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions);
 
     return symmetryGroupBuilder.getGroup();
 };
@@ -993,6 +1039,7 @@ aljabr.buildSymmetryGroup = function(degree) {
  */
 aljabr.buildAlternatingGroup = function(degree) {
     'use strict';
+    var numActionArrays, alternatingActionArrays, i, j, k, arrayCount, transpositions, alternatingGroupBuilder;
 
     if (degree <= 1) {
         return null;
@@ -1004,21 +1051,21 @@ aljabr.buildAlternatingGroup = function(degree) {
 
     // Number generators = choose(degree, 3)
     numActionArrays = degree * (degree-1) * (degree-2) / 6;
-    alternatingActionArrays = Array.new(numActionArrays);
+    alternatingActionArrays = [];
 
   // Build actionArrays like [0, 1, 2, ...]
-    for (i in alternatingActionArrays) {
-        alternatingActionArrays[i] = Array.new(degree);
-        for (j in alternatingActionArrays[i]) {
+    for (i=0; i<numActionArrays; i++) {
+        alternatingActionArrays[i] = [];
+        for (j=0; j<degree; j++) {
             alternatingActionArrays[i][j] = j;
         }
     }
 
     // Switch elements at indices num1, num2, and num3
     arrayCount = 0;
-    for (i in [0..degree-3]) {
-        for (j in [i+1..degree-2]) {
-            for (k in [j+1..degree-1]) {
+    for (i=0; i<degree-2; i++) {
+        for (j=i+1; j<degree-1; j++) {
+            for (k=j+1; k<degree; k++) {
 	        alternatingActionArrays[arrayCount][i] = j;
 	        alternatingActionArrays[arrayCount][j] = k;
 	        alternatingActionArrays[arrayCount][k] = i;
@@ -1027,12 +1074,12 @@ aljabr.buildAlternatingGroup = function(degree) {
         }
     }
   
-    transpositions = Array.new(numActionArrays);
-    for (i in transpositions) {
-        transpositions[i] = Permutor.new(alternatingActionArrays[i]);
+    transpositions = [];
+    for (i=0; i<numActionArrays; i++) {
+        transpositions[i] = new aljabr.Permutor(alternatingActionArrays[i]);
     }
 
-    alternatingGroupBuilder = PermutationGroupBuilder.new(transpositions);
+    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions);
 
     return alternatingGroupBuilder.getGroup();
 };
@@ -1053,22 +1100,29 @@ aljabr.buildProductGroup = function(group1, group2) {
     backMap = Array.new(group1.order);
     backMap2 = [];
     // Create new ElementSet
-    for (i in [0..group1.order-1]) {
+    for (i=0; i<group1.order; i++) {
         backMap[i] = Array.new(group2.order);
-        for (j in [0..group2.order-1]) {
-            elArray.push(Element.new("(#{group1.elements.element(i).symbol},#{group2.elements.element(j).symbol})"));
+        backMap[i] = [];
+        for (j=0; j<group2.order; j++) {
+            elArray.push(
+                new aljabr.Element('(' +
+                                   group1.elements.element(i).symbol +
+                                   ',' +
+                                   group2.elements.element(j).symbol +
+                                   ')')
+            );
             backMap[i][j] = elCount;
             elCount += 1;
             backMap2.push([i, j]);
         }
     }
 
-    elements = ElementSet.new(elArray);
-    productBuilder = GroupBuilder.new(elements);
+    elements = new aljabr.ElementSet(elArray);
+    productBuilder = new aljabr.GroupBuilder(elements);
 
     // Loop through Groups
-    for (i in [0..productBuilder.order-1]) {
-        for (j in [0..productBuilder.order-1]) {
+    for (i=0; i<productBuilder.order; i++) {
+        for (j=0; j<productBuilder.order; j++) {
             el1 = group1.getElement(backMap2[i][0], backMap2[j][0]);
             el2 = group2.getElement(backMap2[i][1], backMap2[j][1]);
             productBuilder.setElement(i, j, backMap[el1][el2]);
@@ -1076,4 +1130,28 @@ aljabr.buildProductGroup = function(group1, group2) {
     }
   
     return productBuilder.buildGroup();
+};
+
+
+/**
+ *
+ * @param justLen
+ * @returns justified string
+ */
+aljabr.rJust = function(inStr, justLen, fillChar) {
+    'use strict';
+    var outStr, i;
+
+    outStr = inStr;
+
+    if (typeof(fillChar) !== 'string' ||
+        fillChar.length !== 1) {
+        fillChar = ' ';
+    }
+
+    for (i=inStr.length; i<justLen; i++) {
+        outStr += fillChar;
+    }
+
+    return outStr;
 };

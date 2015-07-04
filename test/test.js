@@ -202,18 +202,18 @@ aljabr.test.testPermutor = function() {
     perm1 = new aljabr.Permutor([1, 2, 3, 4, 5, 6, 0]);
     pgb1 = new aljabr.PermutationGroupBuilder([perm1]);
     g1 = pgb1.buildGroup();
-    pgb1.print_permutors;
+    pgb1.printPermutors();
 
     perm2 = new aljabr.Permutor([1, 0, 3, 2]);
     pgb2 = new aljabr.PermutationGroupBuilder([perm2]);
     g2 = pgb2.buildGroup();
-    pgb2.print_permutors;
+    pgb2.printPermutors();
     
     perm3 = new aljabr.Permutor([1, 0, 2, 3]);
     perm4 = new aljabr.Permutor([0, 1, 3, 2]);
     pgb3 = new aljabr.PermutationGroupBuilder([perm3, perm4]);
     g3 = pgb3.buildGroup();
-    pgb3.print_permutors;
+    pgb3.printPermutors();
 };
 
 
