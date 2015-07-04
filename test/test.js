@@ -9,8 +9,10 @@ aljabr.test.testOperatorTable = function() {
     
     console.log('\n\n***** OperatorTable Test *****\n');
     
-    table = new aljabr.OperatorTable(2);
-    console.log('table.getElement(0, 0):' + table.getElement(0, 0)});
+    // table = new aljabr.OperatorTable(2);
+    table = new aljabr.OperatorTable();
+    table.init(2);
+    console.log('table.getElement(0, 0): ' + table.getElement(0, 0));
     
     table.setElement(0, 0, 0);
     table.setElement(0, 1, 1);
@@ -156,23 +158,27 @@ aljabr.test.testPermutor = function() {
     var a, e, x, y, z, perm1, perm2, perm3, perm4, pgb1, pgb2, pgb3, g1, g2, g3;
     
     console.log('\n\n***** Permutor Test *****');
-    a = new aljabr.Permutor([0, 1, 2, 3, 4, 5]);
+    a = new aljabr.Permutor();
+    a.init([0, 1, 2, 3, 4, 5]);
     console.log(a);
     
     console.log(a.op(1));
     console.log(a.op(5));
     
-    e = new aljabr.Permutor([0, 1, 2]);
+    e = new aljabr.Permutor();
+    e.init([0, 1, 2]);
     console.log('e: ' + e.toStr());
     console.log('ee: ' + e.operate(e).toStr());
     console.log('eee: ' + e.operate(e.operate(e)).toStr());
     
-    x = new aljabr.Permutor([1, 2, 0]);
+    x = new aljabr.Permutor();
+    x.init([1, 2, 0]);
     console.log('x: ' + x.toStr());
     console.log('xx: ' + x.operate(x).toStr());
     console.log('xxx: ' + x.operate(x.operate(x)).toStr());
     
-    y = new aljabr.Permutor([0, 2, 1])
+    y = new aljabr.Permutor();
+    y.init([0, 2, 1])
     console.log('y: ' + y.toStr());
     console.log('yy: ' + y.operate(y).toStr());
     
@@ -184,36 +190,44 @@ aljabr.test.testPermutor = function() {
     console.log('x: ' + x.toStr2());
     console.log('y: ' + y.toStr2());
     
-    console.log('(1 == 2): ' + (1 == 2).toStr());
-    console.log('(1 == 1): ' + (1 == 1).toStr());
-    console.log('([0, 1, 2] == [0, 1, 2]): ' + ([0, 1, 2] == [0, 1, 2]).toStr());
-    console.log('([0, 1, 2] == [0, 1, 2, 3]): ' + ([0, 1, 2] == [0, 1, 2, 3]).toStr());
+    console.log('(1 == 2): ' + (1 == 2));
+    console.log('(1 == 1): ' + (1 == 1));
+    console.log('([0, 1, 2] == [0, 1, 2]): ' + ([0, 1, 2] == [0, 1, 2]));
+    console.log('([0, 1, 2] == [0, 1, 2, 3]): ' + ([0, 1, 2] == [0, 1, 2, 3]));
     
-    z = new aljabr.Permutor([1, 2, 0]);
-    console.log('(e == e): ' + (e == e).toStr());
-    console.log('(e == x): ' + (e == x).toStr());
-    console.log('(e == y): ' + (e == y).toStr());
-    console.log('(x == x): ' + (x == x).toStr());
-    console.log('(x == y): ' + (x == y).toStr());
-    console.log('(x == z): ' + (x == z).toStr());
+    z = new aljabr.Permutor();
+    z.init([1, 2, 0]);
+    console.log('(e == e): ' + (e == e));
+    console.log('(e == x): ' + (e == x));
+    console.log('(e == y): ' + (e == y));
+    console.log('(x == x): ' + (x == x));
+    console.log('(x == y): ' + (x == y));
+    console.log('(x == z): ' + (x == z));
     
-    console.log('\n\n***** PermutationGroupBuilder Test *****');
+    // console.log('\n\n***** PermutationGroupBuilder Test *****');
     
-    perm1 = new aljabr.Permutor([1, 2, 3, 4, 5, 6, 0]);
-    pgb1 = new aljabr.PermutationGroupBuilder([perm1]);
-    g1 = pgb1.buildGroup();
-    pgb1.printPermutors();
+    // perm1 = new aljabr.Permutor();
+    // perm1.init([1, 2, 3, 4, 5, 6, 0]);
+    // pgb1 = new aljabr.PermutationGroupBuilder();
+    // pgb1.init([perm1]);
+    // g1 = pgb1.buildGroup();
+    // pgb1.printPermutors();
 
-    perm2 = new aljabr.Permutor([1, 0, 3, 2]);
-    pgb2 = new aljabr.PermutationGroupBuilder([perm2]);
-    g2 = pgb2.buildGroup();
-    pgb2.printPermutors();
+    // perm2 = new aljabr.Permutor();
+    // perm2.init([1, 0, 3, 2]);
+    // pgb2 = new aljabr.PermutationGroupBuilder();
+    // pgb2.init([perm2]);
+    // g2 = pgb2.buildGroup();
+    // pgb2.printPermutors();
     
-    perm3 = new aljabr.Permutor([1, 0, 2, 3]);
-    perm4 = new aljabr.Permutor([0, 1, 3, 2]);
-    pgb3 = new aljabr.PermutationGroupBuilder([perm3, perm4]);
-    g3 = pgb3.buildGroup();
-    pgb3.printPermutors();
+    // perm3 = new aljabr.Permutor();
+    // perm3.init([1, 0, 2, 3]);
+    // perm4 = new aljabr.Permutor();
+    // perm4.init([0, 1, 3, 2]);
+    // pgb3 = new aljabr.PermutationGroupBuilder();
+    // pgb3.init([perm3, perm4]);
+    // g3 = pgb3.buildGroup();
+    // pgb3.printPermutors();
 };
 
 
@@ -345,13 +359,13 @@ aljabr.test.boolTableToStr = function(table) {
     // Set column width to size of largest element symbol
     order = table.length;
     columnWidth = 1;
-    outString = ' #{' '.rjust(columnWidth)} |';
+    outString = ' ' + aljabr.rjust(' ', columnWidth) + ' |';
     for (i=0; i<order; i++) {
         outString += ' i |';
     }
     
     for (i=0; i<order; i++) {
-        outString += '-#{'-'.rjust(columnWidth, '-')}-|';
+        outString += '-' + aljabr.rjust('-', columnWidth, '-') + '-|';
     }
     
     for (i=0; i<order; i++) {
@@ -371,10 +385,10 @@ aljabr.test.boolTableToStr = function(table) {
 
 
 aljabr.test.testOperatorTable()
-aljabr.test.testGroupBuilder()
+// aljabr.test.testGroupBuilder()
 aljabr.test.testPermutor()
-aljabr.test.testGroupBuilders()
-aljabr.test.testCyclicGroups()
-aljabr.test.testDihedralGroups()
-aljabr.test.testSymmetryGroups()
-aljabr.test.testAlternatingGroups()
+// aljabr.test.testGroupBuilders()
+// aljabr.test.testCyclicGroups()
+// aljabr.test.testDihedralGroups()
+// aljabr.test.testSymmetryGroups()
+// aljabr.test.testAlternatingGroups()
