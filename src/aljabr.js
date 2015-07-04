@@ -8,6 +8,24 @@
 
 var aljabr = aljabr || {};
 
+aljabr.Class = function(methods) {
+    'use strict';
+    var obj, i;
+    
+    obj = function() {    
+        this.init.apply(this, arguments);          
+    };  
+    
+    for (i in methods) { 
+        obj.prototype[i] = methods[i];
+    }
+
+    // Default constructor
+    if (!obj.prototype.init) obj.prototype.init = function(){};
+    
+    return obj;    
+};
+
 /**
  * This class holds the elements of a multiplication table.
  * The table only contains ints or null; the ints are indices
@@ -17,119 +35,115 @@ var aljabr = aljabr || {};
  * for element placement, that happens in the corresponding
  * Builder classes.
  */
-aljabr.OperatorTable = function() {
-    return {
-        order: 0,
-        emptyCellCount: 0,
-        table: undefined,
-        /**
-         * The +new+ class method initializes the class.
-         * @param order - number of rows (and columns) in the table
-         */
-        init: function(order) {
-            'use strict';
-            var model, i, j;
-            
-            model = this;
-            model.order = order;
-            model.emptyCellCount = model.order * model.order;
-            model.table = [];
-            for (i=0; i<model.order; i++) {
-                model.table[i] = [];
-                for (j=0; j<model.order; j++) {
-                    model.table[i][j] = null;
-                }
+aljabr.OperatorTable = aljabr.Class({
+    order: 0,
+    emptyCellCount: 0,
+    table: undefined,
+    /**
+     * The +new+ class method initializes the class.
+     * @param order - number of rows (and columns) in the table
+     */
+    init: function(order) {
+        'use strict';
+        var model, i, j;
+        
+        model = this;
+        model.order = order;
+        model.emptyCellCount = model.order * model.order;
+        model.table = [];
+        for (i=0; i<model.order; i++) {
+            model.table[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.table[i][j] = null;
             }
-        },
-        /**
-         * Number of Elements in the OperatorTable.
-         */
-        // order: function() {
-        //     'use strict';
-        //     return this.order;
-        // },
-        /**
-         * Set the element for a given position in the table.
-         * @param i - row
-         * @param j - column
-         * @param element - value to set the element to (int)
-         */
-        setElement: function(i, j, element) {
-            'use strict';
-            var model;
-            
-            model = this;
-            
-            if (0 <= i && i < model.order &&
-                0 <= j && j < model.order &&
-                0 <= element && element < model.order) {
-                if (model.table[i][j] === null) {
-                    model.emptyCellCount -= 1;
-                }
-                model.table[i][j] = element;
-            }
-            // XXX - else throw exception
-        },
-        /**
-         * Get element index from the table.
-         * @param i - row
-         * @param j - column
-         * @returns 
-         */
-        getElement: function(i, j) {
-            'use strict';
-            
-            return this.table[i][j];
-        },
-        /**
-         * Remove an element index from the table.
-         * @param i - row
-         * @param j - column
-         */
-        removeElement: function(i, j) {
-            'use strict';
-            
-        this.table[i][j] = null;
-        },
-        /**
-         * @returns 
-         */
-        isComplete: function() {
-            'use strict';
-            
-            return this.emptyCellCount === 0;
         }
-    };
-};
+    },
+    /**
+     * Number of Elements in the OperatorTable.
+     */
+    // order: function() {
+    //     'use strict';
+    //     return this.order;
+    // },
+    /**
+     * Set the element for a given position in the table.
+     * @param i - row
+     * @param j - column
+     * @param element - value to set the element to (int)
+     */
+    setElement: function(i, j, element) {
+        'use strict';
+        var model;
+        
+        model = this;
+        
+        if (0 <= i && i < model.order &&
+            0 <= j && j < model.order &&
+            0 <= element && element < model.order) {
+            if (model.table[i][j] === null) {
+                model.emptyCellCount -= 1;
+            }
+            model.table[i][j] = element;
+        }
+        // XXX - else throw exception
+    },
+    /**
+     * Get element index from the table.
+     * @param i - row
+     * @param j - column
+     * @returns 
+     */
+    getElement: function(i, j) {
+        'use strict';
+        
+        return this.table[i][j];
+    },
+    /**
+     * Remove an element index from the table.
+     * @param i - row
+     * @param j - column
+     */
+    removeElement: function(i, j) {
+        'use strict';
+        
+        this.table[i][j] = null;
+    },
+    /**
+     * @returns 
+     */
+    isComplete: function() {
+        'use strict';
+        
+        return this.emptyCellCount === 0;
+    }
+});
 
 
 /**
  * Symbol representation of an element.
  */
-aljabr.Element = function() {
-    return {
-        /**
-         * The +new+ class method initializes the class.
-         * @param symbol - string representation of an element
-         */
-        init: function(symbol) {
-            'use strict';
-            this.symbol = symbol;
-        },
-        /**
-         * Return the string representation.
-         * @returns 
-         */
-        symbol: function() {
-            'use strict';
-            return this.symbol;
-        },
-        toStr: function() {
-            'use strict';
-            return this.symbol;
-        }
-    };
-};
+aljabr.Element = aljabr.Class({
+    /**
+     * The +new+ class method initializes the class.
+     * @param symbol - string representation of an element
+     */
+    init: function(symbol) {
+        'use strict';
+        this.symbol = symbol;
+    },
+    /**
+     * Return the string representation.
+     * @returns 
+     */
+    symbol: function() {
+        'use strict';
+        return this.symbol;
+    },
+    toStr: function() {
+        'use strict';
+        return this.symbol;
+    }
+});
 
 
 /**
@@ -137,46 +151,50 @@ aljabr.Element = function() {
  * Immutable array holding a set of Elements.
  * Mapping from 0-indexed integers to Elements.
  */
-aljabr.ElementSet = function() {
-    return {
-        elementArray: undefined,
-        /**
-         * The +new+ class method initializes the class.
-         * @param elementArray - array of Elements
-         */
-        init: function(elementArray) {
-            'use strict';
-            this.elementArray = elementArray;
-        },
-        /**
-         *  Number of Elements in the ElementSet.
-         */
-        order: function() {
-            'use strict';
-            return this.elementArray.length;
-        },
-        /**
-         * Retrieve the Element at a given index.
-         * @param i - index
-         */
-        element: function(i) {
-            'use strict';
-            return this.elementArray[i];
-        }
-        // XXX - defined in structures that have identity elements.
-        // Get identity Element.
-        // identity
-        //   return @elementArray[@identity_index]
-        // }
-    };
-};
+aljabr.ElementSet = aljabr.Class({
+    elementArray: undefined,
+    order: 0,
+    /**
+     * The +new+ class method initializes the class.
+     * @param elementArray - array of Elements
+     */
+    init: function(elementArray) {
+        'use strict';
+        var model;
+
+        model = this;
+        
+        model.elementArray = elementArray;
+        model.order = model.elementArray.length;
+    },
+    /**
+     *  Number of Elements in the ElementSet.
+     */
+    // order: function() {
+    //     'use strict';
+    //     return ;
+    // },
+    /**
+     * Retrieve the Element at a given index.
+     * @param i - index
+     */
+    element: function(i) {
+        'use strict';
+        return this.elementArray[i];
+    }
+    // XXX - defined in structures that have identity elements.
+    // Get identity Element.
+    // identity
+    //   return @elementArray[@identity_index]
+    // }
+});
 
 
 
 /**
  * Immutable, validated Group.
  */
-aljabr.Group = {
+aljabr.Group = aljabr.Class({
     elements: null,
     order: 0,
     table: null,
@@ -296,7 +314,7 @@ aljabr.Group = {
         }
         outString += '\n';
 
-        for (i=0; i<model.order; i++) {
+        for (i=0; i<=model.order; i++) {
             outString += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
         }
         outString += '\n';
@@ -326,7 +344,7 @@ aljabr.Group = {
         
         return outString;
     }
-};
+});
 
 
 /**
@@ -335,7 +353,7 @@ aljabr.Group = {
  * of Elements in an OperatorTable as long as they maintain the
  * possibility of creating a valid Group.
  */
-aljabr.GroupBuilder = {
+aljabr.GroupBuilder = aljabr.Class({
     elements: undefined,
     order: 0,
     table: undefined,
@@ -351,7 +369,7 @@ aljabr.GroupBuilder = {
         model = this;
         model.elements = elements;
         model.order = model.elements.order;
-        model.table = OperatorTable.new(model.order);
+        model.table = new aljabr.OperatorTable(model.order);
         
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = [];
@@ -361,7 +379,7 @@ aljabr.GroupBuilder = {
                 model.openTable[i][j] = [];
                 // model.openTable[i][j] = (0..model.order-1).to_set();
                 for (k=0; k<model.order; k++) {
-                    model.openTabe[i][j][k] = k;
+                    model.openTable[i][j][k] = k;
                 }
             }
         }
@@ -379,7 +397,7 @@ aljabr.GroupBuilder = {
         model.setElement(0, 0, 0);
 
         // Last element is automatically set by setElement()
-        for (i=0; i<model.order-1; i++) {
+        for (i=0; i<model.order; i++) {
             model.setElement(0, i, i);
             model.setElement(i, 0, i);
         }
@@ -403,7 +421,7 @@ aljabr.GroupBuilder = {
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, markQueue, row, col, el, elIndex;
+        var model, markQueue, head, row, col, el, elIndex, x;
 
         model = this;
         // console.log('setElement(#{i}, #{j}, #{element})\n');
@@ -439,15 +457,18 @@ aljabr.GroupBuilder = {
             markQueue = [];
             markQueue.push([i, j, element]);
             while (markQueue.length > 0) {
-                row, col, el = markQueue.shift;
-                checkAssociativityRules(row, col);
+                head = markQueue.splice(0, 1)[0];
+                row = head[0];
+                col = head[1];
+                el = head[2];
+                model.checkAssociativityRules(row, col);
                 model.table.setElement(row, col, el);
-                addAssociativityRules(row, col, el);
+                model.addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
                 // model.openTable[row][col].clear();
                 model.openTable[row][col] = [];
-                for (x in (0..model.order-1)) {
+                for (x=0; x<model.order; x++) {
                     // Remove from column
                     // if (model.openTable[x][col].include?(el)) {
                     elIndex = model.openTable[x][col].indexOf(el);
@@ -484,7 +505,9 @@ aljabr.GroupBuilder = {
      */
     elementOrder: function(el) {
         'use strict';
-        var order, elPower;
+        var model, order, elPower;
+
+        model = this;
         
         if (el === 0) {
             return 1;
@@ -540,6 +563,8 @@ aljabr.GroupBuilder = {
      * @param j - column
      */
     checkAssociativityRules: function(row, col) {
+        'use strict';
+
         if (this.associationTable[row][col] !== null) {
             // console.log('Association rule: #{this.associationTable[row][col]}\n');
         }
@@ -609,7 +634,7 @@ aljabr.GroupBuilder = {
         
         // Must have full OperatorTable
         if (isComplete) {
-            return Group.new(model.elements, model.table);
+            return new aljabr.Group(model.elements, model.table);
         }
     },
     /**
@@ -618,7 +643,7 @@ aljabr.GroupBuilder = {
      */
     toStr: function() {
         'use strict';
-        var model, elements, colWidth, outStr;
+        var model, elements, colWidth, i, j, outStr;
 
         model = this;
         elements = model.elements;
@@ -639,7 +664,7 @@ aljabr.GroupBuilder = {
         }
         outStr += '\n';
 
-        for (i=0; i<model.order; i++) {
+        for (i=0; i<=model.order; i++) {
             outStr += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
         }
         outStr += '\n';
@@ -691,144 +716,141 @@ aljabr.GroupBuilder = {
             });
         });
     }
-};
+});
 
 
 /**
  * Permutation representation of a group element from the symmetric group.
  */
-aljabr.Permutor = function() {
-    return {
-        actionArray: undefined,
-        order: 0,
-        /**
-         * The +new+ class method initializes the class.
-         * @param actionArray - permutor representation
-         */
-        init: function(actionArray) {
-            'use strict';
-            var model, i;
+aljabr.Permutor = aljabr.Class({
+    actionArray: undefined,
+    order: 0,
+    /**
+     * The +new+ class method initializes the class.
+     * @param actionArray - permutor representation
+     */
+    init: function(actionArray) {
+        'use strict';
+        var model, i;
 
-            model = this;
-            model.order = actionArray.length;
-            
-            // Validate actionArray
-            // actionArray must be an array of integers from 0..actionArray.length-1
-            // each integer appears only once
-            // the array is a map from integer i to the integer actionArray[i]
-            for (i=0; i<model.order; i++) {
-                // if (!actionArray.include?(i)) {
-                if (actionArray.indexOf(i) === -1) {
-                    console.log('Error: bad actionArray');
-                }
+        model = this;
+        model.order = actionArray.length;
+        
+        // Validate actionArray
+        // actionArray must be an array of integers from 0..actionArray.length-1
+        // each integer appears only once
+        // the array is a map from integer i to the integer actionArray[i]
+        for (i=0; i<model.order; i++) {
+            // if (!actionArray.include?(i)) {
+            if (actionArray.indexOf(i) === -1) {
+                console.log('Error: bad actionArray');
             }
-            model.actionArray = actionArray;
-        },
-        /**
-         * Equality (was '===')
-         * @param permutor - permutor to compare against
-         */
-        eq: function(permutor) {
-            'use strict';
-            return (this.toStr() === permutor.toStr());
-        },
-        /**
-         * 
-         * @param permutor - 
-         */
-        operate: function(permutor) {
-            'use strict';
-            var model, tempActionArray, i, perm;
-            
-            model = this;
-            
-            if (model.order !== permutor.order) {
-                return null;
-            }
-            tempActionArray = [];
-            for (i=0; i<model.actionArray.length; i++) {
-                tempActionArray[i] = model.op(permutor.op(i));
-            }
-            perm = new aljabr.Permutor();
-            perm.init(tempActionArray);
-            
-            return perm;
-        },
-        /**
-         * Return an element of actionArray.
-         * @param num - index into actionArray
-         */
-        op: function(num) {
-            'use strict';
-            
-            //puts 'op num: ' + num.toStr()
-            return this.actionArray[num];
-        },
-        /**
-         * Size of actionArray.
-         */
-        order: function() {
-            'use strict';
-            return this.actionArray.length;
-        },
-        /**
-         * Return a string representation of actionArray.
-         */
-        toStr2: function() {
-            'use strict';
-            var model, str, i;
-            
-            model = this;
-            str = '[';
-            for (i=0; i<model.actionArray.length; i++) {
-                str += model.actionArray[i] + ' ';
-            }
-            
-            str = str.trimRight();
-            str += ']';
-            
-            return str;
-        },
-        /**
-         * Return a string representation of actionArray.
-         */
-        toStr: function() {
-            'use strict';
-            var model, str, markArray, i, j;
-            
-            model = this;
-            str = '';
-            markArray = [];
-            
-            for (i=0; i<model.actionArray.length; i++) {
-                if (!markArray[i] && model.actionArray[i] !== i) {
-                    markArray[i] = 1;
-                    str += '(' + i + ' ';
-                    j = model.actionArray[i];
-                    str += j + ' ';
-                    while (!markArray[j] && model.actionArray[j] !== i) {
-                        markArray[j] = 1;
-                        j = model.actionArray[j];
-                        str += j + ' ';
-                    }
-                    markArray[j] = 1;
-                    str = str.trimRight() + ') ';
-                }
-            }
-            
-            // Identity element represented as 'e'
-            str = str.trimRight();
-            if (str.length === 0) {
-                return 'e';
-            }
-            
-            return str;
         }
-    };
-};
+        model.actionArray = actionArray;
+    },
+    /**
+     * Equality (was '===')
+     * @param permutor - permutor to compare against
+     */
+    eq: function(permutor) {
+        'use strict';
+        return (this.toStr() === permutor.toStr());
+    },
+    /**
+     * 
+     * @param permutor - 
+     */
+    operate: function(permutor) {
+        'use strict';
+        var model, tempActionArray, i, perm;
+        
+        model = this;
+        
+        if (model.order !== permutor.order) {
+            return null;
+        }
+        tempActionArray = [];
+        for (i=0; i<model.actionArray.length; i++) {
+            tempActionArray[i] = model.op(permutor.op(i));
+        }
+        perm = new aljabr.Permutor(tempActionArray);
+        
+        return perm;
+    },
+    /**
+     * Return an element of actionArray.
+     * @param num - index into actionArray
+     */
+    op: function(num) {
+        'use strict';
+        
+        //puts 'op num: ' + num.toStr()
+        return this.actionArray[num];
+    },
+    /**
+     * Size of actionArray.
+     */
+    order: function() {
+        'use strict';
+        return this.actionArray.length;
+    },
+    /**
+     * Return a string representation of actionArray.
+     */
+    toStr2: function() {
+        'use strict';
+        var model, str, i;
+        
+        model = this;
+        str = '[';
+        for (i=0; i<model.actionArray.length; i++) {
+            str += model.actionArray[i] + ' ';
+        }
+        
+        str = str.trimRight();
+        str += ']';
+        
+        return str;
+    },
+    /**
+     * Return a string representation of actionArray.
+     */
+    toStr: function() {
+        'use strict';
+        var model, str, markArray, i, j;
+        
+        model = this;
+        str = '';
+        markArray = [];
+        
+        for (i=0; i<model.actionArray.length; i++) {
+            if (!markArray[i] && model.actionArray[i] !== i) {
+                markArray[i] = 1;
+                str += '(' + i + ' ';
+                j = model.actionArray[i];
+                str += j + ' ';
+                while (!markArray[j] && model.actionArray[j] !== i) {
+                    markArray[j] = 1;
+                    j = model.actionArray[j];
+                    str += j + ' ';
+                }
+                markArray[j] = 1;
+                str = str.trimRight() + ') ';
+            }
+        }
+        
+        // Identity element represented as 'e'
+        str = str.trimRight();
+        if (str.length === 0) {
+            return 'e';
+        }
+        
+        return str;
+    }
+});
 
 
-aljabr.PermutationGroupBuilder = {
+aljabr.PermutationGroupBuilder = aljabr.Class({
     generators: undefined,
     permutors: undefined,
     group: undefined,
@@ -957,7 +979,7 @@ aljabr.PermutationGroupBuilder = {
             console.log(i + ': ' + model.permutors[i]);
         }
     }
-};
+});
 
 
 
@@ -1155,11 +1177,10 @@ aljabr.buildProductGroup = function(group1, group2) {
     
     elArray = [];
     elCount = 0;
-    backMap = Array.new(group1.order);
+    backMap = [];
     backMap2 = [];
     // Create new ElementSet
     for (i=0; i<group1.order; i++) {
-        backMap[i] = Array.new(group2.order);
         backMap[i] = [];
         for (j=0; j<group2.order; j++) {
             elArray.push(
@@ -1208,7 +1229,7 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
     }
 
     for (i=inStr.length; i<justLen; i++) {
-        outStr += fillChar;
+        outStr = fillChar + outStr;
     }
 
     return outStr;
