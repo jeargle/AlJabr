@@ -197,30 +197,23 @@ aljabr.test.testPermutor = function() {
     console.log('(x == y): ' + (x == y));
     console.log('(x == z): ' + (x == z));
     
-    // console.log('\n\n***** PermutationGroupBuilder Test *****');
+    console.log('\n\n***** PermutationGroupBuilder Test *****');
     
-    // perm1 = new aljabr.Permutor();
-    // perm1.init([1, 2, 3, 4, 5, 6, 0]);
-    // pgb1 = new aljabr.PermutationGroupBuilder();
-    // pgb1.init([perm1]);
-    // g1 = pgb1.buildGroup();
-    // pgb1.printPermutors();
+    perm1 = new aljabr.Permutor([1, 2, 3, 4, 5, 6, 0]);
+    pgb1 = new aljabr.PermutationGroupBuilder([perm1]);
+    g1 = pgb1.buildGroup();
+    pgb1.printPermutors();
 
-    // perm2 = new aljabr.Permutor();
-    // perm2.init([1, 0, 3, 2]);
-    // pgb2 = new aljabr.PermutationGroupBuilder();
-    // pgb2.init([perm2]);
-    // g2 = pgb2.buildGroup();
-    // pgb2.printPermutors();
+    perm2 = new aljabr.Permutor([1, 0, 3, 2]);
+    pgb2 = new aljabr.PermutationGroupBuilder([perm2]);
+    g2 = pgb2.buildGroup();
+    pgb2.printPermutors();
     
-    // perm3 = new aljabr.Permutor();
-    // perm3.init([1, 0, 2, 3]);
-    // perm4 = new aljabr.Permutor();
-    // perm4.init([0, 1, 3, 2]);
-    // pgb3 = new aljabr.PermutationGroupBuilder();
-    // pgb3.init([perm3, perm4]);
-    // g3 = pgb3.buildGroup();
-    // pgb3.printPermutors();
+    perm3 = new aljabr.Permutor([1, 0, 2, 3]);
+    perm4 = new aljabr.Permutor([0, 1, 3, 2]);
+    pgb3 = new aljabr.PermutationGroupBuilder([perm3, perm4]);
+    g3 = pgb3.buildGroup();
+    pgb3.printPermutors();
 };
 
 
@@ -230,14 +223,14 @@ aljabr.test.testGroupBuilders = function() {
     
     console.log('\n\n***** Group Builder Function Tests *****');
     
-    g13 = buildCyclicGroup(13);
-    g7 = buildDihedralGroup(7);
-    g3 = buildSymmetryGroup(3);
-    g4 = buildAlternatingGroup(4);
-    g2 = buildCyclicGroup(2);
-    g3 = buildCyclicGroup(3);
-    g2x2 = buildProductGroup(g2, g2);
-    g2x3 = buildProductGroup(g2, g3);
+    g13 = aljabr.buildCyclicGroup(13);
+    g7 = aljabr.buildDihedralGroup(7);
+    g3 = aljabr.buildSymmetryGroup(3);
+    g4 = aljabr.buildAlternatingGroup(4);
+    g2 = aljabr.buildCyclicGroup(2);
+    g3 = aljabr.buildCyclicGroup(3);
+    g2x2 = aljabr.buildProductGroup(g2, g2);
+    g2x3 = aljabr.buildProductGroup(g2, g3);
     console.log('g13 order 1: ' + g13.elementOrder(1));
     console.log('g13 index 1: ' + g13.elementIndex(1));
     console.log(g13.toStr());
@@ -265,15 +258,15 @@ aljabr.test.testCyclicGroups = function() {
     
     console.log('\n\n***** Cyclic Group Test *****');
     
-    g1 = buildCyclicGroup(1);
-    g2 = buildCyclicGroup(2);
-    g3 = buildCyclicGroup(3);
-    g4 = buildCyclicGroup(4);
-    g5 = buildCyclicGroup(5);
-    g10 = buildCyclicGroup(10);
-    g20 = buildCyclicGroup(20);
-    // g30 = buildCyclicGroup(30);  // order 30
-    // g40 = buildCyclicGroup(40);  // order 40
+    g1 = aljabr.buildCyclicGroup(1);
+    g2 = aljabr.buildCyclicGroup(2);
+    g3 = aljabr.buildCyclicGroup(3);
+    g4 = aljabr.buildCyclicGroup(4);
+    g5 = aljabr.buildCyclicGroup(5);
+    g10 = aljabr.buildCyclicGroup(10);
+    g20 = aljabr.buildCyclicGroup(20);
+    // g30 = aljabr.buildCyclicGroup(30);  // order 30
+    // g40 = aljabr.buildCyclicGroup(40);  // order 40
     console.log(g1.toStr());
     console.log(g2.toStr());
     console.log(g3.toStr());
@@ -290,13 +283,13 @@ aljabr.test.testDihedralGroups = function() {
 
     console.log('\n\n***** Dihedral Group Test *****');
     
-    g1 = buildDihedralGroup(1)
-    g2 = buildDihedralGroup(2);
-    g3 = buildDihedralGroup(3);
-    g4 = buildDihedralGroup(4);
-    g5 = buildDihedralGroup(5);
-    g6 = buildDihedralGroup(6);
-    g7 = buildDihedralGroup(7);  // order 14
+    g1 = aljabr.buildDihedralGroup(1)
+    g2 = aljabr.buildDihedralGroup(2);
+    g3 = aljabr.buildDihedralGroup(3);
+    g4 = aljabr.buildDihedralGroup(4);
+    g5 = aljabr.buildDihedralGroup(5);
+    g6 = aljabr.buildDihedralGroup(6);
+    g7 = aljabr.buildDihedralGroup(7);  // order 14
     console.log(g1.toStr());
     console.log(g2.toStr());
     console.log(g3.toStr());
@@ -313,11 +306,11 @@ aljabr.test.testSymmetryGroups = function() {
     
     console.log('\n\n***** Symmetry Group Test *****');
     
-    g1 = buildSymmetryGroup(1);
-    g2 = buildSymmetryGroup(2);
-    g3 = buildSymmetryGroup(3);
-    g4 = buildSymmetryGroup(4);
-    // g5 = buildSymmetryGroup(5);  // order 120
+    g1 = aljabr.buildSymmetryGroup(1);
+    g2 = aljabr.buildSymmetryGroup(2);
+    g3 = aljabr.buildSymmetryGroup(3);
+    g4 = aljabr.buildSymmetryGroup(4);
+    // g5 = aljabr.buildSymmetryGroup(5);  // order 120
     console.log(g1.toStr());
     console.log(g2.toStr());
     console.log(g3.toStr());
@@ -332,11 +325,11 @@ aljabr.test.testAlternatingGroups = function() {
     
     console.log('\n\n***** Alternating Group Test *****');
     
-    g1 = buildAlternatingGroup(1);
-    g2 = buildAlternatingGroup(2);
-    g3 = buildAlternatingGroup(3);
-    g4 = buildAlternatingGroup(4);
-    // g5 = buildAlternatingGroup(5);  // order 60
+    g1 = aljabr.buildAlternatingGroup(1);
+    g2 = aljabr.buildAlternatingGroup(2);
+    g3 = aljabr.buildAlternatingGroup(3);
+    g4 = aljabr.buildAlternatingGroup(4);
+    // g5 = aljabr.buildAlternatingGroup(5);  // order 60
     console.log(g1.toStr());
     console.log(g2.toStr());
     console.log(g3.toStr());
@@ -385,8 +378,8 @@ aljabr.test.boolTableToStr = function(table) {
 aljabr.test.testOperatorTable()
 aljabr.test.testGroupBuilder()
 aljabr.test.testPermutor()
-// aljabr.test.testGroupBuilders()
-// aljabr.test.testCyclicGroups()
-// aljabr.test.testDihedralGroups()
-// aljabr.test.testSymmetryGroups()
-// aljabr.test.testAlternatingGroups()
+aljabr.test.testCyclicGroups()
+aljabr.test.testDihedralGroups()
+aljabr.test.testSymmetryGroups()
+aljabr.test.testAlternatingGroups()
+aljabr.test.testGroupBuilders()

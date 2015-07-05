@@ -129,7 +129,13 @@ aljabr.Element = aljabr.Class({
      */
     init: function(symbol) {
         'use strict';
-        this.symbol = symbol;
+
+        if (typeof(symbol) === 'string') {
+            this.symbol = symbol;
+        }
+        else {
+            this.symbol = symbol.toString();
+        }
     },
     /**
      * Return the string representation.
@@ -280,7 +286,7 @@ aljabr.Group = aljabr.Class({
             return 0;
         }
 
-        order = elementOrder(el);
+        order = model.elementOrder(el);
         if (order === 0) {
             console.log("Error: element order is 0");
         }
@@ -618,7 +624,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     isComplete: function() {
         'use strict';
-        return this.table.isComplete;
+        return this.table.isComplete();
     },
     /**
      * Validate and build a corresponding Group.
@@ -633,7 +639,7 @@ aljabr.GroupBuilder = aljabr.Class({
         // Associativity guaranteed by association checks
         
         // Must have full OperatorTable
-        if (isComplete) {
+        if (model.isComplete()) {
             return new aljabr.Group(model.elements, model.table);
         }
     },
@@ -732,6 +738,8 @@ aljabr.Permutor = aljabr.Class({
     init: function(actionArray) {
         'use strict';
         var model, i;
+
+        // console.log('Permutor.init()');
 
         model = this;
         model.order = actionArray.length;
@@ -864,6 +872,8 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         'use strict';
         var model;
 
+        // console.log('PermutationGroupBuilder.init()');
+        
         model = this;
 
         model.generators = generators;
@@ -874,8 +884,8 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
     },
     /**
      * Return a hash from generators to booleans (whether they're valid or not)
-     *   A generator is valid if it has the largest order of a set of conflicting
-     *   generators (e.g. r is valid compared with r^2 and r^3).
+     * A generator is valid if it has the largest order of a set of conflicting
+     * generators (e.g. r is valid compared with r^2 and r^3).
      */
     getValidGenerators: function() {
         'use strict';
@@ -883,12 +893,12 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
     },
     /**
      * Create a list of all elements with which to build the Group
-     *   Breadth-first search using the generators and starting with the identity
-     *   element.
+     * Breadth-first search using the generators and starting with the identity
+     * element.
      */
     findElements: function() {
         'use strict';
-        var model;
+        var model, identityActionArray, i, j, k, tempPermutor, match;
 
         model = this;
 
@@ -902,10 +912,20 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
 
         for (i=0; i<model.permutors.length; i++) {
             for (j=0; j<model.generators.length; j++) {
-	        tempPermutor = model.generators[j].operate(model.permutors[i])
-                if (model.permutors.indexOf(tempPermutor) === -1) {
+	        tempPermutor = model.generators[j].operate(model.permutors[i]);
+                if (model.permutorIndex(tempPermutor) === -1) {
                     model.permutors.push(tempPermutor);
                 }
+                // match = false;
+                // for (k=0; k<model.permutors.length; k++) {
+                //     if (tempPermutor.eq(model.permutors[k])) {
+                //         match = true;
+                //         break;
+                //     }
+                // }
+                // if (!match) {
+                //     model.permutors.push(tempPermutor);
+                // }
             }
         }
     },
@@ -914,7 +934,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict';
-        var model, elementArray, elements, groupBuilder, i, j;
+        var model, elementArray, elements, groupBuilder, i, j, k;
 
         model = this;
         if (model.permutors.length === 0) {
@@ -931,8 +951,13 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         // Loop through elements and fill out GroupBuilder
         groupBuilder = new aljabr.GroupBuilder(elements);
         for (i=0; i<model.permutors.length; i++) {
+            // console.log('i: ' + i);
             for (j=0; j<model.permutors.length; j++) {
-                groupBuilder.setElement(i, j, model.permutors.index(model.permutors[j].operate(model.permutors[i])));
+                groupBuilder.setElement(i, j,
+                                        model.permutorIndex(
+                                            model.permutors[j].operate(model.permutors[i])
+                                        ));
+                // model.permutors.index(model.permutors[j].operate(model.permutors[i])));
                 if (groupBuilder.isComplete()) {
                     // console.log('COMPLETE\n');
                     break;
@@ -976,8 +1001,27 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         model = this;
         
         for (i=0; i<model.permutors.length; i++) {
-            console.log(i + ': ' + model.permutors[i]);
+            console.log(i + ': ' + model.permutors[i].toStr());
         }
+    },
+    /**
+     * Find the index of permutor in model.permutors
+     */
+    permutorIndex: function(permutor) {
+        'use strict';
+        var model, index, i;
+
+        model = this;
+        index = -1;
+
+        for (i=0; i<model.permutors.length; i++) {
+            if (permutor.eq(model.permutors[i])) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
     }
 });
 
@@ -998,7 +1042,7 @@ aljabr.buildCyclicGroup = function(order) {
 
     cycleActionArray = [];
     for (i=0; i<order; i++) {
-        cycleAction[i] = null;
+        cycleActionArray[i] = null;
     }
     
     if (order === 1) {
@@ -1030,26 +1074,25 @@ aljabr.buildDihedralGroup = function(degree) {
         return null;
     }
 
-    dihedralActionArray1 = Array.new(degree+2);
-    dihedralActionArray2 = Array.new(degree+2);
+    dihedralActionArray1 = [];
+    dihedralActionArray2 = [];
 
     // XXX - should throw an exception; no Dih1 or Dih2
     if (degree === 1 || degree === 2) {
-        return buildCyclicGroup(degree);
+        return aljabr.buildCyclicGroup(degree);
     }
     else {
-        for (i in dihedralActionArray1) {
+        for (i=0; i<degree+2; i++) {
             dihedralActionArray1[i] = i+1;
+            dihedralActionArray2[i] = i;
         }
         dihedralActionArray1[degree-1] = 0;
         dihedralActionArray1[degree] = degree;
         dihedralActionArray1[degree+1] = degree+1;
-        for (i in dihedralActionArray2) {
-            dihedralActionArray2[i] = i;
-        }
         dihedralActionArray2[degree] = degree+1;
         dihedralActionArray2[degree+1] = degree;
     }
+
     dihed1 = new aljabr.Permutor(dihedralActionArray1);
     dihed2 = new aljabr.Permutor(dihedralActionArray2);
     dihedralGroupBuilder = new aljabr.PermutationGroupBuilder([dihed1, dihed2]);
@@ -1122,18 +1165,19 @@ aljabr.buildAlternatingGroup = function(degree) {
     var numActionArrays, alternatingActionArrays, i, j, k, arrayCount, transpositions, alternatingGroupBuilder;
 
     if (degree <= 1) {
-        return null;
+        // return null;
+        return aljabr.buildCyclicGroup(degree);
     }
 
     if (degree === 2) {
-        return buildCyclicGroup(degree);
+        return aljabr.buildCyclicGroup(degree);
     }
 
     // Number generators = choose(degree, 3)
     numActionArrays = degree * (degree-1) * (degree-2) / 6;
     alternatingActionArrays = [];
 
-  // Build actionArrays like [0, 1, 2, ...]
+    // Build actionArrays like [0, 1, 2, ...]
     for (i=0; i<numActionArrays; i++) {
         alternatingActionArrays[i] = [];
         for (j=0; j<degree; j++) {
@@ -1173,7 +1217,7 @@ aljabr.buildAlternatingGroup = function(degree) {
  */
 aljabr.buildProductGroup = function(group1, group2) {
     'use strict';
-    var elArray, elCount, backMap, backMap2, elements, productBuilder, el1, el2;
+    var elArray, elCount, backMap, backMap2, i, j, elements, productBuilder, el1, el2;
     
     elArray = [];
     elCount = 0;
