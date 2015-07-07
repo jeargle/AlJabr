@@ -1,5 +1,5 @@
 /* JSLint */
-/*global console: false, aljabr: false */
+/*global console: false, aljabr: false, extend: false*/
 
 extend(aljabr, 'test');
 
@@ -152,7 +152,7 @@ aljabr.test.testGroupBuilder = function() {
 
 
 aljabr.test.testPermutor = function() {
-    'use strict;'
+    'use strict';
     var a, e, x, y, z, perm1, perm2, perm3, perm4, pgb1, pgb2, pgb3, g1, g2, g3;
     
     console.log('\n\n***** Permutor Test *****');
@@ -184,18 +184,13 @@ aljabr.test.testPermutor = function() {
     console.log('x: ' + x.toStr2());
     console.log('y: ' + y.toStr2());
     
-    console.log('(1 == 2): ' + (1 == 2));
-    console.log('(1 == 1): ' + (1 == 1));
-    console.log('([0, 1, 2] == [0, 1, 2]): ' + ([0, 1, 2] == [0, 1, 2]));
-    console.log('([0, 1, 2] == [0, 1, 2, 3]): ' + ([0, 1, 2] == [0, 1, 2, 3]));
-    
     z = new aljabr.Permutor([1, 2, 0]);
-    console.log('(e == e): ' + (e == e));
-    console.log('(e == x): ' + (e == x));
-    console.log('(e == y): ' + (e == y));
-    console.log('(x == x): ' + (x == x));
-    console.log('(x == y): ' + (x == y));
-    console.log('(x == z): ' + (x == z));
+    console.log('(e === e): ' + (e === e));
+    console.log('(e === x): ' + (e === x));
+    console.log('(e === y): ' + (e === y));
+    console.log('(x === x): ' + (x === x));
+    console.log('(x === y): ' + (x === y));
+    console.log('(x === z): ' + (x === z));
     
     console.log('\n\n***** PermutationGroupBuilder Test *****');
     
@@ -283,7 +278,7 @@ aljabr.test.testDihedralGroups = function() {
 
     console.log('\n\n***** Dihedral Group Test *****');
     
-    g1 = aljabr.buildDihedralGroup(1)
+    g1 = aljabr.buildDihedralGroup(1);
     g2 = aljabr.buildDihedralGroup(2);
     g3 = aljabr.buildDihedralGroup(3);
     g4 = aljabr.buildDihedralGroup(4);
@@ -375,11 +370,11 @@ aljabr.test.boolTableToStr = function(table) {
 };
 
 
-aljabr.test.testOperatorTable()
-aljabr.test.testGroupBuilder()
-aljabr.test.testPermutor()
-aljabr.test.testCyclicGroups()
-aljabr.test.testDihedralGroups()
-aljabr.test.testSymmetryGroups()
-aljabr.test.testAlternatingGroups()
-aljabr.test.testGroupBuilders()
+aljabr.test.testOperatorTable();
+aljabr.test.testGroupBuilder();
+aljabr.test.testPermutor();
+aljabr.test.testCyclicGroups();
+aljabr.test.testDihedralGroups();
+aljabr.test.testSymmetryGroups();
+aljabr.test.testAlternatingGroups();
+aljabr.test.testGroupBuilders();

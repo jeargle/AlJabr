@@ -1,3 +1,5 @@
+/*global console: false, aljabr: false, _: false */
+
 /**
  * John Eargle (mailto: jeargle at gmail.com)
  * 2007-2015
@@ -21,7 +23,9 @@ aljabr.Class = function(methods) {
     }
 
     // Default constructor
-    if (!obj.prototype.init) obj.prototype.init = function(){};
+    if (!obj.prototype.init) {
+        obj.prototype.init = function(){};
+    }
     
     return obj;    
 };
@@ -130,7 +134,7 @@ aljabr.Element = aljabr.Class({
     init: function(symbol) {
         'use strict';
 
-        if (typeof(symbol) === 'string') {
+        if (typeof symbol === 'string') {
             this.symbol = symbol;
         }
         else {
@@ -454,7 +458,7 @@ aljabr.GroupBuilder = aljabr.Class({
                 console.log('Error: element #{element} is not allowed at (#{i}, #{j})\n');
                 console.log('model.openTable[i][j]:');
                 _.each(model.openTable[i][j], function(x) {
-                    console.log('#{x} ');
+                    console.log(x + ' ');
                 });
                 console.log('\n');
                 return null;
@@ -655,7 +659,7 @@ aljabr.GroupBuilder = aljabr.Class({
         elements = model.elements;
         
         // Set column width to size of largest element symbol
-        colWidth = 0
+        colWidth = 0;
         for (i=0; i<model.order; i++) {
             if (colWidth < elements.element(i).symbol.length) {
 	        colWidth = elements.element(i).symbol.length;
@@ -702,25 +706,25 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     printOpenTable: function() {
         'use strict';
-        var model;
+        var model, i, j;
 
         model = this;
         
-        _.each([0..model.order-1], function(i) {
-            console.log('row #{i}\n');
-            _.each([0..model.order-1], function(j) {
+        for (i=0; i<model.order; i++) {
+            console.log('row ' + i + '\n');
+            for (j=0; j<model.order; j++) {
                 console.log('   col ' + j + '\n');
                 console.log('      ');
-                // console.log('openTable[#{i}][#{j}].class: #{model.openTable[i][j].class}\n');
-                // console.log('openTable[#{i}][#{j}].length: #{model.openTable[i][j].length}\n');
-                // console.log('openTable[0][0].length: #{model.openTable[0][0].length}\n');
+                // console.log('openTable[' + i + '][' + j + '].class: ' + model.openTable[i][j].class + '\n');
+                // console.log('openTable[' + i + '][' + j + '].length: ' + model.openTable[i][j].length + '\n');
+                // console.log('openTable[0][0].length: ' + model.openTable[0][0].length + '\n');
                 _.each(model.openTable[i][j], function(el) {
-                    // console.log('#{el.class} ');
-                    console.log('#{el} ');
+                    // console.log(el.class + ' ');
+                    console.log(el + ' ');
                 });
                 console.log('\n');
-            });
-        });
+            }
+        }
     }
 });
 
@@ -794,13 +798,6 @@ aljabr.Permutor = aljabr.Class({
         
         //puts 'op num: ' + num.toStr()
         return this.actionArray[num];
-    },
-    /**
-     * Size of actionArray.
-     */
-    order: function() {
-        'use strict';
-        return this.actionArray.length;
     },
     /**
      * Return a string representation of actionArray.
@@ -898,7 +895,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     findElements: function() {
         'use strict';
-        var model, identityActionArray, i, j, k, tempPermutor, match;
+        var model, identityActionArray, i, j, tempPermutor;
 
         model = this;
 
@@ -916,16 +913,6 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
                 if (model.permutorIndex(tempPermutor) === -1) {
                     model.permutors.push(tempPermutor);
                 }
-                // match = false;
-                // for (k=0; k<model.permutors.length; k++) {
-                //     if (tempPermutor.eq(model.permutors[k])) {
-                //         match = true;
-                //         break;
-                //     }
-                // }
-                // if (!match) {
-                //     model.permutors.push(tempPermutor);
-                // }
             }
         }
     },
@@ -934,7 +921,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict';
-        var model, elementArray, elements, groupBuilder, i, j, k;
+        var model, elementArray, elements, groupBuilder, i, j;
 
         model = this;
         if (model.permutors.length === 0) {
@@ -1267,7 +1254,7 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
 
     outStr = inStr;
 
-    if (typeof(fillChar) !== 'string' ||
+    if (typeof fillChar !== 'string' ||
         fillChar.length !== 1) {
         fillChar = ' ';
     }
@@ -1300,7 +1287,7 @@ function extend(ns, ns_string) {
 
     for (i = 0; i < pl; i++) {
         // create a property if it doesnt exist
-        if (typeof parent[parts[i]] === 'undefined') {
+        if (parent[parts[i]] === undefined) {
             parent[parts[i]] = {};
         }
         parent = parent[parts[i]];
