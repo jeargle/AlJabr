@@ -6,10 +6,14 @@
  * aljabr
  */
 
-// require 'set'
 
 var aljabr = aljabr || {};
 
+/**
+ * OO-style class that provides a constructor.
+ * @param methods
+ * @returns a class equipped with a constructor
+ */
 aljabr.Class = function(methods) {
     'use strict';
     var obj, i;
@@ -63,13 +67,6 @@ aljabr.OperatorTable = aljabr.Class({
         }
     },
     /**
-     * Number of Elements in the OperatorTable.
-     */
-    // order: function() {
-    //     'use strict';
-    //     return this.order;
-    // },
-    /**
      * Set the element for a given position in the table.
      * @param i - row
      * @param j - column
@@ -95,7 +92,7 @@ aljabr.OperatorTable = aljabr.Class({
      * Get element index from the table.
      * @param i - row
      * @param j - column
-     * @returns 
+     * @returns element at (i,j) in the table
      */
     getElement: function(i, j) {
         'use strict';
@@ -113,7 +110,7 @@ aljabr.OperatorTable = aljabr.Class({
         this.table[i][j] = null;
     },
     /**
-     * @returns 
+     * @returns whether the table is filled out or not
      */
     isComplete: function() {
         'use strict';
@@ -143,12 +140,16 @@ aljabr.Element = aljabr.Class({
     },
     /**
      * Return the string representation.
-     * @returns 
+     * @returns the symbol
      */
     symbol: function() {
         'use strict';
         return this.symbol;
     },
+    /**
+     *
+     * returns string representation of the symbol
+     */
     toStr: function() {
         'use strict';
         return this.symbol;
@@ -177,13 +178,6 @@ aljabr.ElementSet = aljabr.Class({
         model.elementArray = elementArray;
         model.order = model.elementArray.length;
     },
-    /**
-     *  Number of Elements in the ElementSet.
-     */
-    // order: function() {
-    //     'use strict';
-    //     return ;
-    // },
     /**
      * Retrieve the Element at a given index.
      * @param i - index
@@ -1244,8 +1238,10 @@ aljabr.buildProductGroup = function(group1, group2) {
 
 
 /**
- *
- * @param justLen
+ * Right justify.
+ * @param inStr - string to justify
+ * @param justLen - column width in characters
+ * @param fillChar - character used for padding; default: ' '
  * @returns justified string
  */
 aljabr.rJust = function(inStr, justLen, fillChar) {
@@ -1271,17 +1267,21 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
 // Namespacing
 //----------------------------
 
-// Parse dot-separated namespace strings,
-// create corresponding nested namespaces,
-// and add to an existing top-level namespace.
-// ns_string is the namespace extension so to get
-// myApp.models.model1 use:
-//   extend(myApp, 'models.model1');
-function extend(ns, ns_string) {  
+/**
+ * Parse dot-separated namespace strings,
+ * create corresponding nested namespaces,
+ * and add to an existing top-level namespace.
+ * ns_string is the namespace extension so to get
+ * myApp.models.model1 use:
+ *   extend(myApp, 'models.model1');
+ * @param ns
+ * @param nsString
+ */
+function extend(ns, nsString) {  
     'use strict';
     var parts, parent, pl, i;
 
-    parts = ns_string.split('.');
+    parts = nsString.split('.');
     parent = ns;
     pl = parts.length;
 
