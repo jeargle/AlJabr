@@ -40,17 +40,18 @@ aljabr.builder.CayleyTableView = aljabr.Class({
                     .attr('y', (j+1)*boxSize)
                     .attr('width', boxSize)
                     .attr('height', boxSize)
-                    .style('fill', 'rgb(' + i*30 + ',0,' + j*30 + ')')
-                    .on('mouseover', function() {
+                    .attr('fill', 'rgb(' + i*30 + ',0,' + j*30 + ')')
+                    .on('click', function() {
                         d3.select(this)
                             .style('fill', 'yellow');
                     });
                 svg.append('text')
                     .attr('x', (i+1.5)*boxSize)
                     .attr('y', (j+1.7)*boxSize)
-                    .style('fill', 'black')
-                    .style('text-anchor', 'middle')
-                    .style('font-size', '16')
+                    .attr('fill', 'black')
+                    .attr('text-anchor', 'middle')
+                    .attr('font-size', '16')
+                    .attr('pointer-events', 'none')
                     .text(i);
             }
         }
@@ -98,8 +99,8 @@ aljabr.builder.ElementView = aljabr.Class({
         view = this;
         view.id = id;
         view.el = d3.select('#' + view.id);
-        view.width = 500;
-        view.height = 300;
+        view.width = 300;
+        view.height = 100;
 
         view.render();
     },
