@@ -167,17 +167,24 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, baseRadius, baseX, baseY, radius, angle, i, points;
+        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points;
 
         view = this;
+        view.el.html('');
         svg = view.el.append('svg')
             .attr('width', view.width)
             .attr('height', view.height);
-        order = 17;
+
+        if (view.model === undefined) {
+            return;
+        }
+        order = view.model.order;
+        colorStep = Math.floor(256/(order-1));
+
         baseRadius = 100;
         baseX = 150;
         baseY = 150;
-        radius = 10;
+        radius = 15;
         angle = 2.0*Math.PI/order;
 
         points = [];
@@ -206,7 +213,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 .attr('stroke', 'black')
                 .attr('stroke-width', '1')
                 // .attr('fill', 'red');
-                .attr('fill', 'rgb(' + i*20 + ',' + i*20 + ',0)');
+                .attr('fill', 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)');
+            svg.append('text')
+                .attr('x', points[i][0])
+                .attr('y', points[i][1] + 5)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '16')
+                .attr('pointer-events', 'none')
+                .text(i);
         }
 
         return view;
@@ -217,6 +232,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
 
         view = this;
         view.model = model;
+        view.render();
     }
 });
 
@@ -234,6 +250,7 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildDihedralGroup(3);
+    z3 = aljabr.buildDihedralGroup(7);
     builder.cayleyTableView.attach(z3);
+    builder.cayleyGraphView.attach(z3);
 });
