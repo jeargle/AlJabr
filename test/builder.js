@@ -23,53 +23,75 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, boxSize, order, i, j;
+        var view, svg, boxSize, order, i, j, colorStep;
 
         view = this;
+        view.el.html('');
         svg = view.el.append('svg')
             .attr('width', view.width)
             .attr('height', view.height);
         boxSize = 25;
-        order = 15;
+
+        if (view.model === undefined) {
+            return;
+        }
+        order = view.model.order;
+        colorStep = Math.floor(256/(order-1));
 
         // Grid boxes
         for (i=0; i<order; i++) {
+            svg.append('text')
+                .attr('x', (i+2.5)*boxSize)
+                .attr('y', 1.7*boxSize)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '16')
+                .attr('pointer-events', 'none')
+                .text(view.model.getElement(i,0));
+            svg.append('text')
+                .attr('x', 1.5*boxSize)
+                .attr('y', (i+2.7)*boxSize)
+                .attr('fill', 'black')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '16')
+                .attr('pointer-events', 'none')
+                .text(view.model.getElement(i,0));
             for (j=0; j<order; j++) {
                 svg.append('rect')
-                    .attr('x', (i+1)*boxSize)
-                    .attr('y', (j+1)*boxSize)
+                    .attr('x', (i+2)*boxSize)
+                    .attr('y', (j+2)*boxSize)
                     .attr('width', boxSize)
                     .attr('height', boxSize)
-                    .attr('fill', 'rgb(' + i*30 + ',0,' + j*30 + ')')
+                    .attr('fill', 'rgb(' + i*colorStep + ',0,' + j*colorStep + ')')
                     .on('click', function() {
                         d3.select(this)
                             .style('fill', 'yellow');
                     });
                 svg.append('text')
-                    .attr('x', (i+1.5)*boxSize)
-                    .attr('y', (j+1.7)*boxSize)
+                    .attr('x', (i+2.5)*boxSize)
+                    .attr('y', (j+2.7)*boxSize)
                     .attr('fill', 'black')
                     .attr('text-anchor', 'middle')
                     .attr('font-size', '16')
                     .attr('pointer-events', 'none')
-                    .text(i);
+                    .text(view.model.getElement(i,j));
             }
         }
 
         // Grid lines
         for (i=1; i<=order+1; i++) {
             svg.append('line')
-                .attr('x1', boxSize*i)
+                .attr('x1', boxSize*(i+1))
                 .attr('y1', boxSize)
-                .attr('x2', boxSize*i)
-                .attr('y2', boxSize*(order+1))
+                .attr('x2', boxSize*(i+1))
+                .attr('y2', boxSize*(order+2))
                 .style('stroke', 'black')
                 .style('stroke-width', '1');
             svg.append('line')
                 .attr('x1', boxSize)
-                .attr('y1', boxSize*i)
-                .attr('x2', boxSize*(order+1))
-                .attr('y2', boxSize*i)
+                .attr('y1', boxSize*(i+1))
+                .attr('x2', boxSize*(order+2))
+                .attr('y2', boxSize*(i+1))
                 .style('stroke', 'black')
                 .style('stroke-width', '1');
         }
@@ -83,6 +105,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
 
         view = this;
         view.model = model;
+        view.render();
     }
 });
 
@@ -114,6 +137,13 @@ aljabr.builder.ElementView = aljabr.Class({
             .attr('height', view.height);
 
         return view;
+    },
+    attach: function(model) {
+        'use strict';
+        var view;
+
+        view = this;
+        view.model = model;
     }
 });
 
@@ -180,6 +210,13 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
 
         return view;
+    },
+    attach: function(model) {
+        'use strict';
+        var view;
+
+        view = this;
+        view.model = model;
     }
 });
 
@@ -189,11 +226,14 @@ aljabr.builder.cayleyGraphView = null;
 
 $(document).ready(function() {
     'use strict';
-    var builder;
+    var builder, z3;
 
     builder = aljabr.builder;
 
     builder.cayleyTableView = new builder.CayleyTableView('cayley-table');
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
+
+    z3 = aljabr.buildDihedralGroup(3);
+    builder.cayleyTableView.attach(z3);
 });
