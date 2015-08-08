@@ -167,7 +167,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points;
+        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points, pointPairs, edges;
 
         view = this;
         view.el.html('');
@@ -192,17 +192,42 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             points[i] = [Math.sin(angle*i)*baseRadius + baseX,
                          -Math.cos(angle*i)*baseRadius + baseY];
         }
+        
+        pointPairs = [];
+        for (i=0; i<order; i++) {
+            pointPairs[i] = [points[i], points[(i+1)%order]];
+        }
 
         // Edges
-        for (i=0; i<order; i++) {
-            svg.append('line')
-                .attr('x1', points[i][0])
-                .attr('y1', points[i][1])
-                .attr('x2', points[(i+1)%order][0])
-                .attr('y2', points[(i+1)%order][1])
-                .attr('stroke', 'black')
-                .attr('stroke-width', '1');
-        }
+        // for (i=0; i<order; i++) {
+        //     svg.append('line')
+        //         .attr('x1', points[i][0])
+        //         .attr('y1', points[i][1])
+        //         .attr('x2', points[(i+1)%order][0])
+        //         .attr('y2', points[(i+1)%order][1])
+        //         .attr('stroke', 'black')
+        //         .attr('stroke-width', '1');
+        // }
+
+        edges = svg.selectAll('line')
+            .data(pointPairs);
+        edges.enter()
+            .append('line')
+            .attr('x1', function(i) {
+                return i[0][0];
+            })
+            .attr('y1', function(i) {
+                return i[0][1];
+            })
+            .attr('x2', function(i) {
+                return i[1][0];
+            })
+            .attr('y2', function(i) {
+                return i[1][1];
+            })
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1');
+        edges.exit().remove();
 
         // Nodes
         for (i=0; i<order; i++) {
@@ -250,7 +275,7 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildDihedralGroup(7);
+    z3 = aljabr.buildDihedralGroup(6);
     builder.cayleyTableView.attach(z3);
     builder.cayleyGraphView.attach(z3);
 });
