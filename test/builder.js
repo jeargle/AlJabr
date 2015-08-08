@@ -167,7 +167,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points, pointPairs, edges;
+        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points, pointPairs, edges, nodes, labels;
 
         view = this;
         view.el.html('');
@@ -230,24 +230,62 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         edges.exit().remove();
 
         // Nodes
-        for (i=0; i<order; i++) {
-            svg.append('circle')
-                .attr('cx', points[i][0])
-                .attr('cy', points[i][1])
-                .attr('r', radius)
-                .attr('stroke', 'black')
-                .attr('stroke-width', '1')
-                // .attr('fill', 'red');
-                .attr('fill', 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)');
-            svg.append('text')
-                .attr('x', points[i][0])
-                .attr('y', points[i][1] + 5)
-                .attr('fill', 'black')
-                .attr('text-anchor', 'middle')
-                .attr('font-size', '16')
-                .attr('pointer-events', 'none')
-                .text(i);
-        }
+        // for (i=0; i<order; i++) {
+        //     svg.append('circle')
+        //         .attr('cx', points[i][0])
+        //         .attr('cy', points[i][1])
+        //         .attr('r', radius)
+        //         .attr('stroke', 'black')
+        //         .attr('stroke-width', '1')
+        //         // .attr('fill', 'red');
+        //         .attr('fill', 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)');
+        //     svg.append('text')
+        //         .attr('x', points[i][0])
+        //         .attr('y', points[i][1] + 5)
+        //         .attr('fill', 'black')
+        //         .attr('text-anchor', 'middle')
+        //         .attr('font-size', '16')
+        //         .attr('pointer-events', 'none')
+        //         .text(i);
+        // }
+
+        nodes = svg.selectAll('circle')
+            .data(points);
+        nodes.enter()
+            .append('circle')
+            .attr('cx', function(p) {
+                return p[0];
+            })
+            .attr('cy', function(p) {
+                return p[1];
+            })
+            .attr('r', radius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+        // .attr('fill', 'red');
+            .attr('fill', function(p, i) {
+                return 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)';
+            });
+        nodes.exit().remove();
+
+        labels = svg.selectAll('text')
+            .data(points);
+        labels.enter()
+            .append('text')
+            .attr('x', function(p) {
+                return p[0];
+            })
+            .attr('y', function(p) {
+                return p[1] + 5;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(p, i) {
+                return i;
+            });
+        labels.exit().remove();
 
         return view;
     },
@@ -275,7 +313,7 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildDihedralGroup(6);
+    z3 = aljabr.buildDihedralGroup(7);
     builder.cayleyTableView.attach(z3);
     builder.cayleyGraphView.attach(z3);
 });
