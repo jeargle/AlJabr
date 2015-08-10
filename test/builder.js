@@ -153,6 +153,7 @@ aljabr.builder.elementView = null;
 aljabr.builder.CayleyGraphView = aljabr.Class({
     width: 0,
     height: 0,
+    points: [],
     init: function(id) {
         'use strict';
         var view;
@@ -162,12 +163,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.el = d3.select('#' + view.id);
         view.width = 500;
         view.height = 300;
+        view.baseRadius = 100;
+        view.baseX = 150;
+        view.baseY = 150;
 
         view.render();
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, baseRadius, baseX, baseY, radius, angle, i, points, pointPairs, edges, nodes, labels;
+        var view, svg, order, colorStep, radius, i, points, pointPairs, edges, nodes, labels;
 
         view = this;
         view.el.html('');
@@ -180,75 +184,37 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
         order = view.model.order;
         colorStep = Math.floor(256/(order-1));
-
-        baseRadius = 100;
-        baseX = 150;
-        baseY = 150;
         radius = 15;
-        angle = 2.0*Math.PI/order;
-
-        points = [];
-        for (i=0; i<order; i++) {
-            points[i] = [Math.sin(angle*i)*baseRadius + baseX,
-                         -Math.cos(angle*i)*baseRadius + baseY];
-        }
+        points = view.points;
         
         pointPairs = [];
         for (i=0; i<order; i++) {
-            pointPairs[i] = [points[i], points[(i+1)%order]];
+            // pointPairs[i] = [i, (i+1)%order];
+            pointPairs[i] = [i, (i+2)%order];
         }
 
         // Edges
-        // for (i=0; i<order; i++) {
-        //     svg.append('line')
-        //         .attr('x1', points[i][0])
-        //         .attr('y1', points[i][1])
-        //         .attr('x2', points[(i+1)%order][0])
-        //         .attr('y2', points[(i+1)%order][1])
-        //         .attr('stroke', 'black')
-        //         .attr('stroke-width', '1');
-        // }
-
         edges = svg.selectAll('line')
             .data(pointPairs);
         edges.enter()
             .append('line')
             .attr('x1', function(i) {
-                return i[0][0];
+                return view.points[i[0]][0];
             })
             .attr('y1', function(i) {
-                return i[0][1];
+                return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
-                return i[1][0];
+                return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
-                return i[1][1];
+                return view.points[i[1]][1];
             })
             .attr('stroke', 'black')
             .attr('stroke-width', '1');
         edges.exit().remove();
 
         // Nodes
-        // for (i=0; i<order; i++) {
-        //     svg.append('circle')
-        //         .attr('cx', points[i][0])
-        //         .attr('cy', points[i][1])
-        //         .attr('r', radius)
-        //         .attr('stroke', 'black')
-        //         .attr('stroke-width', '1')
-        //         // .attr('fill', 'red');
-        //         .attr('fill', 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)');
-        //     svg.append('text')
-        //         .attr('x', points[i][0])
-        //         .attr('y', points[i][1] + 5)
-        //         .attr('fill', 'black')
-        //         .attr('text-anchor', 'middle')
-        //         .attr('font-size', '16')
-        //         .attr('pointer-events', 'none')
-        //         .text(i);
-        // }
-
         nodes = svg.selectAll('circle')
             .data(points);
         nodes.enter()
@@ -268,6 +234,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             });
         nodes.exit().remove();
 
+        // Node labels
         labels = svg.selectAll('text')
             .data(points);
         labels.enter()
@@ -291,10 +258,20 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     attach: function(model) {
         'use strict';
-        var view;
+        var view, order, radius, angle, i;
 
         view = this;
         view.model = model;
+        order = view.model.order;
+        radius = view.baseRadius;
+        angle = 2.0*Math.PI/order;
+
+        view.points = [];
+        for (i=0; i<order; i++) {
+            view.points[i] = [Math.sin(angle*i)*radius + view.baseX,
+                              -Math.cos(angle*i)*radius + view.baseY];
+        }
+        
         view.render();
     }
 });
@@ -313,7 +290,7 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildDihedralGroup(7);
+    z3 = aljabr.buildDihedralGroup(6);
     builder.cayleyTableView.attach(z3);
     builder.cayleyGraphView.attach(z3);
 });
