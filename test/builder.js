@@ -154,6 +154,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     width: 0,
     height: 0,
     points: [],
+    activeEdges: [],
     init: function(id) {
         'use strict';
         var view;
@@ -171,7 +172,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, radius, i, points, pointPairs, edges, nodes, labels;
+        var view, svg, order, colorStep, radius, i, j, points, pointPairs, edges, nodes, labels;
 
         view = this;
         view.el.html('');
@@ -189,8 +190,13 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         
         pointPairs = [];
         for (i=0; i<order; i++) {
-            // pointPairs[i] = [i, (i+1)%order];
-            pointPairs[i] = [i, (i+2)%order];
+            if (view.activeEdges[i]) {
+                for (j=0; j<order; j++) {
+                    // pointPairs[i] = [i, (i+1)%order];
+                    // pointPairs[i] = [i, (i+2)%order];
+                    pointPairs.push([j, view.model.getElement(j,i)]);
+                }
+            }
         }
 
         // Edges
@@ -228,9 +234,11 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('r', radius)
             .attr('stroke', 'black')
             .attr('stroke-width', '1')
-        // .attr('fill', 'red');
             .attr('fill', function(p, i) {
                 return 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)';
+            })
+            .on('click', function(p, i) {
+                view.toggleEdges(i);
             });
         nodes.exit().remove();
 
@@ -256,6 +264,24 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
 
         return view;
     },
+    /**
+     * Turn sets of edges on or off.
+     * @param {number} index - index of element to toggle
+     */
+    toggleEdges: function(index) {
+        'use strict';
+        var view;
+
+        view = this;
+
+        view.activeEdges[index] = !view.activeEdges[index];
+
+        view.render();
+    },
+    /**
+     * Attach view to a Group or GroupBuilder
+     * @param model - Group or GroupBuilder
+     */
     attach: function(model) {
         'use strict';
         var view, order, radius, angle, i;
@@ -267,9 +293,11 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         angle = 2.0*Math.PI/order;
 
         view.points = [];
+        view.activeEdges = [];
         for (i=0; i<order; i++) {
             view.points[i] = [Math.sin(angle*i)*radius + view.baseX,
                               -Math.cos(angle*i)*radius + view.baseY];
+            view.activeEdges[i] = false;
         }
         
         view.render();
@@ -290,7 +318,11 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildDihedralGroup(6);
+    z3 = aljabr.buildCyclicGroup(8);
+    // z3 = aljabr.buildDihedralGroup(6);
+    // z3 = aljabr.buildAlternatingGroup(4);
+    // z3 = aljabr.buildSymmetryGroup(3);
     builder.cayleyTableView.attach(z3);
     builder.cayleyGraphView.attach(z3);
+    builder.cayleyGraphView.toggleEdges(1);
 });
