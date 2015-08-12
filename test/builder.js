@@ -265,6 +265,67 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         return view;
     },
     /**
+     * Place nodes in one circle.
+     */
+    layoutCircle: function() {
+        'use strict';
+        var view, order, radius, angle, i;
+
+        view = this;
+        order = view.model.order;
+        radius = view.baseRadius;
+        angle = 2.0*Math.PI/order;
+
+        for (i=0; i<order; i++) {
+            view.points[i] = [Math.sin(angle*i)*radius + view.baseX,
+                              -Math.cos(angle*i)*radius + view.baseY];
+        }
+
+        view.render();
+    },
+    /**
+     * Place nodes in concentric circles.
+     * @param {number} index - index of element to toggle
+     * @param {number} twist - angle to rotate interior circles clockwise (default 0)
+     */
+    layoutNested: function(index, twist) {
+        'use strict';
+        var view, order, elOrder, radius, angle, i, j;
+
+        view = this;
+        order = view.model.order;
+        elOrder = view.model.elementOrder(index);
+        elIndex = view.model.elementIndex(index);
+        angle = 2.0*Math.PI/elOrder;
+        usedElements = []
+        for (i=0; i<order; i++) {
+            usedElements.push(false);
+        }
+
+        if (twist === undefined) {
+            twist = 0;
+        }
+
+        for (i=0; i<elIndex; i++) {
+            radius = view.baseRadius - i*10;
+            for (j=0; j<elOrder; j++) {
+                view.points[i] = [Math.sin(angle*j)*radius + view.baseX,
+                                  -Math.cos(angle*j)*radius + view.baseY];
+            }
+        }
+
+        view.render();
+    },
+    /**
+     * Place nodes in adjacent circles.
+     * @param {number} index - index of element to toggle
+     */
+    layoutSeparate: function(index) {
+        'use strict';
+        var view;
+        view.render();
+    },
+    /**
      * Turn sets of edges on or off.
      * @param {number} index - index of element to toggle
      */
@@ -284,23 +345,18 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     attach: function(model) {
         'use strict';
-        var view, order, radius, angle, i;
+        var view, order, i;
 
         view = this;
         view.model = model;
         order = view.model.order;
-        radius = view.baseRadius;
-        angle = 2.0*Math.PI/order;
 
-        view.points = [];
         view.activeEdges = [];
         for (i=0; i<order; i++) {
-            view.points[i] = [Math.sin(angle*i)*radius + view.baseX,
-                              -Math.cos(angle*i)*radius + view.baseY];
             view.activeEdges[i] = false;
         }
-        
-        view.render();
+
+        view.layoutCircle();
     }
 });
 
