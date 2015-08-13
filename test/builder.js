@@ -374,11 +374,17 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildCyclicGroup(8);
+    z3 = aljabr.buildCyclicGroup(10);
     // z3 = aljabr.buildDihedralGroup(6);
     // z3 = aljabr.buildAlternatingGroup(4);
     // z3 = aljabr.buildSymmetryGroup(3);
     builder.cayleyTableView.attach(z3);
     builder.cayleyGraphView.attach(z3);
     builder.cayleyGraphView.toggleEdges(1);
+    console.log(z3.elementSubgroup(1));
+    console.log(z3.elementSubgroup(2));
+    console.log(z3.elementSubgroup(5));
+    console.log(z3.cosets(1));
+    console.log(z3.cosets(2));
+    console.log(z3.cosets(5));
 });
