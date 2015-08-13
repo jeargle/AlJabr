@@ -163,10 +163,10 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.id = id;
         view.el = d3.select('#' + view.id);
         view.width = 500;
-        view.height = 300;
-        view.baseRadius = 100;
-        view.baseX = 150;
-        view.baseY = 150;
+        view.height = 400;
+        view.baseRadius = 150;
+        view.baseX = 200;
+        view.baseY = 200;
 
         view.render();
     },
@@ -290,27 +290,23 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutNested: function(index, twist) {
         'use strict';
-        var view, order, elOrder, radius, angle, i, j;
+        var view, cosets, elIndex, elOrder, radius, angle, i, j;
 
         view = this;
-        order = view.model.order;
-        elOrder = view.model.elementOrder(index);
-        elIndex = view.model.elementIndex(index);
+        cosets = view.model.cosets(index);
+        elIndex = cosets.length;
+        elOrder = cosets[0].length;
         angle = 2.0*Math.PI/elOrder;
-        usedElements = []
-        for (i=0; i<order; i++) {
-            usedElements.push(false);
-        }
 
         if (twist === undefined) {
             twist = 0;
         }
 
         for (i=0; i<elIndex; i++) {
-            radius = view.baseRadius - i*10;
+            radius = view.baseRadius - i*50;
             for (j=0; j<elOrder; j++) {
-                view.points[i] = [Math.sin(angle*j)*radius + view.baseX,
-                                  -Math.cos(angle*j)*radius + view.baseY];
+                view.points[cosets[i][j]] = [Math.sin(angle*j + twist*i)*radius + view.baseX,
+                                             -Math.cos(angle*j + twist*i)*radius + view.baseY];
             }
         }
 
@@ -366,7 +362,7 @@ aljabr.builder.cayleyGraphView = null;
 
 $(document).ready(function() {
     'use strict';
-    var builder, z3;
+    var builder, group;
 
     builder = aljabr.builder;
 
@@ -374,17 +370,18 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    z3 = aljabr.buildCyclicGroup(10);
-    // z3 = aljabr.buildDihedralGroup(6);
-    // z3 = aljabr.buildAlternatingGroup(4);
-    // z3 = aljabr.buildSymmetryGroup(3);
-    builder.cayleyTableView.attach(z3);
-    builder.cayleyGraphView.attach(z3);
+    // aljabr.group = aljabr.buildCyclicGroup(12);
+    aljabr.group = aljabr.buildDihedralGroup(6);
+    // aljabr.group = aljabr.buildAlternatingGroup(4);
+    // aljabr.group = aljabr.buildSymmetryGroup(3);
+    group = aljabr.group;
+    builder.cayleyTableView.attach(group);
+    builder.cayleyGraphView.attach(group);
     builder.cayleyGraphView.toggleEdges(1);
-    console.log(z3.elementSubgroup(1));
-    console.log(z3.elementSubgroup(2));
-    console.log(z3.elementSubgroup(5));
-    console.log(z3.cosets(1));
-    console.log(z3.cosets(2));
-    console.log(z3.cosets(5));
+    console.log(group.elementSubgroup(1));
+    console.log(group.elementSubgroup(2));
+    console.log(group.elementSubgroup(5));
+    console.log(group.cosets(1));
+    console.log(group.cosets(2));
+    console.log(group.cosets(5));
 });
