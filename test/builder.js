@@ -162,7 +162,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view = this;
         view.id = id;
         view.el = d3.select('#' + view.id);
-        view.width = 500;
+        view.width = 1000;
         view.height = 400;
         view.baseRadius = 150;
         view.baseX = 200;
@@ -318,7 +318,22 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutSeparate: function(index) {
         'use strict';
-        var view;
+        var view, cosets, elIndex, elOrder, radius, angle, i, j;
+
+        view = this;
+        cosets = view.model.cosets(index);
+        elIndex = cosets.length;
+        elOrder = cosets[0].length;
+        radius = view.baseRadius/elIndex;
+        angle = 2.0*Math.PI/elOrder;
+
+        for (i=0; i<elIndex; i++) {
+            for (j=0; j<elOrder; j++) {
+                view.points[cosets[i][j]] = [Math.sin(angle*j)*radius + view.baseX + (i*radius*3),
+                                             -Math.cos(angle*j)*radius + view.baseY];
+            }
+        }
+
         view.render();
     },
     /**
