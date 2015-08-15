@@ -172,7 +172,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, radius, i, j, points, pointPairs, edges, nodes, labels;
+        var view, svg, order, colorStep, radius, i, j, points, pointPairs, edges, nodes, labels, selectors, sLabels;
 
         view = this;
         view.el.html('');
@@ -236,17 +236,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('stroke-width', '1')
             .attr('fill', function(p, i) {
                 return 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)';
-            })
-            .on('click', function(p, i) {
-                view.toggleEdges(i);
             });
         nodes.exit().remove();
 
         // Node labels
-        labels = svg.selectAll('text')
+        labels = svg.selectAll('.nLabel')
             .data(points);
         labels.enter()
             .append('text')
+            .classed('nLabel', true)
             .attr('x', function(p) {
                 return p[0];
             })
@@ -261,6 +259,53 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return i;
             });
         labels.exit().remove();
+
+        // Edge selectors
+        selectors = svg.selectAll('rect')
+            .data(view.activeEdges);
+        selectors.enter()
+            .append('rect')
+            .attr('x', view.width-50)
+            .attr('y', function(s, i) {
+                return i*20 + 50;
+            })
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', 'cyan')
+            .on('click', function(s, i) {
+                view.toggleEdges(i);
+                console.log('s: ' + s);
+                console.log('typeof s: ' + typeof s);
+                console.log(d3.select(this));
+                d3.selectAll(this).style('fill', 'yellow');
+                // if (s) {
+                //     d3.select(this).style('fill', 'cyan');
+                // }
+                // else {
+                //     d3.select(this).style('fill', 'yellow');
+                // }
+            });
+        selectors.exit().remove();
+
+        sLabels = svg.selectAll('.sLabel')
+            .data(view.activeEdges);
+        sLabels.enter()
+            .append('text')
+            .classed('sLabel', true)
+            .attr('x', view.width-40)
+            .attr('y', function(s, i) {
+                return i*20 + 65;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(s, i) {
+                return i;
+            });
+        sLabels.exit().remove();
 
         return view;
     },
