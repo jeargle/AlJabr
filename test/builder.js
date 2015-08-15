@@ -184,7 +184,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             return;
         }
         order = view.model.order;
-        colorStep = Math.floor(256/(order-1));
+        colorStep = Math.floor(156/(order-1));
         radius = 15;
         points = view.points;
         
@@ -235,7 +235,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('stroke', 'black')
             .attr('stroke-width', '1')
             .attr('fill', function(p, i) {
-                return 'rgb(' + i*colorStep + ',' + i*colorStep + ',0)';
+                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
             });
         nodes.exit().remove();
 
@@ -273,19 +273,14 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('height', 20)
             .attr('stroke', 'black')
             .attr('stroke-width', '1')
-            .attr('fill', 'cyan')
+            .attr('fill', function(s) {
+                if (s) {
+                    return 'yellow';
+                }
+                return 'cyan';
+            })
             .on('click', function(s, i) {
                 view.toggleEdges(i);
-                console.log('s: ' + s);
-                console.log('typeof s: ' + typeof s);
-                console.log(d3.select(this));
-                d3.selectAll(this).style('fill', 'yellow');
-                // if (s) {
-                //     d3.select(this).style('fill', 'cyan');
-                // }
-                // else {
-                //     d3.select(this).style('fill', 'yellow');
-                // }
             });
         selectors.exit().remove();
 
