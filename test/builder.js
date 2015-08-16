@@ -9,6 +9,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     model: undefined,
     width: 0,
     height: 0,
+    activeNodes: null,
     init: function(id) {
         'use strict';
         var view;
@@ -16,14 +17,14 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         view = this;
         view.id = id;
         view.el = d3.select('#' + view.id);
-        view.width = 500;
+        view.width = 1000;
         view.height = 400;
 
         view.render();
     },
     render: function() {
         'use strict';
-        var view, svg, boxSize, order, i, j, colorStep;
+        var view, svg, boxSize, order, i, j, colorStep, selectors, sLabels;
 
         view = this;
         view.el.html('');
@@ -96,15 +97,83 @@ aljabr.builder.CayleyTableView = aljabr.Class({
                 .style('stroke-width', '1');
         }
         
+        // Node selectors
+        selectors = svg.selectAll('.node-sel')
+            .data(view.activeNodes);
+        selectors.enter()
+            .append('rect')
+            .classed('node-sel', true)
+            .attr('x', view.width-50)
+            .attr('y', function(s, i) {
+                return i*20 + 50;
+            })
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function(n) {
+                if (n) {
+                    return 'yellow';
+                }
+                return 'cyan';
+            })
+            .on('click', function(s, i) {
+                view.toggleNodes(i);
+            });
+        selectors.exit().remove();
+
+        sLabels = svg.selectAll('.sLabel')
+            .data(view.activeNodes);
+        sLabels.enter()
+            .append('text')
+            .classed('sLabel', true)
+            .attr('x', view.width-40)
+            .attr('y', function(s, i) {
+                return i*20 + 65;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(s, i) {
+                return i;
+            });
+        sLabels.exit().remove();
 
         return view;
     },
+    /**
+     * Turn sets of nodes on or off.
+     * @param {number} index - index of element to toggle
+     */
+    toggleNodes: function(index) {
+        'use strict';
+        var view, i;
+
+        view = this;
+
+        for (i=0; i<view.model.order; i++) {
+            if (i === index) {
+                view.activeNodes[i] = !view.activeNodes[i];
+            }
+            else {
+                view.activeNodes[i] = false;
+            }
+        }
+
+        view.render();
+    },
     attach: function(model) {
         'use strict';
-        var view;
+        var view, i;
 
         view = this;
         view.model = model;
+        view.activeNodes = [];
+        for (i=0; i<view.model.order; i++) {
+            view.activeNodes.push(false);
+        }
+        
         view.render();
     }
 });
