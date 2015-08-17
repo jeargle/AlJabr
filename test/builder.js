@@ -24,7 +24,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, boxSize, order, i, j, colorStep, selectors, sLabels;
+        var view, svg, boxSize, order, elements, entries, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels;
 
         view = this;
         view.el.html('');
@@ -39,63 +39,114 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         order = view.model.order;
         colorStep = Math.floor(256/(order-1));
 
-        // Grid boxes
+        elements = [];
+        entries = [];
         for (i=0; i<order; i++) {
-            svg.append('text')
-                .attr('x', (i+2.5)*boxSize)
-                .attr('y', 1.7*boxSize)
-                .attr('fill', 'black')
-                .attr('text-anchor', 'middle')
-                .attr('font-size', '16')
-                .attr('pointer-events', 'none')
-                .text(view.model.getElement(i,0));
-            svg.append('text')
-                .attr('x', 1.5*boxSize)
-                .attr('y', (i+2.7)*boxSize)
-                .attr('fill', 'black')
-                .attr('text-anchor', 'middle')
-                .attr('font-size', '16')
-                .attr('pointer-events', 'none')
-                .text(view.model.getElement(i,0));
+            elements.push(view.model.getElement(i,0));
             for (j=0; j<order; j++) {
-                svg.append('rect')
-                    .attr('x', (i+2)*boxSize)
-                    .attr('y', (j+2)*boxSize)
-                    .attr('width', boxSize)
-                    .attr('height', boxSize)
-                    .attr('fill', 'rgb(' + i*colorStep + ',0,' + j*colorStep + ')')
-                    .on('click', function() {
-                        d3.select(this)
-                            .style('fill', 'yellow');
-                    });
-                svg.append('text')
-                    .attr('x', (i+2.5)*boxSize)
-                    .attr('y', (j+2.7)*boxSize)
-                    .attr('fill', 'black')
-                    .attr('text-anchor', 'middle')
-                    .attr('font-size', '16')
-                    .attr('pointer-events', 'none')
-                    .text(view.model.getElement(i,j));
+                entries.push({row: i,
+                              col: j,
+                              el: view.model.getElement(i,j)});
             }
         }
 
+        // Grid boxes
+        colLabels = svg.selectAll('.col-label')
+            .data(elements);
+        colLabels.enter()
+            .append('text')
+            .classed('col-label', true)
+            .attr('x', function(c, i) {
+                return (i+2.5)*boxSize;
+            })
+            .attr('y', 1.7*boxSize)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(c) {
+                return c;
+            });
+        colLabels.exit().remove();
+
+        rowLabels = svg.selectAll('.row-label')
+            .data(elements);
+        rowLabels.enter()
+            .append('text')
+            .classed('row-label', true)
+            .attr('x', 1.5*boxSize)
+            .attr('y', function(r, i) {
+                return (i+2.7)*boxSize;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(r) {
+                return r;
+            });
+        rowLabels.exit().remove();
+
+        boxes = svg.selectAll('.box')
+            .data(entries);
+        boxes.enter()
+            .append('rect')
+            .classed('box', true)
+            .attr('x', function(b) {
+                return (b.col+2)*boxSize;
+            })
+            .attr('y', function(b) {
+                return (b.row+2)*boxSize;
+            })
+            .attr('width', boxSize)
+            .attr('height', boxSize)
+            .style('stroke', 'black')
+            .attr('fill', function(b) {
+                return 'rgb(' + b.col*colorStep + ',0,' + b.row*colorStep + ')';
+            })
+            .on('click', function() {
+                d3.select(this)
+                    .style('fill', 'yellow');
+            });
+        boxes.exit().remove();
+        
+        boxLabels = svg.selectAll('.box-label')
+            .data(entries);
+        boxLabels.enter()
+            .append('text')
+            .classed('box-label', true)
+            .attr('x', function(b) {
+                return (b.col+2.5)*boxSize;
+            })
+            .attr('y', function(b) {
+                return (b.row+2.7)*boxSize;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(b) {
+                return b.el;
+            });
+        boxLabels.exit().remove();
+        
         // Grid lines
-        for (i=1; i<=order+1; i++) {
-            svg.append('line')
-                .attr('x1', boxSize*(i+1))
-                .attr('y1', boxSize)
-                .attr('x2', boxSize*(i+1))
-                .attr('y2', boxSize*(order+2))
-                .style('stroke', 'black')
-                .style('stroke-width', '1');
-            svg.append('line')
-                .attr('x1', boxSize)
-                .attr('y1', boxSize*(i+1))
-                .attr('x2', boxSize*(order+2))
-                .attr('y2', boxSize*(i+1))
-                .style('stroke', 'black')
-                .style('stroke-width', '1');
-        }
+        // for (i=1; i<=order+1; i++) {
+        //     svg.append('line')
+        //         .attr('x1', boxSize*(i+1))
+        //         .attr('y1', boxSize)
+        //         .attr('x2', boxSize*(i+1))
+        //         .attr('y2', boxSize*(order+2))
+        //         .style('stroke', 'black')
+        //         .style('stroke-width', '1');
+        //     svg.append('line')
+        //         .attr('x1', boxSize)
+        //         .attr('y1', boxSize*(i+1))
+        //         .attr('x2', boxSize*(order+2))
+        //         .attr('y2', boxSize*(i+1))
+        //         .style('stroke', 'black')
+        //         .style('stroke-width', '1');
+        // }
         
         // Node selectors
         selectors = svg.selectAll('.node-sel')
@@ -143,7 +194,8 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         return view;
     },
     /**
-     * Turn sets of nodes on or off.
+     * Turn nodes on or off.  No more than one node may be active
+     * at the same time.
      * @param {number} index - index of element to toggle
      */
     toggleNodes: function(index) {
@@ -163,6 +215,10 @@ aljabr.builder.CayleyTableView = aljabr.Class({
 
         view.render();
     },
+    /**
+     * Attach view to a Group or GroupBuilder.
+     * @param model - Group or GroupBuilder
+     */
     attach: function(model) {
         'use strict';
         var view, i;
@@ -460,7 +516,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.render();
     },
     /**
-     * Attach view to a Group or GroupBuilder
+     * Attach view to a Group or GroupBuilder.
      * @param model - Group or GroupBuilder
      */
     attach: function(model) {
