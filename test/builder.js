@@ -10,6 +10,8 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     width: 0,
     height: 0,
     activeNodes: null,
+    elements: null,
+    entries: null,
     init: function(id) {
         'use strict';
         var view;
@@ -24,7 +26,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, boxSize, order, elements, entries, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels;
+        var view, svg, boxSize, order, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels;
 
         view = this;
         view.el.html('');
@@ -37,22 +39,12 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             return;
         }
         order = view.model.order;
-        colorStep = Math.floor(256/(order-1));
+        colorStep = Math.floor(100/(order-1) + 156);
 
-        elements = [];
-        entries = [];
-        for (i=0; i<order; i++) {
-            elements.push(view.model.getElement(i,0));
-            for (j=0; j<order; j++) {
-                entries.push({row: i,
-                              col: j,
-                              el: view.model.getElement(i,j)});
-            }
-        }
 
         // Grid boxes
         colLabels = svg.selectAll('.col-label')
-            .data(elements);
+            .data(view.elements);
         colLabels.enter()
             .append('text')
             .classed('col-label', true)
@@ -70,7 +62,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         colLabels.exit().remove();
 
         rowLabels = svg.selectAll('.row-label')
-            .data(elements);
+            .data(view.elements);
         rowLabels.enter()
             .append('text')
             .classed('row-label', true)
@@ -88,7 +80,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         rowLabels.exit().remove();
 
         boxes = svg.selectAll('.box')
-            .data(entries);
+            .data(view.entries);
         boxes.enter()
             .append('rect')
             .classed('box', true)
@@ -111,7 +103,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         boxes.exit().remove();
         
         boxLabels = svg.selectAll('.box-label')
-            .data(entries);
+            .data(view.entries);
         boxLabels.enter()
             .append('text')
             .classed('box-label', true)
@@ -221,13 +213,25 @@ aljabr.builder.CayleyTableView = aljabr.Class({
      */
     attach: function(model) {
         'use strict';
-        var view, i;
+        var view, order, i, j;
 
         view = this;
         view.model = model;
+        order = view.model.order;
         view.activeNodes = [];
-        for (i=0; i<view.model.order; i++) {
+        for (i=0; i<order; i++) {
             view.activeNodes.push(false);
+        }
+        
+        view.elements = [];
+        view.entries = [];
+        for (i=0; i<order; i++) {
+            view.elements.push(view.model.getElement(i,0));
+            for (j=0; j<order; j++) {
+                view.entries.push({row: i,
+                                   col: j,
+                                   el: view.model.getElement(i,j)});
+            }
         }
         
         view.render();
@@ -542,7 +546,7 @@ aljabr.builder.cayleyGraphView = null;
 
 $(document).ready(function() {
     'use strict';
-    var builder, group;
+    var builder, group, elements, testSet, group;
 
     builder = aljabr.builder;
 
@@ -551,17 +555,27 @@ $(document).ready(function() {
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
     // aljabr.group = aljabr.buildCyclicGroup(12);
-    aljabr.group = aljabr.buildDihedralGroup(6);
+    // aljabr.group = aljabr.buildDihedralGroup(6);
     // aljabr.group = aljabr.buildAlternatingGroup(4);
     // aljabr.group = aljabr.buildSymmetryGroup(3);
+    aljabr.elements = [];
+    elements = aljabr.elements;
+    elements.push(new aljabr.Element('e'));
+    elements.push(new aljabr.Element('a'));
+    elements.push(new aljabr.Element('b'));
+    elements.push(new aljabr.Element('c'));
+    elements.push(new aljabr.Element('d'));
+    testSet = new aljabr.ElementSet(elements);
+    aljabr.group = new aljabr.GroupBuilder(testSet);
+    
     group = aljabr.group;
     builder.cayleyTableView.attach(group);
     builder.cayleyGraphView.attach(group);
-    builder.cayleyGraphView.toggleEdges(1);
-    console.log(group.elementSubgroup(1));
-    console.log(group.elementSubgroup(2));
-    console.log(group.elementSubgroup(5));
-    console.log(group.cosets(1));
-    console.log(group.cosets(2));
-    console.log(group.cosets(5));
+    // builder.cayleyGraphView.toggleEdges(1);
+    // console.log(group.elementSubgroup(1));
+    // console.log(group.elementSubgroup(2));
+    // console.log(group.elementSubgroup(5));
+    // console.log(group.cosets(1));
+    // console.log(group.cosets(2));
+    // console.log(group.cosets(5));
 });
