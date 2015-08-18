@@ -301,7 +301,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict';
-        var view, svg, order, colorStep, radius, i, j, points, pointPairs, edges, nodes, labels, selectors, sLabels;
+        var view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels;
 
         view = this;
         view.el.html('');
@@ -321,9 +321,10 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         for (i=0; i<order; i++) {
             if (view.activeEdges[i]) {
                 for (j=0; j<order; j++) {
-                    // pointPairs[i] = [i, (i+1)%order];
-                    // pointPairs[i] = [i, (i+2)%order];
-                    pointPairs.push([j, view.model.getElement(j,i)]);
+                    element = view.model.getElement(j,i);
+                    if (element !== null) {
+                        pointPairs.push([j, element]);
+                    }
                 }
             }
         }
@@ -340,6 +341,9 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
+                console.log('i: ' + i);
+                console.log('i[1]: ' + i[1]);
+                console.log('view.points[i[1]]: ' + view.points[i[1]]);
                 return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
@@ -569,6 +573,9 @@ $(document).ready(function() {
     aljabr.group = new aljabr.GroupBuilder(testSet);
     
     group = aljabr.group;
+    group.setElement(1, 1, 2);
+    group.setElement(1, 2, 3);
+    
     builder.cayleyTableView.attach(group);
     builder.cayleyGraphView.attach(group);
     // builder.cayleyGraphView.toggleEdges(1);
