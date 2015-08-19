@@ -94,12 +94,15 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('height', boxSize)
             .style('stroke', 'black')
             .attr('fill', function(b) {
+                if (b.open) {
+                    return 'rgb(240,240,100)';
+                }
                 return 'rgb(' + b.col*colorStep + ',0,' + b.row*colorStep + ')';
-            })
-            .on('click', function() {
-                d3.select(this)
-                    .style('fill', 'yellow');
             });
+            // .on('click', function() {
+            //     d3.select(this)
+            //         .style('fill', 'yellow');
+            // });
         boxes.exit().remove();
         
         boxLabels = svg.selectAll('.box-label')
@@ -156,7 +159,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('stroke-width', '1')
             .attr('fill', function(n) {
                 if (n) {
-                    return 'yellow';
+                    return 'rgb(240,240,100)';
                 }
                 return 'cyan';
             })
@@ -192,16 +195,40 @@ aljabr.builder.CayleyTableView = aljabr.Class({
      */
     toggleNodes: function(index) {
         'use strict';
-        var view, i;
+        var view, order, i, j, openEntries;
 
         view = this;
+        order = view.model.order;
 
-        for (i=0; i<view.model.order; i++) {
+        for (i=0; i<order; i++) {
             if (i === index) {
                 view.activeNodes[i] = !view.activeNodes[i];
             }
             else {
                 view.activeNodes[i] = false;
+            }
+        }
+
+        if (view.activeNodes[index]) {
+            openEntries = view.model.openPositions(index);
+            view.entries = [];
+            for (i=0; i<order; i++) {
+                for (j=0; j<order; j++) {
+                    view.entries.push({row: i,
+                                       col: j,
+                                       el: view.model.getElement(i,j),
+                                       open: openEntries[i][j]});
+                }
+            }
+        }
+        else {
+            for (i=0; i<order; i++) {
+                for (j=0; j<order; j++) {
+                    view.entries.push({row: i,
+                                       col: j,
+                                       el: view.model.getElement(i,j),
+                                       open: false});
+                }
             }
         }
 
@@ -230,7 +257,8 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             for (j=0; j<order; j++) {
                 view.entries.push({row: i,
                                    col: j,
-                                   el: view.model.getElement(i,j)});
+                                   el: view.model.getElement(i,j),
+                                   open: false});
             }
         }
         
@@ -569,12 +597,19 @@ $(document).ready(function() {
     elements.push(new aljabr.Element('b'));
     elements.push(new aljabr.Element('c'));
     elements.push(new aljabr.Element('d'));
+    elements.push(new aljabr.Element('f'));
+    elements.push(new aljabr.Element('g'));
+    elements.push(new aljabr.Element('h'));
     testSet = new aljabr.ElementSet(elements);
     aljabr.group = new aljabr.GroupBuilder(testSet);
     
     group = aljabr.group;
     group.setElement(1, 1, 2);
     group.setElement(1, 2, 3);
+    group.setElement(1, 3, 4);
+    group.setElement(1, 4, 5);
+    group.setElement(1, 5, 6);
+    group.setElement(1, 6, 7);
     
     builder.cayleyTableView.attach(group);
     builder.cayleyGraphView.attach(group);
