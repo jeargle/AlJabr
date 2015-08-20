@@ -9,6 +9,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     model: undefined,
     width: 0,
     height: 0,
+    activeNode: null,
     activeNodes: null,
     elements: null,
     entries: null,
@@ -83,7 +84,12 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .data(view.entries);
         boxes.enter()
             .append('rect')
-            .classed('box', true)
+            .attr('class', function(b) {
+                if (b.open) {
+                    return 'box active';
+                }
+                return 'box';
+            })
             .attr('x', function(b) {
                 return (b.col+2)*boxSize;
             })
@@ -93,16 +99,15 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('width', boxSize)
             .attr('height', boxSize)
             .style('stroke', 'black')
-            .attr('fill', function(b) {
+            .on('click', function(b) {
+                // d3.select(this)
+                //     .style('fill', 'yellow');
                 if (b.open) {
-                    return 'rgb(240,240,100)';
+                    console.log('(' + b.row + ',' + b.col + ')');
+                    view.model.setElement(b.row, b.col, view.activeNode);
+                    view.render();
                 }
-                return 'rgb(' + b.col*colorStep + ',0,' + b.row*colorStep + ')';
             });
-            // .on('click', function() {
-            //     d3.select(this)
-            //         .style('fill', 'yellow');
-            // });
         boxes.exit().remove();
         
         boxLabels = svg.selectAll('.box-label')
@@ -210,6 +215,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         }
 
         if (view.activeNodes[index]) {
+            view.activeNode = index;
             openEntries = view.model.openPositions(index);
             view.entries = [];
             for (i=0; i<order; i++) {
@@ -222,6 +228,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             }
         }
         else {
+            view.activeNode = null;
             for (i=0; i<order; i++) {
                 for (j=0; j<order; j++) {
                     view.entries.push({row: i,

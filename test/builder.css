@@ -1,0 +1,13 @@
+
+
+.box {
+    fill: rgb(180,180,240);
+}
+
+.box.active {
+    fill: rgb(240,240,100);
+}
+
+.box.active:hover {
+    fill: rgb(200,200,100);
+}
