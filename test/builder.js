@@ -321,6 +321,8 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     height: 0,
     points: [],
     activeEdges: [],
+    activeEdge: 1,
+    layout: 'circle',
     init: function(id) {
         'use strict';
         var view;
@@ -431,10 +433,11 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         labels.exit().remove();
 
         // Edge selectors
-        selectors = svg.selectAll('rect')
+        selectors = svg.selectAll('.edge-sel')
             .data(view.activeEdges);
         selectors.enter()
             .append('rect')
+            .classed('edge-sel', true)
             .attr('x', view.width-50)
             .attr('y', function(s, i) {
                 return i*20 + 50;
@@ -472,6 +475,62 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             });
         sLabels.exit().remove();
 
+        // Layout selectors
+        svg.append('rect')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 50)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'circle') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutCircle();
+            });
+
+        svg.append('rect')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 70)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'nested') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutNested(view.activeEdge);
+            });
+
+        svg.append('rect')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 90)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'separate') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutSeparate(view.activeEdge);
+            });
+
+
         return view;
     },
     /**
@@ -491,6 +550,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                               -Math.cos(angle*i)*radius + view.baseY];
         }
 
+        view.layout = 'circle';
         view.render();
     },
     /**
@@ -520,6 +580,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             }
         }
 
+        view.layout = 'nested';
         view.render();
     },
     /**
@@ -544,6 +605,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             }
         }
 
+        view.layout = 'separate';
         view.render();
     },
     /**
@@ -552,10 +614,22 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     toggleEdges: function(index) {
         'use strict';
-        var view;
+        var view, i;
 
         view = this;
 
+        if (view.activeEdges[index]) {
+            view.activeEdge = 1;
+            for (i=2; i<view.model.order; i++) {
+                if (i !== index && view.activeEdges[i]) {
+                    view.activeEdge = i;
+                    break;
+                }
+            }
+        }
+        else {
+            view.activeEdge = index;
+        }
         view.activeEdges[index] = !view.activeEdges[index];
 
         view.render();
@@ -595,30 +669,30 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    // aljabr.group = aljabr.buildCyclicGroup(12);
+    aljabr.group = aljabr.buildCyclicGroup(12);
     // aljabr.group = aljabr.buildDihedralGroup(6);
     // aljabr.group = aljabr.buildAlternatingGroup(4);
     // aljabr.group = aljabr.buildSymmetryGroup(3);
-    aljabr.elements = [];
-    elements = aljabr.elements;
-    elements.push(new aljabr.Element('e'));
-    elements.push(new aljabr.Element('a'));
-    elements.push(new aljabr.Element('b'));
-    elements.push(new aljabr.Element('c'));
-    elements.push(new aljabr.Element('d'));
-    elements.push(new aljabr.Element('f'));
-    elements.push(new aljabr.Element('g'));
-    elements.push(new aljabr.Element('h'));
-    testSet = new aljabr.ElementSet(elements);
-    aljabr.group = new aljabr.GroupBuilder(testSet);
+    // aljabr.elements = [];
+    // elements = aljabr.elements;
+    // elements.push(new aljabr.Element('e'));
+    // elements.push(new aljabr.Element('a'));
+    // elements.push(new aljabr.Element('b'));
+    // elements.push(new aljabr.Element('c'));
+    // elements.push(new aljabr.Element('d'));
+    // elements.push(new aljabr.Element('f'));
+    // elements.push(new aljabr.Element('g'));
+    // elements.push(new aljabr.Element('h'));
+    // testSet = new aljabr.ElementSet(elements);
+    // aljabr.group = new aljabr.GroupBuilder(testSet);
     
     group = aljabr.group;
-    group.setElement(1, 1, 2);
-    group.setElement(1, 2, 3);
-    group.setElement(1, 3, 4);
-    group.setElement(1, 4, 5);
-    group.setElement(1, 5, 6);
-    group.setElement(1, 6, 7);
+    // group.setElement(1, 1, 2);
+    // group.setElement(1, 2, 3);
+    // group.setElement(1, 3, 4);
+    // group.setElement(1, 4, 5);
+    // group.setElement(1, 5, 6);
+    // group.setElement(1, 6, 7);
     
     builder.cayleyTableView.attach(group);
     builder.cayleyGraphView.attach(group);
