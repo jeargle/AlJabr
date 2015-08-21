@@ -100,12 +100,14 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('height', boxSize)
             .style('stroke', 'black')
             .on('click', function(b) {
-                // d3.select(this)
-                //     .style('fill', 'yellow');
+                var tempNode;
                 if (b.open) {
-                    console.log('(' + b.row + ',' + b.col + ')');
                     view.model.setElement(b.row, b.col, view.activeNode);
-                    view.render();
+                    tempNode = view.activeNode;
+                    view.activeNode = null;
+                    view.activeNodes[tempNode] = false;
+                    view.toggleNodes(tempNode);
+                    // view.render();
                 }
             });
         boxes.exit().remove();
