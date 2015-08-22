@@ -103,11 +103,17 @@ aljabr.builder.CayleyTableView = aljabr.Class({
                 var tempNode;
                 if (b.open) {
                     view.model.setElement(b.row, b.col, view.activeNode);
-                    tempNode = view.activeNode;
-                    view.activeNode = null;
-                    view.activeNodes[tempNode] = false;
-                    view.toggleNodes(tempNode);
-                    // view.render();
+                    if (view.model.isComplete()) {
+                        aljabr.group = view.model.buildGroup();
+                        aljabr.builder.cayleyGraphView.attach(aljabr.group);
+                        view.attach(aljabr.group);
+                    }
+                    else {
+                        tempNode = view.activeNode;
+                        view.activeNode = null;
+                        view.activeNodes[tempNode] = false;
+                        view.toggleNodes(tempNode);
+                    }
                 }
             });
         boxes.exit().remove();
@@ -669,22 +675,22 @@ $(document).ready(function() {
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    aljabr.group = aljabr.buildCyclicGroup(12);
+    // aljabr.group = aljabr.buildCyclicGroup(12);
     // aljabr.group = aljabr.buildDihedralGroup(6);
     // aljabr.group = aljabr.buildAlternatingGroup(4);
     // aljabr.group = aljabr.buildSymmetryGroup(3);
-    // aljabr.elements = [];
-    // elements = aljabr.elements;
-    // elements.push(new aljabr.Element('e'));
-    // elements.push(new aljabr.Element('a'));
-    // elements.push(new aljabr.Element('b'));
-    // elements.push(new aljabr.Element('c'));
-    // elements.push(new aljabr.Element('d'));
-    // elements.push(new aljabr.Element('f'));
+    aljabr.elements = [];
+    elements = aljabr.elements;
+    elements.push(new aljabr.Element('e'));
+    elements.push(new aljabr.Element('a'));
+    elements.push(new aljabr.Element('b'));
+    elements.push(new aljabr.Element('c'));
+    elements.push(new aljabr.Element('d'));
+    elements.push(new aljabr.Element('f'));
     // elements.push(new aljabr.Element('g'));
     // elements.push(new aljabr.Element('h'));
-    // testSet = new aljabr.ElementSet(elements);
-    // aljabr.group = new aljabr.GroupBuilder(testSet);
+    testSet = new aljabr.ElementSet(elements);
+    aljabr.group = new aljabr.GroupBuilder(testSet);
     
     group = aljabr.group;
     // group.setElement(1, 1, 2);

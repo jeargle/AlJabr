@@ -199,6 +199,7 @@ aljabr.ElementSet = aljabr.Class({
  * Immutable, validated Group.
  */
 aljabr.Group = aljabr.Class({
+    cls: 'Group',
     elements: null,
     order: 0,
     table: null,
@@ -435,6 +436,7 @@ aljabr.Group = aljabr.Class({
  * possibility of creating a valid Group.
  */
 aljabr.GroupBuilder = aljabr.Class({
+    cls: 'GroupBuilder',
     elements: undefined,
     order: 0,
     table: undefined,
