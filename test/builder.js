@@ -482,6 +482,10 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         sLabels.exit().remove();
 
         // Layout selectors
+        svg.selectAll('.layout-sel')
+            .remove();
+        svg.selectAll('.lLabel')
+            .remove();
         svg.append('rect')
             .classed('layout-sel', true)
             .attr('x', view.width-25)
@@ -499,6 +503,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .on('click', function(s, i) {
                 view.layoutCircle();
             });
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 65)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('C');
 
         svg.append('rect')
             .classed('layout-sel', true)
@@ -517,6 +530,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .on('click', function(s, i) {
                 view.layoutNested(view.activeEdge);
             });
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 85)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('N');
 
         svg.append('rect')
             .classed('layout-sel', true)
@@ -535,7 +557,15 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .on('click', function(s, i) {
                 view.layoutSeparate(view.activeEdge);
             });
-
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 105)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('S');
 
         return view;
     },
