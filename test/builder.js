@@ -366,9 +366,11 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         for (i=0; i<order; i++) {
             if (view.activeEdges[i]) {
                 for (j=0; j<order; j++) {
-                    element = view.model.getElement(j,i);
+                    // element = view.model.getElement(j,i);
+                    element = view.model.getElement(i,j);
                     if (element !== null) {
                         pointPairs.push([j, element]);
+                        // pointPairs.push([i, element]);
                     }
                 }
             }
@@ -727,12 +729,12 @@ $(document).ready(function() {
     group.setElement(3, 5, 1);
     group.setElement(4, 3, 1);
     group.setElement(5, 4, 1);   // should have already been set
-    group.setElement(1, 1, 2);
-    group.setElement(3, 4, 2);
-    group.setElement(4, 5, 2);
-    group.setElement(5, 3, 2);   // should have already been set
-    group.setElement(1, 2, 3);
-    group.setElement(2, 5, 3);
+    // group.setElement(1, 1, 2);
+    // group.setElement(3, 4, 2);
+    // group.setElement(4, 5, 2);
+    // group.setElement(5, 3, 2);   // should have already been set
+    // group.setElement(1, 2, 3);
+    // group.setElement(2, 5, 3);
     // group.setElement(1, 1, 2);
     // group.setElement(1, 2, 3);
     // group.setElement(1, 3, 4);
