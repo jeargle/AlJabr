@@ -58,7 +58,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(c) {
-                return c;
+                return view.model.elements.element(c).symbol;
             });
         colLabels.exit().remove();
 
@@ -76,7 +76,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(r) {
-                return r;
+                return view.model.elements.element(r).symbol;
             });
         rowLabels.exit().remove();
 
@@ -134,6 +134,9 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(b) {
+                if (b.el !== null) {
+                    return view.model.elements.element(b.el).symbol;
+                }
                 return b.el;
             });
         boxLabels.exit().remove();
@@ -195,7 +198,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return i;
+                return view.model.elements.element(i).symbol;
             });
         sLabels.exit().remove();
 
@@ -436,7 +439,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(p, i) {
-                return i;
+                return view.model.elements.element(i).symbol;
             });
         labels.exit().remove();
 
@@ -479,7 +482,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return i;
+                return view.model.elements.element(i).symbol;
             });
         sLabels.exit().remove();
 
@@ -725,10 +728,10 @@ $(document).ready(function() {
     aljabr.group = new aljabr.GroupBuilder(testSet);
     
     group = aljabr.group;
-    group.setElement(2, 2, 1);
-    group.setElement(3, 5, 1);
-    group.setElement(4, 3, 1);
-    group.setElement(5, 4, 1);   // should have already been set
+    // group.setElement(2, 2, 1);
+    // group.setElement(3, 5, 1);
+    // group.setElement(4, 3, 1);
+    // group.setElement(5, 4, 1);   // should have already been set
     // group.setElement(1, 1, 2);
     // group.setElement(3, 4, 2);
     // group.setElement(4, 5, 2);
