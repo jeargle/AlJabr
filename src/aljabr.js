@@ -516,6 +516,7 @@ aljabr.GroupBuilder = aljabr.Class({
         var model, markQueue, head, row, col, el, elIndex, x;
 
         model = this;
+
         // console.log('setElement(#{i}, #{j}, #{element})\n');
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
@@ -535,7 +536,6 @@ aljabr.GroupBuilder = aljabr.Class({
             }
       
             // Is this element still allowed to be placed here?
-            // if (!model.openTable[i][j].include?(element)) {
             if (model.openTable[i][j].indexOf(element) === -1) {
                 console.log('Error: element #{element} is not allowed at (#{i}, #{j})\n');
                 console.log('model.openTable[i][j]:');
@@ -558,14 +558,11 @@ aljabr.GroupBuilder = aljabr.Class({
                 model.addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
-                // model.openTable[row][col].clear();
                 model.openTable[row][col] = [];
                 for (x=0; x<model.order; x++) {
                     // Remove from column
-                    // if (model.openTable[x][col].include?(el)) {
                     elIndex = model.openTable[x][col].indexOf(el);
                     if (elIndex > -1) {
-                        // model.openTable[x][col].delete(el);
                         model.openTable[x][col].splice(elIndex, 1);
                         if (model.openTable[x][col].length === 1) {
                             _.each(model.openTable[x][col], function(lastEl) {
@@ -574,10 +571,8 @@ aljabr.GroupBuilder = aljabr.Class({
                         }
                     }
                     // Remove from row
-                    // if (model.openTable[row][x].include?(el)) {
                     elIndex = model.openTable[row][x].indexOf(el);
                     if (elIndex > -1) {
-                        // model.openTable[row][x].delete(el);
                         model.openTable[row][x].splice(elIndex, 1);
                         if (model.openTable[row][x].length === 1) {
                             _.each(model.openTable[row][x], function(lastEl) {
@@ -656,14 +651,17 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     checkAssociativityRules: function(row, col) {
         'use strict';
+        var model;
 
-        if (this.associationTable[row][col] !== null) {
+        model = this;
+
+        if (model.associationTable[row][col] !== null) {
             // console.log('Association rule: #{this.associationTable[row][col]}\n');
         }
     },
     /**
      * Add any new associativity rules that result from the addition
-     * of this element ad this position.
+     * of this element at this position.
      * @param i - row
      * @param j - column
      * @param el - element index to assign to (i, j)
@@ -673,6 +671,7 @@ aljabr.GroupBuilder = aljabr.Class({
         var model;
 
         model = this;
+        
         if (row === col) {
             // a(aa) = (aa)a
             // aa = b

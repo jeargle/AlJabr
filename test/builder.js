@@ -721,7 +721,7 @@ $(document).ready(function() {
     elements.push(new aljabr.Element('b'));
     elements.push(new aljabr.Element('c'));
     elements.push(new aljabr.Element('d'));
-    elements.push(new aljabr.Element('f'));
+    // elements.push(new aljabr.Element('f'));
     // elements.push(new aljabr.Element('g'));
     // elements.push(new aljabr.Element('h'));
     testSet = new aljabr.ElementSet(elements);
