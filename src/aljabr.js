@@ -481,7 +481,7 @@ aljabr.GroupBuilder = aljabr.Class({
         for (i=0; i<model.order; i++) {
             model.associationTable[i] = [];
             for (j=0; j<model.order; j++) {
-                model.associationTable[i][j] = null;
+                model.associationTable[i][j] = {};
             }
         }
 
@@ -651,12 +651,19 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     checkAssociativityRules: function(row, col) {
         'use strict';
-        var model;
+        var model, r, firstFlag;
 
         model = this;
+        firstFlag = true;
 
-        if (model.associationTable[row][col] !== null) {
-            // console.log('Association rule: #{this.associationTable[row][col]}\n');
+        if (model.associationTable[row][col].length !== 0) {
+            for (r in model.associationTable[row][col]) {
+                if (firstFlag) {
+                    console.log('(' + row + ', ' + col + ') =');
+                    firstFlag = false;
+                }
+                console.log('  (' + r + ', ' + model.associationTable[row][col][r] + ')');
+            }
         }
     },
     /**
@@ -676,18 +683,25 @@ aljabr.GroupBuilder = aljabr.Class({
             // a(aa) = (aa)a
             // aa = b
             // => ab = ba
-            model.associationTable[row][el] = [el, row];
-            model.associationTable[el][row] = [row, el];
+            if (row !== el) {
+                model.associationTable[row][el][el] = row;
+                model.associationTable[el][row][row] = el;
+            }
         }
         else {
-            if (el === model.table.getElement(row, col)) {
+            if (el === model.table.getElement(row, col) &&
+                el === model.table.getElement(col, row)) {
                 // a(ba) = (ab)a
                 // ba = c, ab = c (a and b commute)
                 // => ac = ca, bc = cb
-                model.associationTable[row][el] = [el, row];
-                model.associationTable[el][row] = [row, el];
-                model.associationTable[col][el] = [el, col];
-                model.associationTable[el][col] = [col, el];
+                if (el !== row) {
+                    model.associationTable[row][el][el] = row;
+                    model.associationTable[el][row][row] = el;
+                }
+                if (el !== col) {
+                    model.associationTable[col][el][el] = col;
+                    model.associationTable[el][col][col] = el;
+                }
             }
 
             // b(aa) = (ba)a, a(ab) = (aa)b
@@ -783,7 +797,8 @@ aljabr.GroupBuilder = aljabr.Class({
         return outStr;
     },
     /**
-     *
+     * Print out a table showing which elements can be placed in which
+     * open positions in the operator table.
      */
     printOpenTable: function() {
         'use strict';
