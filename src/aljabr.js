@@ -317,15 +317,15 @@ aljabr.Group = aljabr.Class({
         // Set column width to size of largest element symbol
         colWidth = 0;
         for (i=0; i<model.order; i++) {
-            if (colWidth < model.elements.element(i).symbol.length) {
-	        colWidth = model.elements.element(i).symbol.length;
+            if (colWidth < model.elements[i].length) {
+	        colWidth = model.elements[i].length;
             }
         }
         
         outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
         for (i=0; i<model.order; i++) {
             outString += ' ' +
-                aljabr.rJust(model.elements.element(i).symbol,
+                aljabr.rJust(model.elements[i],
                              colWidth) +
                 ' |';
         }
@@ -338,7 +338,7 @@ aljabr.Group = aljabr.Class({
 
         for (i=0; i<model.order; i++) {
             outString += ' ' +
-                aljabr.rJust(model.elements.element(i).symbol,
+                aljabr.rJust(model.elements[i],
                              colWidth) +
                 ' |';
             for (j=0; j<model.order; j++) {
@@ -349,9 +349,7 @@ aljabr.Group = aljabr.Class({
                 else {
 	            outString += ' ' +
                         aljabr.rJust(
-                            model.elements.element(
-                                model.table.getElement(i, j)
-                            ).symbol,
+                            model.elements[model.table.getElement(i, j)],
                             colWidth) +
                         ' |';
                 }
@@ -954,7 +952,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         elementArray = [];
         for (i=0; i<model.permutors.length; i++) {
             // elementArray.push(new aljabr.Element(i));
-            elementArray.push(i);
+            elementArray.push(i.toString());
         }
         // elements = new aljabr.ElementSet(elementArray);
         elements = elementArray;
@@ -1238,20 +1236,17 @@ aljabr.buildProductGroup = function(group1, group2) {
     for (i=0; i<group1.order; i++) {
         backMap[i] = [];
         for (j=0; j<group2.order; j++) {
-            elArray.push(
-                new aljabr.Element('(' +
-                                   group1.elements[i] +
-                                   ',' +
-                                   group2.elements[j] +
-                                   ')')
-            );
+            elArray.push('(' +
+                         group1.elements[i] +
+                         ',' +
+                         group2.elements[j] +
+                         ')');
             backMap[i][j] = elCount;
             elCount += 1;
             backMap2.push([i, j]);
         }
     }
 
-    // elements = new aljabr.ElementSet(elArray);
     elements = elArray;
     productBuilder = new aljabr.GroupBuilder(elements);
 

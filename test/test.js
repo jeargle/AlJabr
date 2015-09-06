@@ -28,13 +28,13 @@ aljabr.test.testGroupBuilder = function() {
     var e, a, testSet1, groupBuilder1, b, c, d, testSet2, groupBuilder2, o, om, i, im, j, jm, k, km, testSet3, groupBuilder3;
     
     console.log('\n\n***** GroupBuilder Test *****\n');
-    e = new aljabr.Element('e');
-    a = new aljabr.Element('a');
-    console.log(e.symbol);
-    testSet1 = new aljabr.ElementSet([e, a]);
+    e = 'e';
+    a = 'a';
+    console.log(e);
+    testSet1 = [e, a];
     console.log('order: ' + testSet1.order);
-    console.log('0: ' + testSet1.element(0).symbol);
-    console.log('1: ' + testSet1.element(1).symbol);
+    console.log('0: ' + testSet1[0]);
+    console.log('1: ' + testSet1[1]);
     groupBuilder1 = new aljabr.GroupBuilder(testSet1);
     console.log('groupBuilder1:');
     console.log(groupBuilder1.toStr());
@@ -44,10 +44,10 @@ aljabr.test.testGroupBuilder = function() {
     console.log('order e: ' + groupBuilder1.elementOrder(0));
     console.log('order a: ' + groupBuilder1.elementOrder(1));
     
-    b = new aljabr.Element('b');
-    c = new aljabr.Element('c');
-    d = new aljabr.Element('d');
-    testSet2 = new aljabr.ElementSet([e, a, b, c, d]);
+    b = 'b';
+    c = 'c';
+    d = 'd';
+    testSet2 = [e, a, b, c, d];
     groupBuilder2 = new aljabr.GroupBuilder(testSet2);
     console.log('groupBuilder2:');
     console.log(groupBuilder2.toStr());
@@ -85,15 +85,15 @@ aljabr.test.testGroupBuilder = function() {
     console.log('order c: ' + groupBuilder2.elementOrder(3));
     console.log('order d: ' + groupBuilder2.elementOrder(4));
 
-    o = new aljabr.Element('1');
-    om = new aljabr.Element('-1');
-    i = new aljabr.Element('i');
-    im = new aljabr.Element('-i');
-    j = new aljabr.Element('j');
-    jm = new aljabr.Element('-j');
-    k = new aljabr.Element('k');
-    km = new aljabr.Element('-k');
-    testSet3 = new aljabr.ElementSet([o, om, i, im, j, jm, k, km]);
+    o = '1';
+    om = '-1';
+    i = 'i';
+    im = '-i';
+    j = 'j';
+    jm = '-j';
+    k = 'k';
+    km = '-k';
+    testSet3 = [o, om, i, im, j, jm, k, km];
     groupBuilder3 = new aljabr.GroupBuilder(testSet3);
     console.log('quaternion group:');
     console.log(groupBuilder3.toStr());
