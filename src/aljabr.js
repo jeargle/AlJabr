@@ -34,6 +34,7 @@ aljabr.Class = function(methods) {
     return obj;    
 };
 
+
 /**
  * This class holds the elements of a multiplication table.
  * The table only contains ints or null; the ints are indices
@@ -121,81 +122,6 @@ aljabr.OperatorTable = aljabr.Class({
 
 
 /**
- * Symbol representation of an element.
- */
-aljabr.Element = aljabr.Class({
-    /**
-     * The +new+ class method initializes the class.
-     * @param symbol - string representation of an element
-     */
-    init: function(symbol) {
-        'use strict';
-
-        if (typeof symbol === 'string') {
-            this.symbol = symbol;
-        }
-        else {
-            this.symbol = symbol.toString();
-        }
-    },
-    /**
-     * Return the string representation.
-     * @returns the symbol
-     */
-    symbol: function() {
-        'use strict';
-        return this.symbol;
-    },
-    /**
-     *
-     * returns string representation of the symbol
-     */
-    toStr: function() {
-        'use strict';
-        return this.symbol;
-    }
-});
-
-
-/**
- * XXX - is this class really needed?
- * Immutable array holding a set of Elements.
- * Mapping from 0-indexed integers to Elements.
- */
-aljabr.ElementSet = aljabr.Class({
-    elementArray: undefined,
-    order: 0,
-    /**
-     * The +new+ class method initializes the class.
-     * @param elementArray - array of Elements
-     */
-    init: function(elementArray) {
-        'use strict';
-        var model;
-
-        model = this;
-        
-        model.elementArray = elementArray;
-        model.order = model.elementArray.length;
-    },
-    /**
-     * Retrieve the Element at a given index.
-     * @param i - index
-     */
-    element: function(i) {
-        'use strict';
-        return this.elementArray[i];
-    }
-    // XXX - defined in structures that have identity elements.
-    // Get identity Element.
-    // identity
-    //   return @elementArray[@identity_index]
-    // }
-});
-
-
-
-/**
  * Immutable, validated Group.
  */
 aljabr.Group = aljabr.Class({
@@ -213,7 +139,7 @@ aljabr.Group = aljabr.Class({
 
         model =  this;
         model.elements = elements;
-        model.order = model.elements.order;
+        model.order = model.elements.length;
         model.table = table;
     },
     /**
@@ -460,7 +386,7 @@ aljabr.GroupBuilder = aljabr.Class({
         
         model = this;
         model.elements = elements;
-        model.order = model.elements.order;
+        model.order = model.elements.length;
         model.table = new aljabr.OperatorTable(model.order);
         
         // Table with bool arrays showing which elements are allowed in a cell
@@ -756,15 +682,15 @@ aljabr.GroupBuilder = aljabr.Class({
         // Set column width to size of largest element symbol
         colWidth = 0;
         for (i=0; i<model.order; i++) {
-            if (colWidth < elements.element(i).symbol.length) {
-	        colWidth = elements.element(i).symbol.length;
+            if (colWidth < elements[i].length) {
+	        colWidth = elements[i].length;
             }
         }
         outStr = ' ' + aljabr.rJust(' ', colWidth) + ' |';
 
         for (i=0; i<model.order; i++) {
             outStr += ' ' +
-                aljabr.rJust(elements.element(i).symbol, colWidth) +
+                aljabr.rJust(elements[i], colWidth) +
                 ' |';
         }
         outStr += '\n';
@@ -776,7 +702,7 @@ aljabr.GroupBuilder = aljabr.Class({
 
         for (i=0; i<model.order; i++) {
             outStr += ' ' +
-                aljabr.rJust(elements.element(i).symbol, colWidth) +
+                aljabr.rJust(elements[i], colWidth) +
                 ' |';
             for (j=0; j<model.order; j++) {
                 if (model.table.getElement(i, j) === null) {
@@ -785,7 +711,7 @@ aljabr.GroupBuilder = aljabr.Class({
                 else {
 	            outStr += ' ' +
                         aljabr.rJust(
-                            elements.element(model.table.getElement(i, j)).symbol,
+                            elements[model.table.getElement(i, j)],
                             colWidth
                         ) +
                         ' |';
@@ -1027,9 +953,11 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         // Create ElementSet corresponding to permutors
         elementArray = [];
         for (i=0; i<model.permutors.length; i++) {
-            elementArray.push(new aljabr.Element(i));
+            // elementArray.push(new aljabr.Element(i));
+            elementArray.push(i);
         }
-        elements = new aljabr.ElementSet(elementArray);
+        // elements = new aljabr.ElementSet(elementArray);
+        elements = elementArray;
 
         // Loop through elements and fill out GroupBuilder
         groupBuilder = new aljabr.GroupBuilder(elements);
@@ -1312,9 +1240,9 @@ aljabr.buildProductGroup = function(group1, group2) {
         for (j=0; j<group2.order; j++) {
             elArray.push(
                 new aljabr.Element('(' +
-                                   group1.elements.element(i).symbol +
+                                   group1.elements[i] +
                                    ',' +
-                                   group2.elements.element(j).symbol +
+                                   group2.elements[j] +
                                    ')')
             );
             backMap[i][j] = elCount;
@@ -1323,7 +1251,8 @@ aljabr.buildProductGroup = function(group1, group2) {
         }
     }
 
-    elements = new aljabr.ElementSet(elArray);
+    // elements = new aljabr.ElementSet(elArray);
+    elements = elArray;
     productBuilder = new aljabr.GroupBuilder(elements);
 
     // Loop through Groups

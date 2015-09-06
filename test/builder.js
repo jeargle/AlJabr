@@ -58,7 +58,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(c) {
-                return view.model.elements.element(c).symbol;
+                return view.model.elements[c];
             });
         colLabels.exit().remove();
 
@@ -76,7 +76,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(r) {
-                return view.model.elements.element(r).symbol;
+                return view.model.elements[r];
             });
         rowLabels.exit().remove();
 
@@ -135,7 +135,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('pointer-events', 'none')
             .text(function(b) {
                 if (b.el !== null) {
-                    return view.model.elements.element(b.el).symbol;
+                    return view.model.elements[b.el];
                 }
                 return b.el;
             });
@@ -198,7 +198,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return view.model.elements.element(i).symbol;
+                return view.model.elements[i];
             });
         sLabels.exit().remove();
 
@@ -439,7 +439,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(p, i) {
-                return view.model.elements.element(i).symbol;
+                return view.model.elements[i];
             });
         labels.exit().remove();
 
@@ -482,7 +482,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return view.model.elements.element(i).symbol;
+                return view.model.elements[i];
             });
         sLabels.exit().remove();
 
@@ -716,16 +716,15 @@ $(document).ready(function() {
     // aljabr.group = aljabr.buildSymmetryGroup(3);
     aljabr.elements = [];
     elements = aljabr.elements;
-    elements.push(new aljabr.Element('e'));
-    elements.push(new aljabr.Element('a'));
-    elements.push(new aljabr.Element('b'));
-    elements.push(new aljabr.Element('c'));
-    elements.push(new aljabr.Element('d'));
-    // elements.push(new aljabr.Element('f'));
-    // elements.push(new aljabr.Element('g'));
-    // elements.push(new aljabr.Element('h'));
-    testSet = new aljabr.ElementSet(elements);
-    aljabr.group = new aljabr.GroupBuilder(testSet);
+    elements.push('e');
+    elements.push('a');
+    elements.push('b');
+    elements.push('c');
+    elements.push('d');
+    elements.push('f');
+    // elements.push('g');
+    // elements.push('h');
+    aljabr.group = new aljabr.GroupBuilder(elements);
     
     group = aljabr.group;
     // group.setElement(2, 2, 1);
