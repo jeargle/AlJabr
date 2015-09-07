@@ -363,6 +363,123 @@ aljabr.Group = aljabr.Class({
 
 
 /**
+ * This class holds information about positions in an OperatorTable
+ * that are still available for specific elements.
+ */
+aljabr.OpenTable = aljabr.Class({
+    cls: 'OpenTable',
+    order: 0,
+    openTable: undefined,
+    /**
+     * The +new+ class method initializes the class.
+     */
+    init: function(order) {
+        'use strict';
+        var model, i, j, k;
+
+        model = this;
+        model.order = order;
+
+        // Table with bool arrays showing which elements are allowed in a cell
+        model.openTable = [];
+        for (i=0; i<model.order; i++) {
+            model.openTable[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.openTable[i][j] = [];
+                // model.openTable[i][j] = (0..model.order-1).to_set();
+                for (k=0; k<model.order; k++) {
+                    model.openTable[i][j][k] = k;
+                }
+            }
+        }
+    },
+    isAllowed: function(row, col, element) {
+        'use strict';
+
+        if (this.openTable[row][col].indexOf(element) === -1) {
+            return false;
+        }
+        
+        return true;
+    },
+    allowedList: function(row, col) {
+        'use strict';
+
+        return this.openTable[row][col];
+    },
+    clear: function(row, col) {
+        'use strict';
+        this.openTable[row][col] = [];
+    },
+    remove: function(row, col, element) {
+        'use strict';
+        var model, elIndex;
+
+        model = this;
+        
+        elIndex = model.openTable[row][col].indexOf(element);
+        if (elIndex > -1) {
+            model.openTable[row][col].splice(elIndex, 1);
+        }
+        
+        return;
+    },
+    /**
+     * Get a table showing where an element can be placed.
+     * @param element - element index
+     * @returns boolean mask of openTable showing open positions
+     */
+    openPositions: function(element) {
+        'use strict';
+        var model, open, i, j;
+
+        model = this;
+
+        // Table with bool arrays showing which elements are allowed in a cell
+        open = [];
+        for (i=0; i<model.order; i++) {
+            open[i] = [];
+            for (j=0; j<model.order; j++) {
+                open[i][j] = false;
+                if (model.openTable[i][j].length > 0 &&
+                    model.openTable[i][j].indexOf(element) >= 0) {
+                    open[i][j] = true;
+                }
+            }
+        }
+        
+        return open;
+    },
+    /**
+     * Print out a table showing which elements can be placed in which
+     * open positions in the operator table.
+     */
+    printOpenTable: function() {
+        'use strict';
+        var model, i, j;
+
+        model = this;
+        
+        for (i=0; i<model.order; i++) {
+            console.log('row ' + i + '\n');
+            for (j=0; j<model.order; j++) {
+                console.log('   col ' + j + '\n');
+                console.log('      ');
+                // console.log('openTable[' + i + '][' + j + '].class: ' + model.openTable[i][j].class + '\n');
+                // console.log('openTable[' + i + '][' + j + '].length: ' + model.openTable[i][j].length + '\n');
+                // console.log('openTable[0][0].length: ' + model.openTable[0][0].length + '\n');
+                _.each(model.openTable[i][j], function(el) {
+                    // console.log(el.class + ' ');
+                    console.log(el + ' ');
+                });
+                console.log('\n');
+            }
+        }
+    }
+});
+
+
+/**
  * This class holds an intermediate representation for a Group that
  * has not been fully built.  It should allow for the placement
  * of Elements in an OperatorTable as long as they maintain the
@@ -388,17 +505,18 @@ aljabr.GroupBuilder = aljabr.Class({
         model.table = new aljabr.OperatorTable(model.order);
         
         // Table with bool arrays showing which elements are allowed in a cell
-        model.openTable = [];
-        for (i=0; i<model.order; i++) {
-            model.openTable[i] = [];
-            for (j=0; j<model.order; j++) {
-                model.openTable[i][j] = [];
-                // model.openTable[i][j] = (0..model.order-1).to_set();
-                for (k=0; k<model.order; k++) {
-                    model.openTable[i][j][k] = k;
-                }
-            }
-        }
+        model.openTable = new aljabr.OpenTable(model.order);
+        // model.openTable = [];
+        // for (i=0; i<model.order; i++) {
+        //     model.openTable[i] = [];
+        //     for (j=0; j<model.order; j++) {
+        //         model.openTable[i][j] = [];
+        //         // model.openTable[i][j] = (0..model.order-1).to_set();
+        //         for (k=0; k<model.order; k++) {
+        //             model.openTable[i][j][k] = k;
+        //         }
+        //     }
+        // }
 
         // Table with associations that declare pairs of cells equal
         model.associationTable = [];
@@ -436,13 +554,22 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, markQueue, head, row, col, el, elIndex, x, assRow, assCol, assEl;
+        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRow, assCol, assEl;
 
         model = this;
+        openTable = model.openTable;
 
-        if (model.getElement(i, j) !== null) {
-            console.warn('Error: element already set, (' + i +
-                         ', ' + j + ') = ' + model.getElement(i,j));
+        tempEl = model.getElement(i, j);
+        if (tempEl !== null) {
+            if (tempEl === element) {
+                console.log('element already exists at this position');
+            }
+            else {
+                console.warn('Error: element already set to ' +
+                             'another value, (' + i + ', ' + j +
+                             ') = ' + tempEl);
+            }
+            return null;
         }
         
         // console.log('setElement(#{i}, #{j}, #{element})\n');
@@ -450,7 +577,7 @@ aljabr.GroupBuilder = aljabr.Class({
             0 <= j && j < model.order &&
             0 <= element && element < model.order) {
 
-            if (model.openTable[i][j].length === 0) {
+            if (openTable.allowedList(i, j).length === 0) {
                 if (element !== model.table.getElement(i, j)) {
                     console.warn('Error: cannot change (' + i +
                                  ', ' + j + '): ' +
@@ -464,10 +591,10 @@ aljabr.GroupBuilder = aljabr.Class({
             }
       
             // Is this element still allowed to be placed here?
-            if (model.openTable[i][j].indexOf(element) === -1) {
+            if (!openTable.isAllowed(i, j, element)) {
                 console.log('Error: element #{element} is not allowed at (#{i}, #{j})\n');
-                console.log('model.openTable[i][j]:');
-                _.each(model.openTable[i][j], function(x) {
+                console.log('openTable[i][j]:');
+                _.each(openTable.allowedList(i, j), function(x) {
                     console.log(x + ' ');
                 });
                 console.log('\n');
@@ -504,27 +631,19 @@ aljabr.GroupBuilder = aljabr.Class({
                 model.addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
-                model.openTable[row][col] = [];
+                openTable.clear(row, col);
                 for (x=0; x<model.order; x++) {
                     // Remove from column
-                    elIndex = model.openTable[x][col].indexOf(el);
-                    if (elIndex > -1) {
-                        model.openTable[x][col].splice(elIndex, 1);
-                        if (model.openTable[x][col].length === 1) {
-                            _.each(model.openTable[x][col], function(lastEl) {
-                                markQueue.push([x, col, lastEl]);
-                            });
-                        }
+                    openTable.remove(x, col, el);
+                    openList = openTable.allowedList(x, col);
+                    if (openList.length === 1) {
+                        markQueue.push([x, col, openList[0]]);
                     }
                     // Remove from row
-                    elIndex = model.openTable[row][x].indexOf(el);
-                    if (elIndex > -1) {
-                        model.openTable[row][x].splice(elIndex, 1);
-                        if (model.openTable[row][x].length === 1) {
-                            _.each(model.openTable[row][x], function(lastEl) {
-                                markQueue.push([row, x, lastEl]);
-                            });
-                        }
+                    openTable.remove(row, x, el);
+                    openList = openTable.allowedList(row, x);
+                    if (openList.length === 1) {
+                        markQueue.push([row, x, openList[0]]);
                     }
                 }
             }
@@ -566,29 +685,13 @@ aljabr.GroupBuilder = aljabr.Class({
     },
     /**
      * Get a table showing where an element can be placed.
-     * @param el - element index
+     * @param element - element index
      * @returns boolean mask of openTable showing open positions
      */
-    openPositions: function(el) {
+    openPositions: function(element) {
         'use strict';
-        var model, open, i, j;
-
-        model = this;
-
-        // Table with bool arrays showing which elements are allowed in a cell
-        open = [];
-        for (i=0; i<model.order; i++) {
-            open[i] = [];
-            for (j=0; j<model.order; j++) {
-                open[i][j] = false;
-                if (model.openTable[i][j].length > 0 &&
-                    model.openTable[i][j].indexOf(el) >= 0) {
-                    open[i][j] = true;
-                }
-            }
-        }
         
-        return open;
+        return this.openTable.openPositions(element);
     },
     /**
      * Check associativity rules for this position.
@@ -748,25 +851,8 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     printOpenTable: function() {
         'use strict';
-        var model, i, j;
 
-        model = this;
-        
-        for (i=0; i<model.order; i++) {
-            console.log('row ' + i + '\n');
-            for (j=0; j<model.order; j++) {
-                console.log('   col ' + j + '\n');
-                console.log('      ');
-                // console.log('openTable[' + i + '][' + j + '].class: ' + model.openTable[i][j].class + '\n');
-                // console.log('openTable[' + i + '][' + j + '].length: ' + model.openTable[i][j].length + '\n');
-                // console.log('openTable[0][0].length: ' + model.openTable[0][0].length + '\n');
-                _.each(model.openTable[i][j], function(el) {
-                    // console.log(el.class + ' ');
-                    console.log(el + ' ');
-                });
-                console.log('\n');
-            }
-        }
+        this.openTable.printOpenTable();
     }
 });
 
