@@ -727,9 +727,9 @@ $(document).ready(function() {
     aljabr.group = new aljabr.GroupBuilder(elements);
     
     group = aljabr.group;
-    // group.setElement(2, 2, 1);
-    // group.setElement(3, 5, 1);
-    // group.setElement(4, 3, 1);
+    group.setElement(2, 2, 1);
+    group.setElement(3, 5, 1);
+    group.setElement(4, 3, 1);
     // group.setElement(5, 4, 1);   // should have already been set
     // group.setElement(1, 1, 2);
     // group.setElement(3, 4, 2);

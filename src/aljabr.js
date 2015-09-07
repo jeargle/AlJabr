@@ -430,17 +430,21 @@ aljabr.GroupBuilder = aljabr.Class({
     },
     /**
      * Set a specific element.
-     * XXX - can an element be overwritten or just set once?
      * @param i - row
      * @param j - column
      * @param element - Element to assign to (i, j)
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, markQueue, head, row, col, el, elIndex, x;
+        var model, markQueue, head, row, col, el, elIndex, x, assRow, assCol, assEl;
 
         model = this;
 
+        if (model.getElement(i, j) !== null) {
+            console.warn('Error: element already set, (' + i +
+                         ', ' + j + ') = ' + model.getElement(i,j));
+        }
+        
         // console.log('setElement(#{i}, #{j}, #{element})\n');
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
@@ -448,10 +452,10 @@ aljabr.GroupBuilder = aljabr.Class({
 
             if (model.openTable[i][j].length === 0) {
                 if (element !== model.table.getElement(i, j)) {
-                    console.log('Error: cannot change (' + i +
-                                ', ' + j + '): ' +
-                                model.table.getElement(i, j) +
-                                ' to ' + element + '\n');
+                    console.warn('Error: cannot change (' + i +
+                                 ', ' + j + '): ' +
+                                 model.table.getElement(i, j) +
+                                 ' to ' + element + '\n');
                 }
                 else {
                     // console.log('Already set\n');
@@ -470,15 +474,33 @@ aljabr.GroupBuilder = aljabr.Class({
                 return null;
             }
       
-            markQueue = [];
-            markQueue.push([i, j, element]);
+            markQueue = [[i, j, element]];
             while (markQueue.length > 0) {
                 head = markQueue.splice(0, 1)[0];
                 row = head[0];
                 col = head[1];
                 el = head[2];
-                model.checkAssociativityRules(row, col);
                 model.table.setElement(row, col, el);
+                // model.checkAssociativityRules(row, col);
+
+                // Add any elements required by associativity rules
+                if (model.associationTable[row][col].length !== 0) {
+                    for (assRow in model.associationTable[row][col]) {
+                        assCol = model.associationTable[row][col][assRow];
+                        assEl = model.getElement(assRow, assCol);
+                        if (assEl === null) {
+                            markQueue.push([assRow, assCol, el]);
+                        }
+                        else if (assEl !== el) {
+                            console.warn('Error: associativity broken');
+                            console.warn('  (' + row + ', ' + col +
+                                         '): ' + el);
+                            console.warn('  (' + assRow + ', ' +
+                                         assCol + '): ' + assEl);
+                        }
+                    }
+                }
+
                 model.addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
