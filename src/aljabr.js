@@ -49,7 +49,7 @@ aljabr.OperatorTable = aljabr.Class({
     emptyCellCount: 0,
     table: undefined,
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      * @param order - number of rows (and columns) in the table
      */
     init: function(order) {
@@ -130,7 +130,7 @@ aljabr.Group = aljabr.Class({
     order: 0,
     table: null,
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      * @param elements - ElementSet with all the group elements
      */
     init: function(elements, table) {
@@ -369,9 +369,10 @@ aljabr.Group = aljabr.Class({
 aljabr.OpenTable = aljabr.Class({
     cls: 'OpenTable',
     order: 0,
-    openTable: undefined,
+    openTable: undefined,  // [row][col][index] = allowedElement
+    openPos: undefined,    // [element][row][col] = true or false
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      */
     init: function(order) {
         'use strict';
@@ -382,13 +383,16 @@ aljabr.OpenTable = aljabr.Class({
 
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = [];
+        model.openPos = [];
         for (i=0; i<model.order; i++) {
             model.openTable[i] = [];
+            model.openPos[i] = [];
             for (j=0; j<model.order; j++) {
                 model.openTable[i][j] = [];
-                // model.openTable[i][j] = (0..model.order-1).to_set();
+                model.openPos[i][j] = [];
                 for (k=0; k<model.order; k++) {
                     model.openTable[i][j][k] = k;
+                    model.openPos[i][j][k] = true;
                 }
             }
         }
@@ -409,8 +413,20 @@ aljabr.OpenTable = aljabr.Class({
     },
     clear: function(row, col) {
         'use strict';
-        this.openTable[row][col] = [];
+        var model, i;
+
+        model = this;
+        model.openTable[row][col] = [];
+
+        for (i=0; i<model.order; i++) {
+            model.openPos[i][row][col] = false;
+        }
+
+        return;
     },
+    /**
+     * 
+     */
     remove: function(row, col, element) {
         'use strict';
         var model, elIndex;
@@ -422,6 +438,8 @@ aljabr.OpenTable = aljabr.Class({
             model.openTable[row][col].splice(elIndex, 1);
         }
         
+        model.openPos[element][row][col] = false;
+        
         return;
     },
     /**
@@ -431,25 +449,35 @@ aljabr.OpenTable = aljabr.Class({
      */
     openPositions: function(element) {
         'use strict';
-        var model, open, i, j;
 
-        model = this;
-
-        // Table with bool arrays showing which elements are allowed in a cell
-        open = [];
-        for (i=0; i<model.order; i++) {
-            open[i] = [];
-            for (j=0; j<model.order; j++) {
-                open[i][j] = false;
-                if (model.openTable[i][j].length > 0 &&
-                    model.openTable[i][j].indexOf(element) >= 0) {
-                    open[i][j] = true;
-                }
-            }
-        }
-        
-        return open;
+        return this.openPos[element];
     },
+    /**
+     * Get a table showing where an element can be placed.
+     * @param element - element index
+     * @returns boolean mask of openTable showing open positions
+     */
+    // openPositions2: function(element) {
+    //     'use strict';
+    //     var model, open, i, j;
+
+    //     model = this;
+
+    //     // Table with bool arrays showing which elements are allowed in a cell
+    //     open = [];
+    //     for (i=0; i<model.order; i++) {
+    //         open[i] = [];
+    //         for (j=0; j<model.order; j++) {
+    //             open[i][j] = false;
+    //             if (model.openTable[i][j].length > 0 &&
+    //                 model.openTable[i][j].indexOf(element) >= 0) {
+    //                 open[i][j] = true;
+    //             }
+    //         }
+    //     }
+        
+    //     return open;
+    // },
     /**
      * Print out a table showing which elements can be placed in which
      * open positions in the operator table.
@@ -492,7 +520,7 @@ aljabr.GroupBuilder = aljabr.Class({
     table: undefined,
     openTable: undefined,
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      * @param elements - ElementSet with all the group elements
      */
     init: function(elements) {
@@ -890,7 +918,7 @@ aljabr.Permutor = aljabr.Class({
     actionArray: undefined,
     order: 0,
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      * @param actionArray - permutor representation
      */
     init: function(actionArray) {
@@ -1015,7 +1043,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
     group: undefined,
     permutorOrder: 0,
     /**
-     * The +new+ class method initializes the class.
+     * Initialize the class.
      * Pass in array of Permutors
      * @param generators - array of generators represented as +Permutors+
      */
