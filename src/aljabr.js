@@ -724,11 +724,12 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     addAssociativityRules: function(row, col, el) {
         'use strict';
-        var model;
+        var model, tempEl1, tempEl2;
 
         model = this;
-        
+
         if (row === col) {
+            // row: a, col: a, el: b
             // a(aa) = (aa)a
             // aa = b
             // => ab = ba
@@ -740,6 +741,7 @@ aljabr.GroupBuilder = aljabr.Class({
         else {
             if (el === model.table.getElement(row, col) &&
                 el === model.table.getElement(col, row)) {
+                // row: a, col: b, el: c
                 // a(ba) = (ab)a
                 // ba = c, ab = c (a and b commute)
                 // => ac = ca, bc = cb
@@ -752,10 +754,34 @@ aljabr.GroupBuilder = aljabr.Class({
                     model.associationTable[el][col][col] = el;
                 }
             }
+            else {
+                // b(aa) = (ba)a, a(ab) = (aa)b
+                // aa = c, ba = d, ab = f
+                // => bc = da, af = cb
+                // row: a, col: b, el: f, tempEl1: c, tempEl2: d
+                tempEl1 = model.table.getElement(row, row);
+                tempEl2 = model.table.getElement(col, row);
+                if (tempEl1 !== null && tempEl2 !== null) {
+                    // bc = da
+                    model.associationTable[col][tempEl1][tempEl2] = row;
+                    model.associationTable[tempEl2][row][col] = tempEl1;
+                    // af = cb
+                    model.associationTable[row][el][tempEl1] = col;
+                    model.associationTable[tempEl1][col][row] = el;
+                }
 
-            // b(aa) = (ba)a, a(ab) = (aa)b
-            // aa = c, ba = d, ab = f
-            // => bc = da, af = cb
+                // row: b, col: a, el: d, tempEl1: c, tempEl2: f
+                tempEl1 = model.table.getElement(col, col);
+                tempEl2 = model.table.getElement(col, row);
+                if (tempEl1 !== null && tempEl2 !== null) {
+                    // bc = da
+                    model.associationTable[row][tempEl1][el] = col;
+                    model.associationTable[el][col][row] = tempEl1;
+                    // af = cb
+                    model.associationTable[col][tempEl2][tempEl1] = row;
+                    model.associationTable[tempEl1][row][col] = tempEl2;
+                }
+            }
             
             // a(ba) = (ab)a, b(ab) = (ba)b
             // ba = c, ab = d

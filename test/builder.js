@@ -391,9 +391,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
-                console.log('i: ' + i);
-                console.log('i[1]: ' + i[1]);
-                console.log('view.points[i[1]]: ' + view.points[i[1]]);
                 return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
@@ -721,15 +718,15 @@ $(document).ready(function() {
     elements.push('b');
     elements.push('c');
     elements.push('d');
-    elements.push('f');
+    // elements.push('f');
     // elements.push('g');
     // elements.push('h');
     aljabr.group = new aljabr.GroupBuilder(elements);
     
     group = aljabr.group;
-    group.setElement(2, 2, 1);
-    group.setElement(3, 5, 1);
-    group.setElement(4, 3, 1);
+    // group.setElement(2, 2, 1);
+    // group.setElement(3, 5, 1);
+    // group.setElement(4, 3, 1);
     // group.setElement(5, 4, 1);   // should have already been set
     // group.setElement(1, 1, 2);
     // group.setElement(3, 4, 2);
