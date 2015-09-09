@@ -371,6 +371,7 @@ aljabr.OpenTable = aljabr.Class({
     order: 0,
     openTable: undefined,  // [row][col][index] = allowedElement
     openPos: undefined,    // [element][row][col] = true or false
+    nextPos: null,    //  {el: el, row: row, col: col}: next position to close
     /**
      * Initialize the class.
      */
@@ -422,6 +423,13 @@ aljabr.OpenTable = aljabr.Class({
             model.openPos[i][row][col] = false;
         }
 
+        if (model.nextPos !== null &&
+            model.nextPos.row === row &&
+            model.nextPos.col === col) {
+            console.warn('cleared nextPos');
+            model.nextPos = null;
+        }
+        
         return;
     },
     /**
@@ -439,6 +447,14 @@ aljabr.OpenTable = aljabr.Class({
         }
         
         model.openPos[element][row][col] = false;
+
+        if (model.nextPos !== null &&
+            model.nextPos.el === element &&
+            model.nextPos.row === row &&
+            model.nextPos.col === col) {
+            console.warn('removed nextPos');
+            model.nextPos = null;
+        }
         
         return;
     },
@@ -478,6 +494,34 @@ aljabr.OpenTable = aljabr.Class({
         
     //     return open;
     // },
+    /**
+     * Go through open positions to find any cases where an element
+     * has only one available open position in a row or column.
+     */
+    findNextPos: function() {
+        'use strict';
+        var model, el, row, col;
+
+        model = this;
+        if (model.nextPos !== null) {
+            return null;
+        }
+        
+        for (el=0; el<model.order; el++) {
+            for (row=0; row<model.order; row++) {
+                col = model.openPos[el][row].indexOf(true);
+                if (col === -1) {
+                    continue;
+                }
+                if (model.openPos[el][row].indexOf(true) === -1) {
+                    model.nextPos = {el: el, row: row, col: col};
+                    return model.nextPos;
+                }
+            }
+        }
+
+        return null;
+    },
     /**
      * Print out a table showing which elements can be placed in which
      * open positions in the operator table.
@@ -582,7 +626,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRow, assCol, assEl;
+        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRow, assCol, assEl, nextPos;
 
         model = this;
         openTable = model.openTable;
@@ -673,6 +717,12 @@ aljabr.GroupBuilder = aljabr.Class({
                     if (openList.length === 1) {
                         markQueue.push([row, x, openList[0]]);
                     }
+                }
+
+                // Check for single open positions
+                nextPos = openTable.findNextPos();
+                if (nextPos !== null) {
+                    markQueue.push([nextPos.row, nextPos.col, nextPos.el])
                 }
             }
         }
