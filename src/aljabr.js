@@ -369,7 +369,7 @@ aljabr.Group = aljabr.Class({
 aljabr.OpenTable = aljabr.Class({
     cls: 'OpenTable',
     order: 0,
-    openTable: undefined,  // [row][col][index] = allowedElement
+    table: undefined,  // [row][col][index] = allowedElement
     openPos: undefined,    // [element][row][col] = true or false
     nextPos: null,    //  {el: el, row: row, col: col}: next position to close
     /**
@@ -383,16 +383,16 @@ aljabr.OpenTable = aljabr.Class({
         model.order = order;
 
         // Table with bool arrays showing which elements are allowed in a cell
-        model.openTable = [];
+        model.table = [];
         model.openPos = [];
         for (i=0; i<model.order; i++) {
-            model.openTable[i] = [];
+            model.table[i] = [];
             model.openPos[i] = [];
             for (j=0; j<model.order; j++) {
-                model.openTable[i][j] = [];
+                model.table[i][j] = [];
                 model.openPos[i][j] = [];
                 for (k=0; k<model.order; k++) {
-                    model.openTable[i][j][k] = k;
+                    model.table[i][j][k] = k;
                     model.openPos[i][j][k] = true;
                 }
             }
@@ -401,7 +401,7 @@ aljabr.OpenTable = aljabr.Class({
     isAllowed: function(row, col, element) {
         'use strict';
 
-        if (this.openTable[row][col].indexOf(element) === -1) {
+        if (this.table[row][col].indexOf(element) === -1) {
             return false;
         }
         
@@ -410,14 +410,14 @@ aljabr.OpenTable = aljabr.Class({
     allowedList: function(row, col) {
         'use strict';
 
-        return this.openTable[row][col];
+        return this.table[row][col];
     },
     clear: function(row, col) {
         'use strict';
         var model, i;
 
         model = this;
-        model.openTable[row][col] = [];
+        model.table[row][col] = [];
 
         for (i=0; i<model.order; i++) {
             model.openPos[i][row][col] = false;
@@ -441,9 +441,9 @@ aljabr.OpenTable = aljabr.Class({
 
         model = this;
         
-        elIndex = model.openTable[row][col].indexOf(element);
+        elIndex = model.table[row][col].indexOf(element);
         if (elIndex > -1) {
-            model.openTable[row][col].splice(elIndex, 1);
+            model.table[row][col].splice(elIndex, 1);
         }
         
         model.openPos[element][row][col] = false;
@@ -461,39 +461,13 @@ aljabr.OpenTable = aljabr.Class({
     /**
      * Get a table showing where an element can be placed.
      * @param element - element index
-     * @returns boolean mask of openTable showing open positions
+     * @returns boolean mask of table showing open positions
      */
     openPositions: function(element) {
         'use strict';
 
         return this.openPos[element];
     },
-    /**
-     * Get a table showing where an element can be placed.
-     * @param element - element index
-     * @returns boolean mask of openTable showing open positions
-     */
-    // openPositions2: function(element) {
-    //     'use strict';
-    //     var model, open, i, j;
-
-    //     model = this;
-
-    //     // Table with bool arrays showing which elements are allowed in a cell
-    //     open = [];
-    //     for (i=0; i<model.order; i++) {
-    //         open[i] = [];
-    //         for (j=0; j<model.order; j++) {
-    //             open[i][j] = false;
-    //             if (model.openTable[i][j].length > 0 &&
-    //                 model.openTable[i][j].indexOf(element) >= 0) {
-    //                 open[i][j] = true;
-    //             }
-    //         }
-    //     }
-        
-    //     return open;
-    // },
     /**
      * Go through open positions to find any cases where an element
      * has only one available open position in a row or column.
@@ -537,10 +511,10 @@ aljabr.OpenTable = aljabr.Class({
             for (j=0; j<model.order; j++) {
                 console.log('   col ' + j + '\n');
                 console.log('      ');
-                // console.log('openTable[' + i + '][' + j + '].class: ' + model.openTable[i][j].class + '\n');
-                // console.log('openTable[' + i + '][' + j + '].length: ' + model.openTable[i][j].length + '\n');
-                // console.log('openTable[0][0].length: ' + model.openTable[0][0].length + '\n');
-                _.each(model.openTable[i][j], function(el) {
+                // console.log('table[' + i + '][' + j + '].class: ' + model.table[i][j].class + '\n');
+                // console.log('table[' + i + '][' + j + '].length: ' + model.table[i][j].length + '\n');
+                // console.log('table[0][0].length: ' + model.table[0][0].length + '\n');
+                _.each(model.table[i][j], function(el) {
                     // console.log(el.class + ' ');
                     console.log(el + ' ');
                 });
@@ -550,6 +524,147 @@ aljabr.OpenTable = aljabr.Class({
     }
 });
 
+
+/**
+ * This class holds information about positions in an OperatorTable
+ * that are still available for specific elements.
+ */
+aljabr.AssociationTable = aljabr.Class({
+    cls: 'AssociationTable',
+    order: 0,
+    table: undefined,   // [row][col][index] = allowedElement
+    builder: undefined, // GroupBuilder
+    /**
+     * Initialize the class.
+     */
+    init: function(order, builder) {
+        'use strict';
+        var model, i, j, k;
+
+        model = this;
+        model.order = order;
+        model.builder = builder;
+
+        model.table = [];
+        for (i=0; i<model.order; i++) {
+            model.table[i] = [];
+            for (j=0; j<model.order; j++) {
+                model.table[i][j] = {};
+            }
+        }
+    },
+    /**
+     * Get association rules for a given position
+     * @param row - row
+     * @param col - column
+     */
+    rules: function(row, col) {
+        'use strict';
+        
+        return this.table[row][col];
+    },
+    /**
+     * Check associativity rules for this position.
+     * @param row - row
+     * @param col - column
+     */
+    checkAssociativityRules: function(row, col) {
+        'use strict';
+        var model, r, firstFlag;
+
+        model = this;
+        firstFlag = true;
+
+        if (model.table[row][col].length !== 0) {
+            for (r in model.table[row][col]) {
+                if (firstFlag) {
+                    console.log('(' + row + ', ' + col + ') =');
+                    firstFlag = false;
+                }
+                console.log('  (' + r + ', ' + model.table[row][col][r] + ')');
+            }
+        }
+    },
+    /**
+     * Add any new associativity rules that result from the addition
+     * of this element at this position.
+     * @param i - row
+     * @param j - column
+     * @param el - element index to assign to (i, j)
+     */
+    addAssociativityRules: function(row, col, el) {
+        'use strict';
+        var model, builder, tempEl1, tempEl2;
+
+        model = this;
+        builder = model.builder;
+
+        if (row === col) {
+            // row: a, col: a, el: b
+            // a(aa) = (aa)a
+            // aa = b
+            // => ab = ba
+            if (row !== el) {
+                model.table[row][el][el] = row;
+                model.table[el][row][row] = el;
+            }
+        }
+        else {
+            if (el === builder.getElement(row, col) &&
+                el === builder.getElement(col, row)) {
+                // row: a, col: b, el: c
+                // a(ba) = (ab)a
+                // ba = c, ab = c (a and b commute)
+                // => ac = ca, bc = cb
+                if (el !== row) {
+                    model.table[row][el][el] = row;
+                    model.table[el][row][row] = el;
+                }
+                if (el !== col) {
+                    model.table[col][el][el] = col;
+                    model.table[el][col][col] = el;
+                }
+            }
+            else {
+                // b(aa) = (ba)a, a(ab) = (aa)b
+                // aa = c, ba = d, ab = f
+                // => bc = da, af = cb
+                // row: a, col: b, el: f, tempEl1: c, tempEl2: d
+                tempEl1 = builder.getElement(row, row);
+                tempEl2 = builder.getElement(col, row);
+                if (tempEl1 !== null && tempEl2 !== null) {
+                    // bc = da
+                    model.table[col][tempEl1][tempEl2] = row;
+                    model.table[tempEl2][row][col] = tempEl1;
+                    // af = cb
+                    model.table[row][el][tempEl1] = col;
+                    model.table[tempEl1][col][row] = el;
+                }
+
+                // row: b, col: a, el: d, tempEl1: c, tempEl2: f
+                tempEl1 = builder.getElement(col, col);
+                tempEl2 = builder.getElement(col, row);
+                if (tempEl1 !== null && tempEl2 !== null) {
+                    // bc = da
+                    model.table[row][tempEl1][el] = col;
+                    model.table[el][col][row] = tempEl1;
+                    // af = cb
+                    model.table[col][tempEl2][tempEl1] = row;
+                    model.table[tempEl1][row][col] = tempEl2;
+                }
+            }
+            
+            // a(ba) = (ab)a, b(ab) = (ba)b
+            // ba = c, ab = d
+            // => ac = da, bd = cb
+            
+            // Most general case
+            // c(ba) = (cb)a
+            // ba = d, cb = f
+            // cd = fa
+        }
+    }
+});
 
 /**
  * This class holds an intermediate representation for a Group that
@@ -563,6 +678,7 @@ aljabr.GroupBuilder = aljabr.Class({
     order: 0,
     table: undefined,
     openTable: undefined,
+    associationTable: undefined,
     /**
      * Initialize the class.
      * @param elements - ElementSet with all the group elements
@@ -578,26 +694,9 @@ aljabr.GroupBuilder = aljabr.Class({
         
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = new aljabr.OpenTable(model.order);
-        // model.openTable = [];
-        // for (i=0; i<model.order; i++) {
-        //     model.openTable[i] = [];
-        //     for (j=0; j<model.order; j++) {
-        //         model.openTable[i][j] = [];
-        //         // model.openTable[i][j] = (0..model.order-1).to_set();
-        //         for (k=0; k<model.order; k++) {
-        //             model.openTable[i][j][k] = k;
-        //         }
-        //     }
-        // }
 
         // Table with associations that declare pairs of cells equal
-        model.associationTable = [];
-        for (i=0; i<model.order; i++) {
-            model.associationTable[i] = [];
-            for (j=0; j<model.order; j++) {
-                model.associationTable[i][j] = {};
-            }
-        }
+        model.associationTable = new aljabr.AssociationTable(model.order, model);
 
         // Set first column and row to identity
         model.setElement(0, 0, 0);
@@ -626,7 +725,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRow, assCol, assEl, nextPos;
+        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos;
 
         model = this;
         openTable = model.openTable;
@@ -683,9 +782,10 @@ aljabr.GroupBuilder = aljabr.Class({
                 // model.checkAssociativityRules(row, col);
 
                 // Add any elements required by associativity rules
-                if (model.associationTable[row][col].length !== 0) {
-                    for (assRow in model.associationTable[row][col]) {
-                        assCol = model.associationTable[row][col][assRow];
+                assRules = model.associationTable.rules(row, col);
+                if (assRules.length !== 0) {
+                    for (assRow in assRules) {
+                        assCol = assRules[assRow];
                         assEl = model.getElement(assRow, assCol);
                         if (assEl === null) {
                             markQueue.push([assRow, assCol, el]);
@@ -700,7 +800,7 @@ aljabr.GroupBuilder = aljabr.Class({
                     }
                 }
 
-                model.addAssociativityRules(row, col, el);
+                model.associationTable.addAssociativityRules(row, col, el);
                 
                 // Remove element from other cells in this row and column
                 openTable.clear(row, col);
@@ -770,106 +870,6 @@ aljabr.GroupBuilder = aljabr.Class({
         'use strict';
         
         return this.openTable.openPositions(element);
-    },
-    /**
-     * Check associativity rules for this position.
-     * @param i - row
-     * @param j - column
-     */
-    checkAssociativityRules: function(row, col) {
-        'use strict';
-        var model, r, firstFlag;
-
-        model = this;
-        firstFlag = true;
-
-        if (model.associationTable[row][col].length !== 0) {
-            for (r in model.associationTable[row][col]) {
-                if (firstFlag) {
-                    console.log('(' + row + ', ' + col + ') =');
-                    firstFlag = false;
-                }
-                console.log('  (' + r + ', ' + model.associationTable[row][col][r] + ')');
-            }
-        }
-    },
-    /**
-     * Add any new associativity rules that result from the addition
-     * of this element at this position.
-     * @param i - row
-     * @param j - column
-     * @param el - element index to assign to (i, j)
-     */
-    addAssociativityRules: function(row, col, el) {
-        'use strict';
-        var model, tempEl1, tempEl2;
-
-        model = this;
-
-        if (row === col) {
-            // row: a, col: a, el: b
-            // a(aa) = (aa)a
-            // aa = b
-            // => ab = ba
-            if (row !== el) {
-                model.associationTable[row][el][el] = row;
-                model.associationTable[el][row][row] = el;
-            }
-        }
-        else {
-            if (el === model.table.getElement(row, col) &&
-                el === model.table.getElement(col, row)) {
-                // row: a, col: b, el: c
-                // a(ba) = (ab)a
-                // ba = c, ab = c (a and b commute)
-                // => ac = ca, bc = cb
-                if (el !== row) {
-                    model.associationTable[row][el][el] = row;
-                    model.associationTable[el][row][row] = el;
-                }
-                if (el !== col) {
-                    model.associationTable[col][el][el] = col;
-                    model.associationTable[el][col][col] = el;
-                }
-            }
-            else {
-                // b(aa) = (ba)a, a(ab) = (aa)b
-                // aa = c, ba = d, ab = f
-                // => bc = da, af = cb
-                // row: a, col: b, el: f, tempEl1: c, tempEl2: d
-                tempEl1 = model.table.getElement(row, row);
-                tempEl2 = model.table.getElement(col, row);
-                if (tempEl1 !== null && tempEl2 !== null) {
-                    // bc = da
-                    model.associationTable[col][tempEl1][tempEl2] = row;
-                    model.associationTable[tempEl2][row][col] = tempEl1;
-                    // af = cb
-                    model.associationTable[row][el][tempEl1] = col;
-                    model.associationTable[tempEl1][col][row] = el;
-                }
-
-                // row: b, col: a, el: d, tempEl1: c, tempEl2: f
-                tempEl1 = model.table.getElement(col, col);
-                tempEl2 = model.table.getElement(col, row);
-                if (tempEl1 !== null && tempEl2 !== null) {
-                    // bc = da
-                    model.associationTable[row][tempEl1][el] = col;
-                    model.associationTable[el][col][row] = tempEl1;
-                    // af = cb
-                    model.associationTable[col][tempEl2][tempEl1] = row;
-                    model.associationTable[tempEl1][row][col] = tempEl2;
-                }
-            }
-            
-            // a(ba) = (ab)a, b(ab) = (ba)b
-            // ba = c, ab = d
-            // => ac = da, bd = cb
-            
-            // Most general case
-            // c(ba) = (cb)a
-            // ba = d, cb = f
-            // cd = fa
-        }
     },
     /**
      * Whether the operator table is completely filled out or not
