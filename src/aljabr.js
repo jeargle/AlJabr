@@ -1501,6 +1501,34 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
 };
 
 
+/**
+ * Prime factorization.
+ * @param num - 
+ * @param factors - list of calculated prime factors
+ * @returns - list of calculated prime factors
+ */
+aljabr.factor = function(num, factors) {
+    'use strict';
+    var root, x;
+    
+    root = Math.sqrt(num);
+    if (factors === undefined) {
+        factors = [];
+    }
+    x = 2; 
+  
+    if (num % x) {
+        x = 3;
+        while ((num % x) && ((x = x + 2) < root)) {}
+    }
+    
+    x = (x <= root) ? x : num;
+    factors.push(x);
+    
+    return (x === num) ? factors : aljabr.factor(num/x, factors);
+};
+
+
 //----------------------------
 // Namespacing
 //----------------------------
