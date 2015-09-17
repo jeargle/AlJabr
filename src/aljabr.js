@@ -369,9 +369,10 @@ aljabr.Group = aljabr.Class({
 aljabr.OpenTable = aljabr.Class({
     cls: 'OpenTable',
     order: 0,
-    table: undefined,  // [row][col][index] = allowedElement
-    openPos: undefined,    // [element][row][col] = true or false
-    nextPos: null,    //  {el: el, row: row, col: col}: next position to close
+    factors: undefined,  // array of prime factors
+    table: undefined,    // [row][col][index] = allowedElement
+    openPos: undefined,  // [element][row][col] = true or false
+    nextPos: null,       //  {el: el, row: row, col: col}: next position to close
     /**
      * Initialize the class.
      */
@@ -381,6 +382,7 @@ aljabr.OpenTable = aljabr.Class({
 
         model = this;
         model.order = order;
+        model.factors = aljabr.factor(model.order);
 
         // Table with bool arrays showing which elements are allowed in a cell
         model.table = [];
@@ -395,6 +397,13 @@ aljabr.OpenTable = aljabr.Class({
                     model.table[i][j][k] = k;
                     model.openPos[i][j][k] = true;
                 }
+            }
+        }
+
+        // Remove bad identity slots
+        if (model.factors.indexOf(2) === -1) {
+            for (i=1; i<model.order; i++) {
+                model.remove(i, i, 0);
             }
         }
     },
@@ -1503,9 +1512,9 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
 
 /**
  * Prime factorization.
- * @param num - 
- * @param factors - list of calculated prime factors
- * @returns - list of calculated prime factors
+ * @param num - number to factor
+ * @param factors - temporary list of calculated prime factors
+ * @returns - list of prime factors
  */
 aljabr.factor = function(num, factors) {
     'use strict';

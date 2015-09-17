@@ -720,7 +720,7 @@ $(document).ready(function() {
     elements.push('d');
     elements.push('f');
     elements.push('g');
-    elements.push('h');
+    // elements.push('h');
     aljabr.group = new aljabr.GroupBuilder(elements);
     
     group = aljabr.group;
