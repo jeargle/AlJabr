@@ -375,6 +375,7 @@ aljabr.OpenTable = aljabr.Class({
     nextPos: null,       //  {el: el, row: row, col: col}: next position to close
     /**
      * Initialize the class.
+     * @param order {number} - size of underlying group
      */
     init: function(order) {
         'use strict';
@@ -407,6 +408,14 @@ aljabr.OpenTable = aljabr.Class({
             }
         }
     },
+    /**
+     * Whether or not an element is a possibility for the given
+     * position.
+     * @param row {number} - row index
+     * @param col {number} - column index
+     * @param element {number} - element index
+     * @returns true or false
+     */
     isAllowed: function(row, col, element) {
         'use strict';
 
@@ -416,11 +425,24 @@ aljabr.OpenTable = aljabr.Class({
         
         return true;
     },
+    /**
+     * Return a list of remaining possible elements for a given
+     * position.
+     * @param row {number} - row index
+     * @param col {number} - column index
+     * @returns list of available elements
+     */
     allowedList: function(row, col) {
         'use strict';
 
         return this.table[row][col];
     },
+    /**
+     * Remove all remaining elements as a possible options for a given
+     * position.
+     * @param row {number} - row index
+     * @param col {number} - column index
+     */
     clear: function(row, col) {
         'use strict';
         var model, i;
@@ -442,7 +464,10 @@ aljabr.OpenTable = aljabr.Class({
         return;
     },
     /**
-     * 
+     * Remove element as a possible option for a given position.
+     * @param row {number} - row index
+     * @param col {number} - column index
+     * @param element {number} - element index
      */
     remove: function(row, col, element) {
         'use strict';
