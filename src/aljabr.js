@@ -188,6 +188,8 @@ aljabr.Group = aljabr.Class({
         }
 
         if (elPower === null) {
+            console.warn('Error - element order is broken for element ' +
+                         model.elements[el]);
             return 0;
         }
 
@@ -372,7 +374,7 @@ aljabr.OpenTable = aljabr.Class({
     factors: undefined,  // array of prime factors
     table: undefined,    // [row][col][index] = allowedElement
     openPos: undefined,  // [element][row][col] = true or false
-    nextPos: null,       //  {el: el, row: row, col: col}: next position to close
+    nextPos: null,       // {el: el, row: row, col: col}: next position to close
     /**
      * Initialize the class.
      * @param order {number} - size of underlying group
@@ -383,7 +385,9 @@ aljabr.OpenTable = aljabr.Class({
 
         model = this;
         model.order = order;
-        model.factors = aljabr.factor(model.order);
+        model.factors = _.uniq(aljabr.factor(model.order));
+        console.log('factors:');
+        console.log(model.factors);
 
         // Table with bool arrays showing which elements are allowed in a cell
         model.table = [];
@@ -865,9 +869,10 @@ aljabr.GroupBuilder = aljabr.Class({
     /**
      * Get the order of an element.
      * @param el - element index
-     * @returns order of the element
+     * @param rightSide - whether or not multiplication is on right side; default true
+     * @returns order of the element; negative if order is not complete
      */
-    elementOrder: function(el) {
+    elementOrder: function(el, rightSide) {
         'use strict';
         var model, order, elPower;
 
@@ -881,16 +886,28 @@ aljabr.GroupBuilder = aljabr.Class({
             return 0;
         }
 
+        if (rightSide === undefined) {
+            rightSide = true;
+        }
+
         order = 1;
         elPower = el;
         // Loop through powers of el
-        while (elPower !== null && elPower !== 0) {
-            elPower = model.table.getElement(elPower, el);
-            order += 1;
+        if (rightSide) {
+            while (elPower !== null && elPower !== 0) {
+                elPower = model.table.getElement(elPower, el);
+                order += 1;
+            }
+        }
+        else {
+            while (elPower !== null && elPower !== 0) {
+                elPower = model.table.getElement(el, elPower);
+                order += 1;
+            }
         }
 
         if (elPower === null) {
-            return 0;
+            return -order;
         }
 
         return order;

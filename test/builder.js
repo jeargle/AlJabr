@@ -530,7 +530,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return 'magenta';
             })
             .on('click', function(s, i) {
-                view.layoutNested(view.activeEdge);
+                view.layoutNested(view.activeEdge, Math.PI/5.0);
             });
         svg.append('text')
             .classed('lLabel', true)
