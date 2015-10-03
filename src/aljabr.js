@@ -870,20 +870,20 @@ aljabr.GroupBuilder = aljabr.Class({
      * Get the order of an element.
      * @param el - element index
      * @param rightSide - whether or not multiplication is on right side; default true
-     * @returns order of the element; negative if order is not complete
+     * @returns [order of the element (negative if order is not complete), last valid power]
      */
     elementOrder: function(el, rightSide) {
         'use strict';
-        var model, order, elPower;
+        var model, order, elPower, prevPower;
 
         model = this;
         
         if (el === 0) {
-            return 1;
+            return [1, 0];
         }
         else if (el >= model.order) {
             console.log('Error: element index too large');
-            return 0;
+            return [0, 0];
         }
 
         if (rightSide === undefined) {
@@ -895,22 +895,24 @@ aljabr.GroupBuilder = aljabr.Class({
         // Loop through powers of el
         if (rightSide) {
             while (elPower !== null && elPower !== 0) {
+                prevPower = elPower;
                 elPower = model.table.getElement(elPower, el);
                 order += 1;
             }
         }
         else {
             while (elPower !== null && elPower !== 0) {
+                prevPower = elPower;
                 elPower = model.table.getElement(el, elPower);
                 order += 1;
             }
         }
 
         if (elPower === null) {
-            return -order;
+            return [-order, prevPower];
         }
 
-        return order;
+        return [order, elPower];
     },
     /**
      * Get a table showing where an element can be placed.
