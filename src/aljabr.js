@@ -916,6 +916,59 @@ aljabr.GroupBuilder = aljabr.Class({
         return [order, elPower];
     },
     /**
+     * Get all subsequences for powers of the given element.
+     * @param el - element index
+     * @param rightSide - whether or not multiplication is on right side; default true
+     * @returns array of subsequences
+     */
+    subsequences: function(el, rightSide) {
+        'use strict';
+        var model, subseqs, starts, i, product;
+
+        model = this;
+        subseqs = [];
+
+        if (rightSide === undefined) {
+            rightSide = true;
+        }
+
+        starts = [];
+        for (i=0; i<model.order; i++) {
+            starts.push(true);
+        }
+
+        if (rightSide) {
+            for (i=0; i<model.order; i++) {
+                product = model.table.getElement(i, el);
+                if (product === null) {
+                    starts[i] = false;
+                }
+                else {
+                    starts[product] = false;
+                }
+            }
+        }
+        else {
+            for (i=0; i<model.order; i++) {
+                product = model.table.getElement(el, i);
+                if (product === null) {
+                    starts[i] = false;
+                }
+                else {
+                    starts[product] = false;
+                }
+            }
+        }
+        
+        for (i=0; i<starts.length; i++) {
+            if (starts[i]) {
+                subseqs.push(model.subsequence(el, i, rightSide));
+            }
+        }
+
+        return subseqs;
+    },
+    /**
      * Get the subsequence for powers of element1 starting at element2.
      * @param el1 - element index
      * @param el2 - element index
