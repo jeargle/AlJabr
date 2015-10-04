@@ -867,6 +867,7 @@ aljabr.GroupBuilder = aljabr.Class({
         // XXX - else throw exception
     },
     /**
+     * TODO - return all known subsequences of powers starting with smallest element index
      * Get the order of an element.
      * @param el - element index
      * @param rightSide - whether or not multiplication is on right side; default true
@@ -913,6 +914,51 @@ aljabr.GroupBuilder = aljabr.Class({
         }
 
         return [order, elPower];
+    },
+    /**
+     * Get the subsequence for powers of element1 starting at element2.
+     * @param el1 - element index
+     * @param el2 - element index
+     * @param rightSide - whether or not multiplication is on right side; default true
+     * @returns array of elements from el2 to first null factor
+     */
+    subsequence: function(el1, el2, rightSide) {
+        'use strict';
+        var model, subseq, elPower, prevPower;
+
+        model = this;
+        subseq = [];
+        
+        if (el1 === 0) {
+            return [0];
+        }
+        else if (el1 >= model.order) {
+            console.log('Error: element index too large');
+            return [0];
+        }
+
+        if (rightSide === undefined) {
+            rightSide = true;
+        }
+
+        subseq.push(el2);
+        // Loop through powers of el
+        if (rightSide) {
+            elPower = model.table.getElement(el2, el1);
+            while (elPower !== null && elPower !== el2) {
+                subseq.push(elPower);
+                elPower = model.table.getElement(elPower, el1);
+            }
+        }
+        else {
+            elPower = model.table.getElement(el1, el2);
+            while (elPower !== null && elPower !== el2) {
+                subseq.push(elPower);
+                elPower = model.table.getElement(el1, elPower);
+            }
+        }
+
+        return subseq;
     },
     /**
      * Get a table showing where an element can be placed.
