@@ -36,6 +36,43 @@ aljabr.Class = function(methods) {
 
 
 /**
+ *
+ */
+aljabr.alphaElements = function(order) {
+    'use strict';
+    var i, alpha, elements;
+
+    if (order > 26) {
+        console.warn('Error - order larger than 26');
+        return null;
+    }
+    
+    alpha = ['e', 'a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k',
+             'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+             'w', 'x', 'y', 'z'];
+    elements = alpha.slice(0,order);
+
+    return elements;
+};
+
+
+/**
+ *
+ */
+aljabr.numElements = function(order) {
+    'use strict';
+    var i, elements;
+
+    elements = [];
+    for (i=0; i<order; i++) {
+        elements.push(toString(i));
+    }
+
+    return elements;
+};
+
+
+/**
  * This class holds the elements of a multiplication table.
  * The table only contains ints or null; the ints are indices
  * into an ElementSet array.

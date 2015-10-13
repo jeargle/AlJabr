@@ -711,17 +711,7 @@ $(document).ready(function() {
     // aljabr.group = aljabr.buildDihedralGroup(6);
     // aljabr.group = aljabr.buildAlternatingGroup(4);
     // aljabr.group = aljabr.buildSymmetryGroup(3);
-    aljabr.elements = [];
-    elements = aljabr.elements;
-    elements.push('e');
-    elements.push('a');
-    elements.push('b');
-    elements.push('c');
-    elements.push('d');
-    elements.push('f');
-    elements.push('g');
-    // elements.push('h');
-    aljabr.group = new aljabr.GroupBuilder(elements);
+    aljabr.group = new aljabr.GroupBuilder(aljabr.alphaElements(8));
     
     group = aljabr.group;
     // group.setElement(2, 2, 1);
