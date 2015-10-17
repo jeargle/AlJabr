@@ -422,7 +422,7 @@ aljabr.OpenTable = aljabr.Class({
 
         model = this;
         model.order = order;
-        model.factors = _.uniq(aljabr.factor(model.order));
+        model.factors = _.uniq(aljabr.factors(model.order));
         console.log('factors:');
         console.log(model.factors);
 
@@ -1691,12 +1691,52 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
 
 
 /**
+ * Find all integer factors for a given number.
+ * @param num - number to factor
+ * @returns - sorted list of integer factors
+ */
+aljabr.factors = function(num) {
+    'use strict';
+    var primeFactors, factor, primeCount, i, powers, factors;
+
+    primeFactors = aljabr.primeFactors(num);
+
+    primeCount = {};
+    for (i=0; i<primeFactors.length; i++) {
+        factor = primeFactors[i];
+        if (primeCount[factor] === undefined) {
+            primeCount[factor] = 1;
+        }
+        else {
+            primeCount[factor]++;
+        }
+    }
+
+    powers = [];
+    for (i in primeCount) {
+        powers.push(aljabr.powers(i, primeCount[i]));
+    }
+
+    factors = [];
+    if (powers.length > 0) {
+        factors = powers[0].slice();
+        for (i=1; i<powers.length; i++) {
+            factors = factors.concat(aljabr.cartProduct(factors, powers[i]));
+            factors = factors.concat(powers[i]);
+        }
+        factors.sort(aljabr.numCompare);
+    }
+    
+    return factors;
+};
+
+/**
  * Prime factorization.
  * @param num - number to factor
  * @param factors - temporary list of calculated prime factors
  * @returns - list of prime factors
  */
-aljabr.factor = function(num, factors) {
+aljabr.primeFactors = function(num, factors) {
     'use strict';
     var root, x;
     
@@ -1714,7 +1754,59 @@ aljabr.factor = function(num, factors) {
     x = (x <= root) ? x : num;
     factors.push(x);
     
-    return (x === num) ? factors : aljabr.factor(num/x, factors);
+    return (x === num) ? factors : aljabr.primeFactors(num/x, factors);
+};
+
+/**
+ * Get list of powers for a given number.
+ * @param {number} num - number to multiply by itself
+ * @param {number} count - number of powers to calculate
+ * @returns array of powers
+ */
+aljabr.powers = function(num, count) {
+    'use strict';
+    var i, powers, tempNum;
+
+    powers = [];
+    tempNum = 1;
+    for (i=0; i<count; i++) {
+        tempNum *= num;
+        powers.push(tempNum);
+    }
+    
+    return powers;
+};
+
+
+/**
+ * Get all pairwise products between two lists of elements.
+ * @param nums1 - list of numbers
+ * @param nums2 - list of numbers
+ * @returns all pairwise products
+ */
+aljabr.cartProduct = function(nums1, nums2) {
+    'use strict';
+    var products, i, j;
+
+    products = [];
+    for (i=0; i<nums1.length; i++) {
+        for (j=0; j<nums2.length; j++) {
+            products.push(nums1[i] * nums2[j]);
+        }
+    }
+    
+    return products;
+};
+
+
+/**
+ * Comparison function for sorting arrays of numbers.
+ * @param {number} a
+ * @param {number} b
+ * @returns a-b
+ */
+aljabr.numCompare = function(a, b) {
+    return a-b;
 };
 
 
