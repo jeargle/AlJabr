@@ -403,12 +403,13 @@ aljabr.Group = aljabr.Class({
 
 /**
  * This class holds information about positions in an OperatorTable
- * that are still available for specific elements.
+ * that are still available for specific elements.  It does not
+ * perform any automatic pruning of the table.  All changes must
+ * be initiated by GroupBuilder.
  */
 aljabr.OpenTable = aljabr.Class({
     cls: 'OpenTable',
     order: 0,
-    factors: undefined,  // array of prime factors
     table: undefined,    // [row][col][index] = allowedElement
     openPos: undefined,  // [element][row][col] = true or false
     nextPos: null,       // {el: el, row: row, col: col}: next position to close
@@ -422,9 +423,6 @@ aljabr.OpenTable = aljabr.Class({
 
         model = this;
         model.order = order;
-        model.factors = _.uniq(aljabr.factors(model.order));
-        console.log('factors:');
-        console.log(model.factors);
 
         // Table with bool arrays showing which elements are allowed in a cell
         model.table = [];
@@ -442,12 +440,6 @@ aljabr.OpenTable = aljabr.Class({
             }
         }
 
-        // Remove bad identity slots
-        if (model.factors.indexOf(2) === -1) {
-            for (i=1; i<model.order; i++) {
-                model.remove(i, i, 0);
-            }
-        }
     },
     /**
      * Whether or not an element is a possibility for the given
@@ -754,6 +746,7 @@ aljabr.GroupBuilder = aljabr.Class({
     table: undefined,
     openTable: undefined,
     associationTable: undefined,
+    factors: undefined,  // array of prime factors
     /**
      * Initialize the class.
      * @param elements - ElementSet with all the group elements
@@ -766,9 +759,18 @@ aljabr.GroupBuilder = aljabr.Class({
         model.elements = elements;
         model.order = model.elements.length;
         model.table = new aljabr.OperatorTable(model.order);
+        model.factors = _.uniq(aljabr.factors(model.order));
+        console.log('factors:');
+        console.log(model.factors);
         
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = new aljabr.OpenTable(model.order);
+        // Remove bad identity slots
+        if (model.factors.indexOf(2) === -1) {
+            for (i=1; i<model.order; i++) {
+                model.openTable.remove(i, i, 0);
+            }
+        }
 
         // Table with associations that declare pairs of cells equal
         model.associationTable = new aljabr.AssociationTable(model.order, model);
