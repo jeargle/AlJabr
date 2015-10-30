@@ -743,6 +743,7 @@ aljabr.GroupBuilder = aljabr.Class({
     cls: 'GroupBuilder',
     elements: undefined,
     order: 0,
+    elementOrders: [],
     table: undefined,
     openTable: undefined,
     associationTable: undefined,
@@ -762,7 +763,12 @@ aljabr.GroupBuilder = aljabr.Class({
         model.factors = _.uniq(aljabr.factors(model.order));
         console.log('factors:');
         console.log(model.factors);
-        
+
+        model.elementOrders[0] = 1;
+        for (i=1; i<model.order; i++) {
+            model.elementOrders[i] = -1;
+        }
+
         // Table with bool arrays showing which elements are allowed in a cell
         model.openTable = new aljabr.OpenTable(model.order);
         // Remove bad identity slots
@@ -779,7 +785,7 @@ aljabr.GroupBuilder = aljabr.Class({
         model.setElement(0, 0, 0);
 
         // Last element is automatically set by setElement()
-        for (i=0; i<model.order; i++) {
+        for (i=1; i<model.order-1; i++) {
             model.setElement(0, i, i);
             model.setElement(i, 0, i);
         }
