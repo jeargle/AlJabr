@@ -931,6 +931,44 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     elementOrder: function(el, rightSide) {
         'use strict';
+        var model, order, seqs, i;
+
+        model = this;
+        
+        if (el === 0) {
+            return 1;
+        }
+        else if (el >= model.order) {
+            console.log('Error: element index too large');
+            return 0;
+        }
+
+        if (rightSide === undefined) {
+            rightSide = true;
+        }
+
+        order = -1;
+        seqs = model.subsequences(el, rightSide);
+        if (seqs.length > 0) {
+            for (i=0; i<seqs.length; i++) {
+                if (seqs[i].length > order) {
+                    order = seqs[i].length;
+                }
+            }
+        }
+        
+        return -order;
+    },
+    /**
+     * TODO - return all known subsequences of powers starting with
+     *   smallest element index
+     * Get the order of an element.
+     * @param el - element index
+     * @param rightSide - whether or not multiplication is on right side; default true
+     * @returns [order of the element (negative if order is not complete), last valid power]
+     */
+    elementOrder2: function(el, rightSide) {
+        'use strict';
         var model, order, elPower, prevPower;
 
         model = this;
@@ -974,7 +1012,7 @@ aljabr.GroupBuilder = aljabr.Class({
     /**
      * Get all subsequences for powers of the given element.
      * @param el - element index
-     * @param rightSide - whether or not multiplication is on right side; default true
+     * @param rightSide - whether or not multiplication is on right side (col traversal); default true
      * @returns array of subsequences
      */
     subsequences: function(el, rightSide) {
@@ -993,26 +1031,19 @@ aljabr.GroupBuilder = aljabr.Class({
             starts.push(true);
         }
 
-        if (rightSide) {
-            for (i=0; i<model.order; i++) {
+        for (i=0; i<model.order; i++) {
+            if (rightSide) {
                 product = model.table.getElement(i, el);
-                if (product === null) {
-                    starts[i] = false;
-                }
-                else {
-                    starts[product] = false;
-                }
             }
-        }
-        else {
-            for (i=0; i<model.order; i++) {
+            else {
                 product = model.table.getElement(el, i);
-                if (product === null) {
-                    starts[i] = false;
-                }
-                else {
-                    starts[product] = false;
-                }
+            }
+            
+            if (product === null) {
+                starts[i] = false;
+            }
+            else {
+                starts[product] = false;
             }
         }
         
@@ -1028,7 +1059,7 @@ aljabr.GroupBuilder = aljabr.Class({
      * Get the subsequence for powers of element1 starting at element2.
      * @param el1 - element index
      * @param el2 - element index
-     * @param rightSide - whether or not multiplication is on right side; default true
+     * @param rightSide - whether or not multiplication is on right side (col traversal); default true
      * @returns array of elements from el2 to first null factor
      */
     subsequence: function(el1, el2, rightSide) {
@@ -1054,6 +1085,7 @@ aljabr.GroupBuilder = aljabr.Class({
         // Loop through powers of el
         if (rightSide) {
             elPower = model.table.getElement(el2, el1);
+            console.log('elPower: ' + elPower);
             while (elPower !== null && elPower !== el2) {
                 subseq.push(elPower);
                 elPower = model.table.getElement(elPower, el1);
