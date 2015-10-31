@@ -808,10 +808,13 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict';
-        var model, openTable, openList, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos;
+        var model, openTable, openList, assTable, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos, error;
+
+        console.log('GroupBuilder.setElement(' + i + ', ' + j + ', ' + element + ')');
 
         model = this;
         openTable = model.openTable;
+        assTable = model.associationTable;
 
         tempEl = model.getElement(i, j);
         if (tempEl !== null) {
@@ -836,25 +839,27 @@ aljabr.GroupBuilder = aljabr.Class({
                     console.warn('Error: cannot change (' + i +
                                  ', ' + j + '): ' +
                                  model.table.getElement(i, j) +
-                                 ' to ' + element + '\n');
+                                 ' to ' + element);
                 }
                 else {
-                    // console.log('Already set\n');
+                    console.warn('Error: already set');
                 }
                 return null;
             }
       
             // Is this element still allowed to be placed here?
             if (!openTable.isAllowed(i, j, element)) {
-                console.log('Error: element #{element} is not allowed at (#{i}, #{j})\n');
-                console.log('openTable[i][j]:');
+                error = 'Error: element ' + element +
+                    ' is not allowed at (' + i + ', ' + j + ')\n';
+                error += '  openTable[' + i + '][' + j + ']: ';
                 _.each(openTable.allowedList(i, j), function(x) {
-                    console.log(x + ' ');
+                    error += x + ' ';
                 });
-                console.log('\n');
+                console.warn(error);
                 return null;
             }
-      
+
+            // markQueue: queue of elements to add to the OperatorTable
             markQueue = [[i, j, element]];
             while (markQueue.length > 0) {
                 head = markQueue.splice(0, 1)[0];
@@ -865,7 +870,7 @@ aljabr.GroupBuilder = aljabr.Class({
                 // model.checkAssociativityRules(row, col);
 
                 // Add any elements required by associativity rules
-                assRules = model.associationTable.rules(row, col);
+                assRules = assTable.rules(row, col);
                 if (assRules.length !== 0) {
                     for (assRow in assRules) {
                         assCol = assRules[assRow];
@@ -874,18 +879,20 @@ aljabr.GroupBuilder = aljabr.Class({
                             markQueue.push([assRow, assCol, el]);
                         }
                         else if (assEl !== el) {
-                            console.warn('Error: associativity broken');
-                            console.warn('  (' + row + ', ' + col +
-                                         '): ' + el);
-                            console.warn('  (' + assRow + ', ' +
-                                         assCol + '): ' + assEl);
+                            error = 'Error: associativity broken\n'
+                            error += '  (' + row + ', ' + col + '): ' +
+                                el + '\n';
+                            error += '  (' + assRow + ', ' + assCol +
+                                '): ' + assEl;
+                            console.warn(error);
                         }
                     }
                 }
 
-                model.associationTable.addAssociativityRules(row, col, el);
+                assTable.addAssociativityRules(row, col, el);
                 
-                // Remove element from other cells in this row and column
+                // Remove element from other cells in this row and column;
+                //   the if() clauses need to be separate
                 openTable.clear(row, col);
                 for (x=0; x<model.order; x++) {
                     // Remove from column
@@ -909,10 +916,14 @@ aljabr.GroupBuilder = aljabr.Class({
                 }
             }
         }
-        // XXX - else throw exception
+        else {
+            console.log('Error: parameter exceeds group order ' + model.order);
+            console.log('  setElement(' + i + ', ' + j + ', ' + element + ')');
+        }
     },
     /**
-     * TODO - return all known subsequences of powers starting with smallest element index
+     * TODO - return all known subsequences of powers starting with
+     *   smallest element index
      * Get the order of an element.
      * @param el - element index
      * @param rightSide - whether or not multiplication is on right side; default true

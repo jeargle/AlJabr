@@ -714,22 +714,6 @@ $(document).ready(function() {
     aljabr.group = new aljabr.GroupBuilder(aljabr.alphaElements(8));
     
     group = aljabr.group;
-    // group.setElement(2, 2, 1);
-    // group.setElement(3, 5, 1);
-    // group.setElement(4, 3, 1);
-    // group.setElement(5, 4, 1);   // should have already been set
-    // group.setElement(1, 1, 2);
-    // group.setElement(3, 4, 2);
-    // group.setElement(4, 5, 2);
-    // group.setElement(5, 3, 2);   // should have already been set
-    // group.setElement(1, 2, 3);
-    // group.setElement(2, 5, 3);
-    // group.setElement(1, 1, 2);
-    // group.setElement(1, 2, 3);
-    // group.setElement(1, 3, 4);
-    // group.setElement(1, 4, 5);
-    // group.setElement(1, 5, 6);
-    // group.setElement(1, 6, 7);
     
     builder.cayleyTableView.attach(group);
     builder.cayleyGraphView.attach(group);
