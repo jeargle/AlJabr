@@ -743,7 +743,7 @@ aljabr.GroupBuilder = aljabr.Class({
     cls: 'GroupBuilder',
     elements: undefined,
     order: 0,
-    elementOrders: [],
+    elementOrders: undefined,
     table: undefined,
     openTable: undefined,
     associationTable: undefined,
@@ -764,9 +764,12 @@ aljabr.GroupBuilder = aljabr.Class({
         console.log('factors:');
         console.log(model.factors);
 
-        model.elementOrders[0] = 1;
+        model.elementOrders = {left: [], right: []}
+        model.elementOrders.left[0] = 1;
+        model.elementOrders.right[0] = 1;
         for (i=1; i<model.order; i++) {
-            model.elementOrders[i] = -1;
+            model.elementOrders.left[i] = -1;
+            model.elementOrders.right[i] = -1;
         }
 
         // Table with bool arrays showing which elements are allowed in a cell
@@ -956,58 +959,15 @@ aljabr.GroupBuilder = aljabr.Class({
                 }
             }
         }
-        
-        return -order;
-    },
-    /**
-     * TODO - return all known subsequences of powers starting with
-     *   smallest element index
-     * Get the order of an element.
-     * @param el - element index
-     * @param rightSide - whether or not multiplication is on right side; default true
-     * @returns [order of the element (negative if order is not complete), last valid power]
-     */
-    elementOrder2: function(el, rightSide) {
-        'use strict';
-        var model, order, elPower, prevPower;
 
-        model = this;
-        
-        if (el === 0) {
-            return [1, 0];
-        }
-        else if (el >= model.order) {
-            console.log('Error: element index too large');
-            return [0, 0];
-        }
-
-        if (rightSide === undefined) {
-            rightSide = true;
-        }
-
-        order = 1;
-        elPower = el;
-        // Loop through powers of el
         if (rightSide) {
-            while (elPower !== null && elPower !== 0) {
-                prevPower = elPower;
-                elPower = model.table.getElement(elPower, el);
-                order += 1;
-            }
+            model.elementOrders.right[el] = -order;
         }
         else {
-            while (elPower !== null && elPower !== 0) {
-                prevPower = elPower;
-                elPower = model.table.getElement(el, elPower);
-                order += 1;
-            }
+            model.elementOrders.left[el] = -order;
         }
-
-        if (elPower === null) {
-            return [-order, prevPower];
-        }
-
-        return [order, elPower];
+        
+        return -order;
     },
     /**
      * Get all subsequences for powers of the given element.
