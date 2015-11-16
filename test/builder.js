@@ -5,6 +5,98 @@
 extend(aljabr, 'builder');
 
 
+aljabr.builder.SettingsView = aljabr.Class({
+    width: 0,
+    height: 0,
+    init: function(id) {
+        'use strict';
+        var view;
+
+        view = this;
+        view.id = id;
+        view.el = d3.select('#' + view.id);
+        view.width = 300;
+        view.height = 120;
+        view.el.html('<select id="group-type-menu">\
+            <option value="empty">Empty</option>\
+            <option value="cyclic">Cyclic</option>\
+            <option value="dihedral">Dihedral</option>\
+            <option value="alternating">Alternating</option>\
+            <option value="symmetry">Symmetry</option>\
+          </select>\
+          <select id="group-order-menu">\
+          </select>\
+          <button id="apply-btn" type="button">Apply</button>');
+
+        view.el.select('#apply-btn')
+            .on('click', function() {
+                view.attachNewGroup.apply(view);
+            });
+        view.render();
+    },
+    render: function() {
+        'use strict';
+        var view, orderMenu, i;
+
+        view = this;
+            
+        orderMenu = view.el.select('#group-order-menu')
+        for (i=1; i<=10; i++) {
+            orderMenu.append('option')
+                .property('value', i)
+                .text(i);
+        }
+        return view;
+    },
+    /**
+     * Select the group type.
+     */
+    select: function() {
+    },
+    /**
+     * Attach the selected group type to the CayleyTableView and
+     * CayleyGraphView.
+     */
+    attachNewGroup: function() {
+        'use strict';
+        var view, builder, groupType, order;
+
+        view = this;
+        builder = aljabr.builder;
+
+        groupType = view.el.select('#group-type-menu')
+            .property('value');
+        order = parseInt(view.el.select('#group-order-menu')
+                         .property('value'), 10);
+        console.log('groupType: ' + groupType);
+        console.log('order: ' + order);
+
+        if (groupType === 'empty') {
+            aljabr.group = new aljabr.GroupBuilder(aljabr.alphaElements(order));
+        }
+        else if (groupType === 'cyclic') {
+            aljabr.group = aljabr.buildCyclicGroup(order);
+        }
+        else if (groupType === 'dihedral') {
+            aljabr.group = aljabr.buildDihedralGroup(order);
+        }
+        else if (groupType === 'alternating') {
+            aljabr.group = aljabr.buildAlternatingGroup(order);
+        }
+        else if (groupType === 'symmetry') {
+            aljabr.group = aljabr.buildSymmetryGroup(order);
+        }
+        
+        builder.cayleyTableView.attach(aljabr.group);
+        builder.cayleyGraphView.attach(aljabr.group);
+
+        return;
+    }
+});
+
+aljabr.builder.settingsView = null;
+
+
 aljabr.builder.CayleyTableView = aljabr.Class({
     model: undefined,
     width: 0,
@@ -140,24 +232,6 @@ aljabr.builder.CayleyTableView = aljabr.Class({
                 return b.el;
             });
         boxLabels.exit().remove();
-        
-        // Grid lines
-        // for (i=1; i<=order+1; i++) {
-        //     svg.append('line')
-        //         .attr('x1', boxSize*(i+1))
-        //         .attr('y1', boxSize)
-        //         .attr('x2', boxSize*(i+1))
-        //         .attr('y2', boxSize*(order+2))
-        //         .style('stroke', 'black')
-        //         .style('stroke-width', '1');
-        //     svg.append('line')
-        //         .attr('x1', boxSize)
-        //         .attr('y1', boxSize*(i+1))
-        //         .attr('x2', boxSize*(order+2))
-        //         .attr('y2', boxSize*(i+1))
-        //         .style('stroke', 'black')
-        //         .style('stroke-width', '1');
-        // }
         
         // Node selectors
         selectors = svg.selectAll('.node-sel')
@@ -703,20 +777,21 @@ $(document).ready(function() {
 
     builder = aljabr.builder;
 
+    builder.settingsView = new builder.SettingsView('settings');
     builder.cayleyTableView = new builder.CayleyTableView('cayley-table');
     builder.elementView = new builder.ElementView('element-inspector');
     builder.cayleyGraphView = new builder.CayleyGraphView('cayley-graph');
 
-    // aljabr.group = aljabr.buildCyclicGroup(12);
+    // aljabr.group = aljabr.buildCyclicGroup(13);
     // aljabr.group = aljabr.buildDihedralGroup(6);
     // aljabr.group = aljabr.buildAlternatingGroup(4);
     // aljabr.group = aljabr.buildSymmetryGroup(3);
-    aljabr.group = new aljabr.GroupBuilder(aljabr.alphaElements(8));
+    // aljabr.group = new aljabr.GroupBuilder(aljabr.alphaElements(8));
     
-    group = aljabr.group;
+    // group = aljabr.group;
     
-    builder.cayleyTableView.attach(group);
-    builder.cayleyGraphView.attach(group);
+    // builder.cayleyTableView.attach(group);
+    // builder.cayleyGraphView.attach(group);
     // builder.cayleyGraphView.toggleEdges(1);
     // console.log(group.elementSubgroup(1));
     // console.log(group.elementSubgroup(2));

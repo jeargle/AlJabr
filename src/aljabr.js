@@ -36,7 +36,9 @@ aljabr.Class = function(methods) {
 
 
 /**
- *
+ * Build an alphabet using latin characters where 'e' is the identity
+ * element.
+ * @param order - number of elements.
  */
 aljabr.alphaElements = function(order) {
     'use strict';
@@ -57,14 +59,29 @@ aljabr.alphaElements = function(order) {
 
 
 /**
- *
+ * Build an alphabet using integers where 0 or 1 is the identity
+ * element.
+ * @param order - number of elements.
+ * @param identityOne - set identity to 1 (default false)
  */
-aljabr.numElements = function(order) {
+aljabr.numElements = function(order, identityOne) {
     'use strict';
-    var i, elements;
+    var i, elements, identity;
 
+    if (identityOne === undefined) {
+        identityOne = false;
+    }
+
+    if (identityOne) {
+        identity = 1;
+        order += 1;
+    }
+    else {
+        identity = 0;
+    }
+    
     elements = [];
-    for (i=0; i<order; i++) {
+    for (i=identity; i<order; i++) {
         elements.push(toString(i));
     }
 
@@ -813,7 +830,7 @@ aljabr.GroupBuilder = aljabr.Class({
         'use strict';
         var model, openTable, openList, assTable, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos, error;
 
-        console.log('GroupBuilder.setElement(' + i + ', ' + j + ', ' + element + ')');
+        // console.log('GroupBuilder.setElement(' + i + ', ' + j + ', ' + element + ')');
 
         model = this;
         openTable = model.openTable;
@@ -1185,7 +1202,6 @@ aljabr.Permutor = aljabr.Class({
         // each integer appears only once
         // the array is a map from integer i to the integer actionArray[i]
         for (i=0; i<model.order; i++) {
-            // if (!actionArray.include?(i)) {
             if (actionArray.indexOf(i) === -1) {
                 console.log('Error: bad actionArray');
             }
