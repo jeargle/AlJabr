@@ -8,6 +8,11 @@ extend(aljabr, 'builder');
 aljabr.builder.SettingsView = aljabr.Class({
     width: 0,
     height: 0,
+    nameMap: {empty: 'E',
+              cyclic: 'C',
+              dihedral: 'D',
+              alternating: 'A',
+              symmetry: 'S'},
     init: function(id) {
         'use strict';
         var view;
@@ -26,12 +31,32 @@ aljabr.builder.SettingsView = aljabr.Class({
           </select>\
           <select id="group-order-menu">\
           </select>\
-          <button id="apply-btn" type="button">Apply</button>');
+          <button id="apply-btn" type="button">Create</button>\
+          <span id="group-name" style="font-size:36px;"><span>E</span><sub>1</sub></span>');
 
+        view.el.select('#group-type-menu')
+            .on('change', function() {
+                console.log('type change');
+                console.log(d3.event.target.value);
+                view.el.select('#group-name')
+                    .select('span')
+                    .text(view.nameMap[d3.event.target.value]);
+            });
+        
+        view.el.select('#group-order-menu')
+            .on('change', function() {
+                console.log('order change');
+                console.log(d3.event.target.value);
+                view.el.select('#group-name')
+                    .select('sub')
+                    .text(d3.event.target.value);
+            });
+        
         view.el.select('#apply-btn')
             .on('click', function() {
                 view.attachNewGroup.apply(view);
             });
+        
         view.render();
     },
     render: function() {
