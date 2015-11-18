@@ -1833,8 +1833,25 @@ aljabr.cartProduct = function(nums1, nums2) {
  * @returns a-b
  */
 aljabr.numCompare = function(a, b) {
+    'use strict';
     return a-b;
 };
+
+
+/**
+ * Take the factorial of a number.
+ * @param {number} num
+ * @returns num!
+ */
+aljabr.factorial = function(num) {
+    'use strict';
+    var result, i;
+    
+    result = 1;
+    for (i=2; i<=num; i++)
+        result = result * i;
+    return result;
+}
 
 
 //----------------------------

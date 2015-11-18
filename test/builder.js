@@ -8,6 +8,8 @@ extend(aljabr, 'builder');
 aljabr.builder.SettingsView = aljabr.Class({
     width: 0,
     height: 0,
+    groupType: 'E',
+    subscript: '1',
     nameMap: {empty: 'E',
               cyclic: 'C',
               dihedral: 'D',
@@ -15,7 +17,7 @@ aljabr.builder.SettingsView = aljabr.Class({
               symmetry: 'S'},
     init: function(id) {
         'use strict';
-        var view;
+        var view, orderMenu, i;
 
         view = this;
         view.id = id;
@@ -32,45 +34,74 @@ aljabr.builder.SettingsView = aljabr.Class({
           <select id="group-order-menu">\
           </select>\
           <button id="apply-btn" type="button">Create</button>\
-          <span id="group-name" style="font-size:36px;"><span>E</span><sub>1</sub></span>');
+          <span id="group-name" style="font-size:36px;"><span>E</span><sub>1</sub> </span>\
+          <span style="font-size:36px;">order: <span id="group-order">1</span></span>');
 
         view.el.select('#group-type-menu')
             .on('change', function() {
                 console.log('type change');
-                console.log(d3.event.target.value);
-                view.el.select('#group-name')
-                    .select('span')
-                    .text(view.nameMap[d3.event.target.value]);
+                view.groupType = view.nameMap[d3.event.target.value];
+                view.render();
+                // view.el.select('#group-name')
+                //     .select('span')
+                //     .text(view.nameMap[d3.event.target.value]);
             });
         
         view.el.select('#group-order-menu')
             .on('change', function() {
                 console.log('order change');
-                console.log(d3.event.target.value);
-                view.el.select('#group-name')
-                    .select('sub')
-                    .text(d3.event.target.value);
+                view.subscript = d3.event.target.value;
+                view.render();
+                // view.el.select('#group-name')
+                //     .select('sub')
+                //     .text(d3.event.target.value);
             });
         
         view.el.select('#apply-btn')
             .on('click', function() {
                 view.attachNewGroup.apply(view);
             });
-        
-        view.render();
-    },
-    render: function() {
-        'use strict';
-        var view, orderMenu, i;
 
-        view = this;
-            
         orderMenu = view.el.select('#group-order-menu')
         for (i=1; i<=10; i++) {
             orderMenu.append('option')
                 .property('value', i)
                 .text(i);
         }
+        
+        view.render();
+    },
+    render: function() {
+        'use strict';
+        var view, order;
+
+        view = this;
+
+        order = ''
+        if (view.groupType === 'E' ||
+            view.groupType === 'C') {
+            order = view.subscript;
+        }
+        else if (view.groupType === 'D') {
+            order = parseInt(view.subscript, 10) * 2;
+        }
+        else if (view.groupType === 'A') {
+            order = aljabr.factorial(parseInt(view.subscript, 10))/2;
+        }
+        else if (view.groupType === 'S') {
+            order = aljabr.factorial(parseInt(view.subscript, 10));
+        }
+
+        console.log('order: ' + order);
+        view.el.select('#group-name')
+            .select('span')
+            .text(view.groupType);
+        view.el.select('#group-name')
+            .select('sub')
+            .text(view.subscript);
+        view.el.select('#group-order')
+            .text(order);
+        
         return view;
     },
     /**
