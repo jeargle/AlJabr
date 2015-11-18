@@ -484,97 +484,24 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view = this;
         view.el.html('');
         svg = view.el.append('svg')
+            .attr('id', 'graph-svg')
             .attr('width', view.width)
             .attr('height', view.height);
 
         if (view.model === undefined) {
             return;
         }
-        order = view.model.order;
-        colorStep = Math.floor(156/(order-1));
-        radius = 15;
-        points = view.points;
+
+        view.renderGraph();
         
-        pointPairs = [];
-        for (i=0; i<order; i++) {
-            if (view.activeEdges[i]) {
-                for (j=0; j<order; j++) {
-                    // element = view.model.getElement(j,i);
-                    element = view.model.getElement(i,j);
-                    if (element !== null) {
-                        pointPairs.push([j, element]);
-                        // pointPairs.push([i, element]);
-                    }
-                }
-            }
-        }
-
-        // Edges
-        edges = svg.selectAll('line')
-            .data(pointPairs);
-        edges.enter()
-            .append('line')
-            .attr('x1', function(i) {
-                return view.points[i[0]][0];
-            })
-            .attr('y1', function(i) {
-                return view.points[i[0]][1];
-            })
-            .attr('x2', function(i) {
-                return view.points[i[1]][0];
-            })
-            .attr('y2', function(i) {
-                return view.points[i[1]][1];
-            })
-            .attr('stroke', 'black')
-            .attr('stroke-width', '1');
-        edges.exit().remove();
-
-        // Nodes
-        nodes = svg.selectAll('circle')
-            .data(points);
-        nodes.enter()
-            .append('circle')
-            .attr('cx', function(p) {
-                return p[0];
-            })
-            .attr('cy', function(p) {
-                return p[1];
-            })
-            .attr('r', radius)
-            .attr('stroke', 'black')
-            .attr('stroke-width', '1')
-            .attr('fill', function(p, i) {
-                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
-            });
-        nodes.exit().remove();
-
-        // Node labels
-        labels = svg.selectAll('.nLabel')
-            .data(points);
-        labels.enter()
-            .append('text')
-            .classed('nLabel', true)
-            .attr('x', function(p) {
-                return p[0];
-            })
-            .attr('y', function(p) {
-                return p[1] + 5;
-            })
-            .attr('fill', 'black')
-            .attr('text-anchor', 'middle')
-            .attr('font-size', '16')
-            .attr('pointer-events', 'none')
-            .text(function(p, i) {
-                return view.model.elements[i];
-            });
-        labels.exit().remove();
-
         // Edge selectors
         selectors = svg.selectAll('.edge-sel')
             .data(view.activeEdges);
         selectors.enter()
             .append('rect')
+            .attr('id', function(d, i) {
+                return 'edge-sel-' + i;
+            })
             .classed('edge-sel', true)
             .attr('x', view.width-50)
             .attr('y', function(s, i) {
@@ -619,6 +546,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         svg.selectAll('.lLabel')
             .remove();
         svg.append('rect')
+            .attr('id', 'layout-sel-circle')
             .classed('layout-sel', true)
             .attr('x', view.width-25)
             .attr('y', 50)
@@ -646,6 +574,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .text('C');
 
         svg.append('rect')
+            .attr('id', 'layout-sel-nested')
             .classed('layout-sel', true)
             .attr('x', view.width-25)
             .attr('y', 70)
@@ -673,6 +602,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .text('N');
 
         svg.append('rect')
+            .attr('id', 'layout-sel-separate')
             .classed('layout-sel', true)
             .attr('x', view.width-25)
             .attr('y', 90)
@@ -702,6 +632,137 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         return view;
     },
     /**
+     * Render the nodes, edges, and node labels.
+     */
+    renderGraph: function() {
+        'use strict';
+        var view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels;
+
+        view = this;
+        svg = d3.select('#graph-svg');
+        order = view.model.order;
+        colorStep = Math.floor(156/(order-1));
+        radius = 15;
+        points = view.points;
+        
+        pointPairs = [];
+        for (i=0; i<order; i++) {
+            if (view.activeEdges[i]) {
+                for (j=0; j<order; j++) {
+                    element = view.model.getElement(i,j);
+                    if (element !== null) {
+                        pointPairs.push([j, element]);
+                    }
+                }
+            }
+        }
+
+        // Edges
+        edges = svg.selectAll('line')
+            .data(pointPairs);
+        edges.enter()
+            .append('line')
+            .attr('x1', function(i) {
+                return view.points[i[0]][0];
+            })
+            .attr('y1', function(i) {
+                return view.points[i[0]][1];
+            })
+            .attr('x2', function(i) {
+                return view.points[i[1]][0];
+            })
+            .attr('y2', function(i) {
+                return view.points[i[1]][1];
+            })
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1');
+        edges.transition()
+            // .append('line')
+            .attr('x1', function(i) {
+                return view.points[i[0]][0];
+            })
+            .attr('y1', function(i) {
+                return view.points[i[0]][1];
+            })
+            .attr('x2', function(i) {
+                return view.points[i[1]][0];
+            })
+            .attr('y2', function(i) {
+                return view.points[i[1]][1];
+            });
+            // .attr('stroke', 'black')
+            // .attr('stroke-width', '1');
+        edges.exit().remove();
+
+        // Nodes
+        nodes = svg.selectAll('circle')
+            .data(points);
+        nodes.enter()
+            .append('circle')
+            .attr('cx', function(p) {
+                return p[0];
+            })
+            .attr('cy', function(p) {
+                return p[1];
+            })
+            .attr('r', radius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function(p, i) {
+                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
+            });
+        nodes.transition()
+            .attr('cx', function(p) {
+                return p[0];
+            })
+            .attr('cy', function(p) {
+                return p[1];
+            });
+            // .attr('r', radius)
+            // .attr('stroke', 'black')
+            // .attr('stroke-width', '1')
+            // .attr('fill', function(p, i) {
+            //     return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
+            // });
+        nodes.exit().remove();
+
+        // Node labels
+        labels = svg.selectAll('.nLabel')
+            .data(points);
+        labels.enter()
+            .append('text')
+            .classed('nLabel', true)
+            .attr('x', function(p) {
+                return p[0];
+            })
+            .attr('y', function(p) {
+                return p[1] + 5;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(p, i) {
+                return view.model.elements[i];
+            });
+        labels.transition()
+            // .classed('nLabel', true)
+            .attr('x', function(p) {
+                return p[0];
+            })
+            .attr('y', function(p) {
+                return p[1] + 5;
+            });
+            // .attr('fill', 'black')
+            // .attr('text-anchor', 'middle')
+            // .attr('font-size', '16')
+            // .attr('pointer-events', 'none')
+            // .text(function(p, i) {
+            //     return view.model.elements[i];
+            // });
+        labels.exit().remove();
+    },
+    /**
      * Place nodes in one circle.
      */
     layoutCircle: function() {
@@ -719,7 +780,12 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
 
         view.layout = 'circle';
-        view.render();
+        d3.selectAll('.layout-sel')
+            .attr('fill', 'magenta');
+        d3.select('#layout-sel-circle')
+            .attr('fill', 'yellow');
+        view.renderGraph();
+        // view.render();
     },
     /**
      * Place nodes in concentric circles.
@@ -749,7 +815,12 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
 
         view.layout = 'nested';
-        view.render();
+        d3.selectAll('.layout-sel')
+            .attr('fill', 'magenta');
+        d3.select('#layout-sel-nested')
+            .attr('fill', 'yellow');
+        view.renderGraph();
+        // view.render();
     },
     /**
      * Place nodes in adjacent circles.
@@ -774,7 +845,12 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
 
         view.layout = 'separate';
-        view.render();
+        d3.selectAll('.layout-sel')
+            .attr('fill', 'magenta');
+        d3.select('#layout-sel-separate')
+            .attr('fill', 'yellow');
+        view.renderGraph();
+        // view.render();
     },
     /**
      * Turn sets of edges on or off.
@@ -794,13 +870,18 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                     break;
                 }
             }
+            d3.select('#edge-sel-' + index)
+                .attr('fill', 'cyan');
         }
         else {
             view.activeEdge = index;
+            d3.select('#edge-sel-' + index)
+                .attr('fill', 'yellow');
         }
         view.activeEdges[index] = !view.activeEdges[index];
 
-        view.render();
+        view.renderGraph();
+        // view.render();
     },
     /**
      * Attach view to a Group or GroupBuilder.
@@ -819,6 +900,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             view.activeEdges[i] = false;
         }
 
+        view.render();
         view.layoutCircle();
     }
 });
