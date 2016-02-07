@@ -677,7 +677,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .attr('stroke', 'black')
             .attr('stroke-width', '1');
         edges.transition()
-            // .append('line')
             .attr('x1', function(i) {
                 return view.points[i[0]][0];
             })
