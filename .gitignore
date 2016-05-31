@@ -1,3 +1,8 @@
 *~
 *#
 doc
+
+# 3rd party libs
+test/d3.v2.min.js
+test/jquery-min.js
+test/underscore-min.js
