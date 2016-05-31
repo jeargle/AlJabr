@@ -17,7 +17,7 @@ aljabr.builder.SettingsView = aljabr.Class({
               symmetry: 'S'},
     init: function(id) {
         'use strict';
-        var view, orderMenu, i;
+        var view;
 
         view = this;
         view.id = id;
@@ -39,12 +39,15 @@ aljabr.builder.SettingsView = aljabr.Class({
 
         view.el.select('#group-type-menu')
             .on('change', function() {
+                var oldGroupType;
                 console.log('type change');
+                oldGroupType = view.groupType;
                 view.groupType = view.nameMap[d3.event.target.value];
+                if (oldGroupType === 'D' ||
+                   view.groupType === 'D') {
+                    view.buildOrderMenu();
+                }
                 view.render();
-                // view.el.select('#group-name')
-                //     .select('span')
-                //     .text(view.nameMap[d3.event.target.value]);
             });
         
         view.el.select('#group-order-menu')
@@ -52,9 +55,6 @@ aljabr.builder.SettingsView = aljabr.Class({
                 console.log('order change');
                 view.subscript = d3.event.target.value;
                 view.render();
-                // view.el.select('#group-name')
-                //     .select('sub')
-                //     .text(d3.event.target.value);
             });
         
         view.el.select('#apply-btn')
@@ -62,14 +62,36 @@ aljabr.builder.SettingsView = aljabr.Class({
                 view.attachNewGroup.apply(view);
             });
 
-        orderMenu = view.el.select('#group-order-menu')
-        for (i=1; i<=10; i++) {
+        view.buildOrderMenu();
+        
+        view.render();
+    },
+    buildOrderMenu: function() {
+        'use strict';
+        var view, orderMenu, start, i;
+
+        view = this;
+        orderMenu = view.el.select('#group-order-menu');
+
+        start = 1;
+        if (view.groupType === 'D') {
+            start = 3;
+        }
+        
+        orderMenu.html('');
+        for (i=start; i<=10; i++) {
             orderMenu.append('option')
                 .property('value', i)
                 .text(i);
         }
+
+        if (view.groupType === 'D' &&
+            (view.subscript === '1' ||
+             view.subscript === '2')) {
+            view.subscript = '3';
+        }
         
-        view.render();
+        orderMenu.property('value', view.subscript);
     },
     render: function() {
         'use strict';
