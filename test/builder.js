@@ -481,6 +481,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     width: 0,
     height: 0,
     points: [],
+    pointPairs: [],
     activeEdges: [],
     activeEdge: 1,
     layout: 'circle',
@@ -514,7 +515,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             return;
         }
 
-        view.renderGraph();
+        // view.renderGraph();
         
         // Edge selectors
         selectors = svg.selectAll('.edge-sel')
@@ -658,24 +659,27 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     renderGraph: function() {
         'use strict';
-        var view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels;
+        var view, svg, order, colorStep, radius, i, j, points, pointPairs, index, element, edges, nodes, labels, selectors, sLabels;
 
+        console.log('renderGraph()');
+        
         view = this;
         svg = d3.select('#graph-svg');
         order = view.model.order;
         colorStep = Math.floor(156/(order-1));
         radius = 15;
         points = view.points;
-        
-        pointPairs = [];
+
+        pointPairs = view.pointPairs;
         for (i=0; i<order; i++) {
-            if (view.activeEdges[i]) {
-                for (j=0; j<order; j++) {
-                    element = view.model.getElement(i,j);
-                    if (element !== null) {
-                        pointPairs.push([j, element]);
-                    }
+            for (j=0; j<order; j++) {
+                index = (i*order)+j;
+                element = view.model.getElement(i,j);
+                if (element !== null &&
+                    pointPairs[index][1] === null) {
+                    pointPairs[index][1] = element;
                 }
+                pointPairs[index][2] = view.activeEdges[i];
             }
         }
 
@@ -691,13 +695,25 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][0];
+                }
                 return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][1];
+                }
                 return view.points[i[1]][1];
             })
             .attr('stroke', 'black')
-            .attr('stroke-width', '1');
+            .attr('stroke-width', '1')
+            .style('visibility', function(i) {
+                if (i[2]) {
+                    return 'visible';
+                }
+                return 'hidden';
+            });
         edges.transition()
             .attr('x1', function(i) {
                 return view.points[i[0]][0];
@@ -706,10 +722,22 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][0];
+                }
                 return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][1];
+                }
                 return view.points[i[1]][1];
+            })
+            .style('visibility', function(i) {
+                if (i[2]) {
+                    return 'visible';
+                }
+                return 'hidden';
             });
             // .attr('stroke', 'black')
             // .attr('stroke-width', '1');
@@ -790,6 +818,8 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         'use strict';
         var view, order, radius, angle, i;
 
+        console.log('layoutCircle()');
+        
         view = this;
         order = view.model.order;
         radius = view.baseRadius;
@@ -817,6 +847,8 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         'use strict';
         var view, cosets, elIndex, elOrder, radius, angle, i, j;
 
+        console.log('layoutNested()');
+        
         view = this;
         cosets = view.model.cosets(index);
         elIndex = cosets.length;
@@ -851,6 +883,8 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         'use strict';
         var view, cosets, elIndex, elOrder, radius, angle, i, j;
 
+        console.log('layoutSeparate()');
+        
         view = this;
         cosets = view.model.cosets(index);
         elIndex = cosets.length;
@@ -910,7 +944,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     attach: function(model) {
         'use strict';
-        var view, order, i;
+        var view, order, i, j, element;
 
         view = this;
         view.model = model;
@@ -921,6 +955,16 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             view.activeEdges[i] = false;
         }
 
+        view.pointPairs = [];
+        for (i=0; i<order; i++) {
+            for (j=0; j<order; j++) {
+                element = view.model.getElement(i,j);
+                if (element !== null) {
+                    view.pointPairs.push([j, element, view.activeEdges[i]]);
+                }
+            }
+        }
+        
         view.render();
         view.layoutCircle();
     }
