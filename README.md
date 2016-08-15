@@ -27,8 +27,8 @@ Groups can also be built by filling out an operator table one position at a time
 Dependencies
 ------------
 
-jQuery
+The external dependencies are currently linked from [cdnjs.com](https://cdnjs.com).
 
-underscore
-
-d3
+1. jQuery
+2. underscore
+3. d3
