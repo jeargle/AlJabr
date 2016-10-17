@@ -956,6 +956,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             view.activeEdges[i] = false;
         }
 
+        view.points = [];
         view.pointPairs = [];
         for (i=0; i<order; i++) {
             for (j=0; j<order; j++) {
