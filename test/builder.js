@@ -480,6 +480,7 @@ aljabr.builder.elementView = null;
 aljabr.builder.CayleyGraphView = aljabr.Class({
     width: 0,
     height: 0,
+    duration: 400,
     points: [],
     pointPairs: [],
     activeEdges: [],
@@ -715,6 +716,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return 'hidden';
             });
         edges.transition()
+            .duration(view.duration)
             .attr('x1', function(i) {
                 return view.points[i[0]][0];
             })
@@ -761,6 +763,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
             });
         nodes.transition()
+            .duration(view.duration)
             .attr('cx', function(p) {
                 return p[0];
             })
@@ -795,6 +798,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
                 return view.model.elements[i];
             });
         labels.transition()
+            .duration(view.duration)
             // .classed('nLabel', true)
             .attr('x', function(p) {
                 return p[0];
@@ -836,7 +840,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-circle')
             .attr('fill', 'yellow');
         view.renderGraph();
-        // view.render();
     },
     /**
      * Place nodes in concentric circles.
@@ -845,13 +848,14 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutNested: function(index, twist) {
         'use strict';
-        var view, cosets, elIndex, elOrder, radius, angle, i, j;
+        var view, cosets, elIndex, elOrder, radiusDiff, radius, angle, i, j;
 
         console.log('layoutNested()');
         
         view = this;
         cosets = view.model.cosets(index);
         elIndex = cosets.length;
+        radiusDiff = view.baseRadius/elIndex;
         elOrder = cosets[0].length;
         angle = 2.0*Math.PI/elOrder;
 
@@ -860,7 +864,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         }
 
         for (i=0; i<elIndex; i++) {
-            radius = view.baseRadius - i*50;
+            radius = view.baseRadius - i*radiusDiff;
             for (j=0; j<elOrder; j++) {
                 view.points[cosets[i][j]] = [Math.sin(angle*j + twist*i)*radius + view.baseX,
                                              -Math.cos(angle*j + twist*i)*radius + view.baseY];
@@ -873,7 +877,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-nested')
             .attr('fill', 'yellow');
         view.renderGraph();
-        // view.render();
     },
     /**
      * Place nodes in adjacent circles.
@@ -905,7 +908,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-separate')
             .attr('fill', 'yellow');
         view.renderGraph();
-        // view.render();
     },
     /**
      * Turn sets of edges on or off.
@@ -936,7 +938,6 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.activeEdges[index] = !view.activeEdges[index];
 
         view.renderGraph();
-        // view.render();
     },
     /**
      * Attach view to a Group or GroupBuilder.
