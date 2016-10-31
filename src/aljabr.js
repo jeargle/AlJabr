@@ -2,7 +2,7 @@
 
 /**
  * John Eargle (mailto: jeargle at gmail.com)
- * 2007-2015
+ * 2007-2016
  * aljabr
  */
 
@@ -1459,6 +1459,96 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         }
 
         return index;
+    }
+});
+
+
+
+aljabr.ArithmeticGroupBuilder = aljabr.Class({
+    elements: undefined,
+    operator: undefined,
+    group: undefined,
+    /**
+     * Initialize the class.
+     * Pass in the list of elements (integers) and the operation used
+     * to build the Group.
+     * @param elements {list} - array of elements
+     * @param operator {string} - '+' or '*'
+     */
+    init: function(elements, operator) {
+        'use strict';
+        var model;
+
+        // console.log('PermutationGroupBuilder.init()');
+        
+        model = this;
+
+        model.elements = elements;
+        model.group = null;
+        
+        if (operator === '+') {
+            model.operator = function(x, y) {
+                return x+y;
+            };
+        }
+        else if (operator === '*') {
+            model.operator = function(x, y) {
+                return x*y;
+            };
+        }
+        else {
+            console.error('Error - unknown operator: ' + operator);
+        }
+    },
+    /**
+     * Build a group from a set of integers and an arithmetic operator.
+     */
+    buildGroup: function() {
+        'use strict';
+        var model, elementArray, elements, groupBuilder, i, j;
+
+        model = this;
+
+        // Loop through elements and fill out GroupBuilder
+        groupBuilder = new aljabr.GroupBuilder(elements);
+        for (i=0; i<model.permutors.length; i++) {
+            // console.log('i: ' + i);
+            for (j=0; j<model.permutors.length; j++) {
+                groupBuilder.setElement(i, j,
+                                        model.permutorIndex(
+                                            model.permutors[j].operate(model.permutors[i])
+                                        ));
+                if (groupBuilder.isComplete()) {
+                    // console.log('COMPLETE\n');
+                    break;
+                }
+            }
+            if (groupBuilder.isComplete()) {
+                // console.log('COMPLETE\n');
+                break;
+            }
+        }
+
+        if (!groupBuilder.isComplete()) {
+            console.log('Error: groupBuilder is not complete');
+        }
+
+        model.group = groupBuilder.buildGroup();
+        return model.group;
+    },
+    /**
+     * Retrieve the current group.
+     * @returns Group
+     */
+    getGroup: function() {
+        'use strict';
+        var model;
+
+        model = this;
+        if (model.group === null) {
+            model.buildGroup();
+        }
+        return model.group;
     }
 });
 
