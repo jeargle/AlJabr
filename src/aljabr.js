@@ -1468,6 +1468,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
     elements: undefined,
     operator: undefined,
     group: undefined,
+    modulo: 1,
     /**
      * Initialize the class.
      * Pass in the list of elements (integers) and the operation used
@@ -1475,7 +1476,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      * @param elements {list} - array of elements
      * @param operator {string} - '+' or '*'
      */
-    init: function(elements, operator) {
+    init: function(elements, operator, modulo) {
         'use strict';
         var model;
 
@@ -1484,6 +1485,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         model = this;
 
         model.elements = elements;
+        model.modulo = modulo;
         model.group = null;
         
         if (operator === '+') {
@@ -1505,26 +1507,35 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict';
-        var model, elementArray, elements, groupBuilder, i, j;
+        var model, elements, numElements, elementSet, groupBuilder, i, j;
 
         model = this;
+        elements = model.elements;
+        numElements = model.elements.length;
 
         // Loop through elements and fill out GroupBuilder
-        groupBuilder = new aljabr.GroupBuilder(elements);
-        for (i=0; i<model.permutors.length; i++) {
+        elementSet = [];
+        for (i=0; i<numElements; i++) {
+            // elementSet.push(elements[i].toString());
+            elementSet.push(elements[i]);
+        }
+        groupBuilder = new aljabr.GroupBuilder(elementSet);
+        // console.log(groupBuilder.toStr());
+        
+        for (i=1; i<numElements; i++) {
             // console.log('i: ' + i);
-            for (j=0; j<model.permutors.length; j++) {
-                groupBuilder.setElement(i, j,
-                                        model.permutorIndex(
-                                            model.permutors[j].operate(model.permutors[i])
-                                        ));
+            for (j=1; j<numElements; j++) {
+                groupBuilder.setElement(
+                    i, j, model.operator(elements[i], elements[j])%model.modulo
+                );
+                // console.log(groupBuilder.toStr());
                 if (groupBuilder.isComplete()) {
-                    // console.log('COMPLETE\n');
+                    console.log('COMPLETE\n');
                     break;
                 }
             }
             if (groupBuilder.isComplete()) {
-                // console.log('COMPLETE\n');
+                console.log('COMPLETE\n');
                 break;
             }
         }
@@ -1534,6 +1545,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         }
 
         model.group = groupBuilder.buildGroup();
+        
         return model.group;
     },
     /**

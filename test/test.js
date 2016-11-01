@@ -212,6 +212,29 @@ aljabr.test.testPermutor = function() {
 };
 
 
+aljabr.test.testArithmetic = function() {
+    'use strict';
+    var ar1, ar2, ar3, agb1, agb2, agb3, g1, g2, g3;
+    
+    console.log('\n\n***** ArithmeticGroupBuilder Test *****');
+
+    ar1 = [0,1,2,3,4];
+    agb1 = new aljabr.ArithmeticGroupBuilder(ar1, '+', 5);
+    g1 = agb1.buildGroup();
+    console.log(g1.toStr());
+
+    // ar2 = [1,2,3,4];
+    // agb2 = new aljabr.ArithmeticGroupBuilder(ar2, '*', 5);
+    // g2 = agb2.buildGroup();
+    // console.log(g2.toStr());
+    
+    // ar3 = [1,2,3,4,5,6];
+    // agb3 = new aljabr.ArithmeticGroupBuilder(ar3, '*', 7);
+    // g3 = agb3.buildGroup();
+    // console.log(g3.toStr());
+};
+
+
 aljabr.test.testGroupBuilders = function() {
     'use strict';
     var g13, g7, g3, g4, g2, g2x2, g2x3;
@@ -372,9 +395,10 @@ aljabr.test.boolTableToStr = function(table) {
 
 aljabr.test.testOperatorTable();
 aljabr.test.testGroupBuilder();
-aljabr.test.testPermutor();
-aljabr.test.testCyclicGroups();
-aljabr.test.testDihedralGroups();
-aljabr.test.testSymmetryGroups();
-aljabr.test.testAlternatingGroups();
-aljabr.test.testGroupBuilders();
+// aljabr.test.testPermutor();
+aljabr.test.testArithmetic();
+// aljabr.test.testCyclicGroups();
+// aljabr.test.testDihedralGroups();
+// aljabr.test.testSymmetryGroups();
+// aljabr.test.testAlternatingGroups();
+// aljabr.test.testGroupBuilders();
