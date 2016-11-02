@@ -223,15 +223,15 @@ aljabr.test.testArithmetic = function() {
     g1 = agb1.buildGroup();
     console.log(g1.toStr());
 
-    // ar2 = [1,2,3,4];
-    // agb2 = new aljabr.ArithmeticGroupBuilder(ar2, '*', 5);
-    // g2 = agb2.buildGroup();
-    // console.log(g2.toStr());
+    ar2 = [1,2,3,4];
+    agb2 = new aljabr.ArithmeticGroupBuilder(ar2, '*', 5);
+    g2 = agb2.buildGroup();
+    console.log(g2.toStr());
     
-    // ar3 = [1,2,3,4,5,6];
-    // agb3 = new aljabr.ArithmeticGroupBuilder(ar3, '*', 7);
-    // g3 = agb3.buildGroup();
-    // console.log(g3.toStr());
+    ar3 = [1,2,3,4,5,6,7,8,9,10];
+    agb3 = new aljabr.ArithmeticGroupBuilder(ar3, '*', 11);
+    g3 = agb3.buildGroup();
+    console.log(g3.toStr());
 };
 
 

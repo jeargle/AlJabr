@@ -366,17 +366,25 @@ aljabr.Group = aljabr.Class({
      */
     toStr: function() {
         'use strict';
-        var model, colWidth, outString, i, j;
+        var model, colWidth, outString, i, j, elementStr;
+
+        console.log('Group.toStr()');
         
         model = this;
         
         // Set column width to size of largest element symbol
         colWidth = 0;
         for (i=0; i<model.order; i++) {
-            if (colWidth < model.elements[i].length) {
-	        colWidth = model.elements[i].length;
+            elementStr = model.elements[i];
+            if (typeof elementStr !== 'string') {
+                elementStr = elementStr.toString();
+            }
+            if (colWidth < elementStr.length) {
+	        colWidth = elementStr.length;
             }
         }
+
+        console.log(colWidth);
         
         outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
         for (i=0; i<model.order; i++) {
@@ -1379,16 +1387,13 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         // Create ElementSet corresponding to permutors
         elementArray = [];
         for (i=0; i<model.permutors.length; i++) {
-            // elementArray.push(new aljabr.Element(i));
             elementArray.push(i.toString());
         }
-        // elements = new aljabr.ElementSet(elementArray);
         elements = elementArray;
 
         // Loop through elements and fill out GroupBuilder
         groupBuilder = new aljabr.GroupBuilder(elements);
         for (i=0; i<model.permutors.length; i++) {
-            // console.log('i: ' + i);
             for (j=0; j<model.permutors.length; j++) {
                 groupBuilder.setElement(i, j,
                                         model.permutorIndex(
@@ -1480,7 +1485,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         'use strict';
         var model;
 
-        // console.log('PermutationGroupBuilder.init()');
+        // console.log('ArithmeticGroupBuilder.init()');
         
         model = this;
 
@@ -1507,28 +1512,24 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict';
-        var model, elements, numElements, elementSet, groupBuilder, i, j;
+        var model, elements, numElements, elementIdxs, groupBuilder, i, j;
 
         model = this;
         elements = model.elements;
         numElements = model.elements.length;
 
         // Loop through elements and fill out GroupBuilder
-        elementSet = [];
+        elementIdxs = {};
         for (i=0; i<numElements; i++) {
-            // elementSet.push(elements[i].toString());
-            elementSet.push(elements[i]);
+            elementIdxs[elements[i]] = i;
         }
-        groupBuilder = new aljabr.GroupBuilder(elementSet);
-        // console.log(groupBuilder.toStr());
+        groupBuilder = new aljabr.GroupBuilder(elements);
         
         for (i=1; i<numElements; i++) {
-            // console.log('i: ' + i);
             for (j=1; j<numElements; j++) {
                 groupBuilder.setElement(
-                    i, j, model.operator(elements[i], elements[j])%model.modulo
+                    i, j, elementIdxs[model.operator(elements[i], elements[j])%model.modulo]
                 );
-                // console.log(groupBuilder.toStr());
                 if (groupBuilder.isComplete()) {
                     console.log('COMPLETE\n');
                     break;
@@ -1811,6 +1812,10 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
         fillChar = ' ';
     }
 
+    if (typeof inStr !== 'string') {
+        inStr = inStr.toString();
+    }
+    
     for (i=inStr.length; i<justLen; i++) {
         outStr = fillChar + outStr;
     }
