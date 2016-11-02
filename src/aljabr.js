@@ -180,12 +180,12 @@ aljabr.OperatorTable = aljabr.Class({
  */
 aljabr.Group = aljabr.Class({
     cls: 'Group',
-    elements: null,
+    elements: null,   // array of strings
     order: 0,
     table: null,
     /**
      * Initialize the class.
-     * @param elements - ElementSet with all the group elements
+     * @param elements - list of strings representing group elements
      */
     init: function(elements, table) {
         'use strict';
@@ -366,7 +366,7 @@ aljabr.Group = aljabr.Class({
      */
     toStr: function() {
         'use strict';
-        var model, colWidth, outString, i, j, elementStr;
+        var model, colWidth, outString, i, j;
 
         console.log('Group.toStr()');
         
@@ -375,17 +375,11 @@ aljabr.Group = aljabr.Class({
         // Set column width to size of largest element symbol
         colWidth = 0;
         for (i=0; i<model.order; i++) {
-            elementStr = model.elements[i];
-            if (typeof elementStr !== 'string') {
-                elementStr = elementStr.toString();
-            }
-            if (colWidth < elementStr.length) {
-	        colWidth = elementStr.length;
+            if (colWidth < model.elements[i].length) {
+	        colWidth = model.elements[i].length;
             }
         }
 
-        console.log(colWidth);
-        
         outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
         for (i=0; i<model.order; i++) {
             outString += ' ' +
@@ -1512,18 +1506,20 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict';
-        var model, elements, numElements, elementIdxs, groupBuilder, i, j;
+        var model, elements, numElements, elementSet, elementIdxs, groupBuilder, i, j;
 
         model = this;
         elements = model.elements;
         numElements = model.elements.length;
 
         // Loop through elements and fill out GroupBuilder
+        elementSet = [];
         elementIdxs = {};
         for (i=0; i<numElements; i++) {
+            elementSet.push(elements[i].toString());
             elementIdxs[elements[i]] = i;
         }
-        groupBuilder = new aljabr.GroupBuilder(elements);
+        groupBuilder = new aljabr.GroupBuilder(elementSet);
         
         for (i=1; i<numElements; i++) {
             for (j=1; j<numElements; j++) {
@@ -1812,10 +1808,6 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
         fillChar = ' ';
     }
 
-    if (typeof inStr !== 'string') {
-        inStr = inStr.toString();
-    }
-    
     for (i=inStr.length; i<justLen; i++) {
         outStr = fillChar + outStr;
     }
