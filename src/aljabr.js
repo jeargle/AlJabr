@@ -186,6 +186,7 @@ aljabr.Group = aljabr.Class({
     /**
      * Initialize the class.
      * @param elements - list of strings representing group elements
+     * @param table - OperatorTable for the Group
      */
     init: function(elements, table) {
         'use strict';
@@ -369,6 +370,174 @@ aljabr.Group = aljabr.Class({
         var model, colWidth, outString, i, j;
 
         console.log('Group.toStr()');
+        
+        model = this;
+        
+        // Set column width to size of largest element symbol
+        colWidth = 0;
+        for (i=0; i<model.order; i++) {
+            if (colWidth < model.elements[i].length) {
+	        colWidth = model.elements[i].length;
+            }
+        }
+
+        outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
+        for (i=0; i<model.order; i++) {
+            outString += ' ' +
+                aljabr.rJust(model.elements[i],
+                             colWidth) +
+                ' |';
+        }
+        outString += '\n';
+
+        for (i=0; i<=model.order; i++) {
+            outString += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
+        }
+        outString += '\n';
+
+        for (i=0; i<model.order; i++) {
+            outString += ' ' +
+                aljabr.rJust(model.elements[i],
+                             colWidth) +
+                ' |';
+            for (j=0; j<model.order; j++) {
+                // outString += ' #{model.elements.element(model.table.getElement(i, j)).symbol.aljabr.rJust(colWidth)} |'
+                if (model.table.getElement(i, j) === null) {
+	            outString += ' ' + aljabr.rJust('.', colWidth) + ' |';
+                }
+                else {
+	            outString += ' ' +
+                        aljabr.rJust(
+                            model.elements[model.table.getElement(i, j)],
+                            colWidth) +
+                        ' |';
+                }
+            }
+            outString += '\n';
+        }
+        
+        return outString;
+    }
+});
+
+
+/**
+ * Immutable, validated Field.
+ */
+aljabr.Field = aljabr.Class({
+    cls: 'Field',
+    elements: null,   // array of strings
+    order: 0,
+    table: null,
+    /**
+     * Initialize the class.
+     * @param elements - list of strings representing Field elements
+     * @param addTable - OperatorTable for additive Group
+     * @param multTable - OperatorTable for multiplicative Group
+     */
+    init: function(elements, addTable, multTable) {
+        'use strict';
+        var model;
+
+        model =  this;
+        model.elements = elements;
+        model.order = model.elements.length;
+        model.addTable = addTable;
+        model.multTable = multTable;
+    },
+    /**
+     * Get the identity element for a given table.
+     * @param tableType {string} - '+' or '*'
+     * @returns the identity element
+     */
+    getIdentity: function(tableType) {
+        'use strict';
+        var model, identity;
+
+        model = this;
+        
+        if (tableType === '+') {
+            identity = model.addTable.getIdentity();
+        }
+        else if (tableType === '*') {
+            identity = model.multTable.getIdentity();
+        }
+        
+        return identity;
+    },
+    /**
+     * Get a specific element from the additive table.
+     * @param i - row
+     * @param j - column
+     * @param tableType {string} - '+' or '*'
+     * @returns the element at position (i, j)
+     */
+    getElement: function(i, j, tableType) {
+        'use strict';
+        var model, el;
+
+        model = this;
+
+        if (tableType === '+') {
+            el = model.addTable.getElement(i, j);
+        }
+        else if (tableType === '*') {
+            el = model.multTable.getElement(i, j);
+        }
+        
+        return el;
+    },
+    /**
+     * Get the order of an element.
+     * @param elIdx - element index
+     * @param tableType {string} - '+' or '*'
+     * @returns order of the element
+     */
+    elementOrder: function(elIdx, tableType) {
+        'use strict';
+        var model, order;
+
+        model = this;
+        
+        if (tableType === '+') {
+            order = model.addTable.elementOrder(elIdx);
+        }
+        else if (tableType === '*') {
+            order = model.multTable.elementOrder(elIdx);
+        }
+
+        return order;
+    },
+    /**
+     * Get the Field index of an element.
+     * @param el - index into element array
+     * @param tableType {string} - '+' or '*'
+     * @returns index of the element
+     */
+    elementIndex: function(elIdx, tableType) {
+        'use strict';
+        var model, index;
+
+        model = this;
+
+        if (tableType === '+') {
+            index = model.addTable.elementIndex(elIdx);
+        }
+        else if (tableType === '*') {
+            index = model.multTable.elementIndex(elIdx);
+        }
+
+        return index;
+    },
+    /**
+     * Create a String representation of the current operator table.
+     * @returns string representation of the operator table
+     */
+    toStr: function() {
+        'use strict';
+        var model, colWidth, outString, i, j;
+
+        console.log('Field.toStr()');
         
         model = this;
         
@@ -1787,6 +1956,21 @@ aljabr.buildProductGroup = function(group1, group2) {
     }
   
     return productBuilder.buildGroup();
+};
+
+
+/**
+ * Build a finite Field.
+ * @param order - order of the Field
+ * @returns built Field
+ */
+aljabr.buildField = function(order) {
+    'use strict';
+    var i;
+  
+    if (order <= 0) {
+        return null;
+    }
 };
 
 
