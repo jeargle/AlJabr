@@ -432,18 +432,18 @@ aljabr.Field = aljabr.Class({
     /**
      * Initialize the class.
      * @param elements - list of strings representing Field elements
-     * @param addTable - OperatorTable for additive Group
-     * @param multTable - OperatorTable for multiplicative Group
+     * @param addGroup - additive Group
+     * @param multGroup - multiplicative Group
      */
-    init: function(elements, addTable, multTable) {
+    init: function(elements, addGroup, multGroup) {
         'use strict';
         var model;
 
         model =  this;
         model.elements = elements;
         model.order = model.elements.length;
-        model.addTable = addTable;
-        model.multTable = multTable;
+        model.addGroup = addGroup;
+        model.multGroup = multGroup;
     },
     /**
      * Get the identity element for a given table.
@@ -457,10 +457,10 @@ aljabr.Field = aljabr.Class({
         model = this;
         
         if (tableType === '+') {
-            identity = model.addTable.getIdentity();
+            identity = model.addGroup.getIdentity();
         }
         else if (tableType === '*') {
-            identity = model.multTable.getIdentity();
+            identity = model.multGroup.getIdentity();
         }
         
         return identity;
@@ -479,10 +479,10 @@ aljabr.Field = aljabr.Class({
         model = this;
 
         if (tableType === '+') {
-            el = model.addTable.getElement(i, j);
+            el = model.addGroup.getElement(i, j);
         }
         else if (tableType === '*') {
-            el = model.multTable.getElement(i, j);
+            el = model.multGroup.getElement(i, j);
         }
         
         return el;
@@ -500,10 +500,10 @@ aljabr.Field = aljabr.Class({
         model = this;
         
         if (tableType === '+') {
-            order = model.addTable.elementOrder(elIdx);
+            order = model.addGroup.elementOrder(elIdx);
         }
         else if (tableType === '*') {
-            order = model.multTable.elementOrder(elIdx);
+            order = model.multGroup.elementOrder(elIdx);
         }
 
         return order;
@@ -521,10 +521,10 @@ aljabr.Field = aljabr.Class({
         model = this;
 
         if (tableType === '+') {
-            index = model.addTable.elementIndex(elIdx);
+            index = model.addGroup.elementIndex(elIdx);
         }
         else if (tableType === '*') {
-            index = model.multTable.elementIndex(elIdx);
+            index = model.multGroup.elementIndex(elIdx);
         }
 
         return index;
@@ -540,49 +540,10 @@ aljabr.Field = aljabr.Class({
         console.log('Field.toStr()');
         
         model = this;
-        
-        // Set column width to size of largest element symbol
-        colWidth = 0;
-        for (i=0; i<model.order; i++) {
-            if (colWidth < model.elements[i].length) {
-	        colWidth = model.elements[i].length;
-            }
-        }
 
-        outString = ' ' + aljabr.rJust(' ', colWidth) + ' |';
-        for (i=0; i<model.order; i++) {
-            outString += ' ' +
-                aljabr.rJust(model.elements[i],
-                             colWidth) +
-                ' |';
-        }
+        outString = model.addGroup.toStr();
         outString += '\n';
-
-        for (i=0; i<=model.order; i++) {
-            outString += '-' + aljabr.rJust('-', colWidth, '-') + '-|';
-        }
-        outString += '\n';
-
-        for (i=0; i<model.order; i++) {
-            outString += ' ' +
-                aljabr.rJust(model.elements[i],
-                             colWidth) +
-                ' |';
-            for (j=0; j<model.order; j++) {
-                // outString += ' #{model.elements.element(model.table.getElement(i, j)).symbol.aljabr.rJust(colWidth)} |'
-                if (model.table.getElement(i, j) === null) {
-	            outString += ' ' + aljabr.rJust('.', colWidth) + ' |';
-                }
-                else {
-	            outString += ' ' +
-                        aljabr.rJust(
-                            model.elements[model.table.getElement(i, j)],
-                            colWidth) +
-                        ' |';
-                }
-            }
-            outString += '\n';
-        }
+        outString += model.multGroup.toStr();
         
         return outString;
     }
@@ -1966,11 +1927,30 @@ aljabr.buildProductGroup = function(group1, group2) {
  */
 aljabr.buildField = function(order) {
     'use strict';
-    var i;
+    var i, elements1, elements2, agb1, group1, agb2, group2, field;
   
     if (order <= 0) {
         return null;
     }
+
+    elements1 = [];
+    for (i=0; i<order; i++) {
+        elements1.push(i);
+    }
+    
+    elements2 = [];
+    for (i=1; i<order; i++) {
+        elements2.push(i);
+    }
+
+    agb1 = new aljabr.ArithmeticGroupBuilder(elements1, '+', 5);
+    group1 = agb1.buildGroup();
+
+    agb2 = new aljabr.ArithmeticGroupBuilder(elements2, '*', 5);
+    group2 = agb2.buildGroup();
+
+    field = new aljabr.Field(elements1, group1, group2);
+    return field;
 };
 
 
