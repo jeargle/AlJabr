@@ -1769,7 +1769,7 @@ aljabr.buildDihedralGroup = function(degree) {
 
 /**
  * Build a symmetry group.
- * XXX - using WAY more generators than are needed
+ * Uses (degree*degree - degree)/2 generators.
  * @param degree - order of the group is degree!
  * @returns built symmetry group
  */
@@ -1821,6 +1821,7 @@ aljabr.buildSymmetryGroup = function(degree) {
 
 /**
  * Build a symmetry group.
+ * Uses degree - 1 generators.
  * @param degree - order of the group is degree!
  * @returns built symmetry group
  */
@@ -1865,6 +1866,7 @@ aljabr.buildSymmetryGroup2 = function(degree) {
 
 /**
  * Build a symmetry group.
+ * Uses 2 generators.
  * @param degree - order of the group is degree!
  * @returns built symmetry group
  */
@@ -1904,7 +1906,7 @@ aljabr.buildSymmetryGroup3 = function(degree) {
 
 /**
  * Build an alternating group.
- * XXX - using WAY more generators than are needed
+ * Uses choose(degree, 3) generators.
  * @param degree - order of the group is degree!/2
  * @returns built alternating group
  */
@@ -1912,12 +1914,7 @@ aljabr.buildAlternatingGroup = function(degree) {
     'use strict';
     var numActionArrays, alternatingActionArrays, i, j, k, arrayCount, transpositions, alternatingGroupBuilder;
 
-    if (degree <= 1) {
-        // return null;
-        return aljabr.buildCyclicGroup(degree);
-    }
-
-    if (degree === 2) {
+    if (degree >= 1 && degree <= 3) {
         return aljabr.buildCyclicGroup(degree);
     }
 
@@ -1950,6 +1947,49 @@ aljabr.buildAlternatingGroup = function(degree) {
     for (i=0; i<numActionArrays; i++) {
         transpositions[i] = new aljabr.Permutor(alternatingActionArrays[i]);
     }
+
+    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions);
+
+    return alternatingGroupBuilder.getGroup();
+};
+
+
+/**
+ * Build an alternating group.
+ * Uses 2 generators.
+ * @param degree - order of the group is degree!/2
+ * @returns built alternating group
+ */
+aljabr.buildAlternatingGroup2 = function(degree) {
+    'use strict';
+    var i, alternatingActionArrays, transpositions, alternatingGroupBuilder;
+
+    if (degree >= 1 && degree <= 3) {
+        return aljabr.buildCyclicGroup(degree);
+    }
+
+    alternatingActionArrays = [[], []];
+    for (i=0; i<degree; i++) {
+        alternatingActionArrays[0][i] = i;
+        alternatingActionArrays[1][i] = i+1;
+    }
+
+    alternatingActionArrays[0][0] = 1;
+    alternatingActionArrays[0][1] = 2;
+    alternatingActionArrays[0][2] = 0;
+
+    if (degree % 2 === 0) {
+        alternatingActionArrays[1][0] = 0;
+        alternatingActionArrays[1][degree-1] = 1;
+    }
+    else {
+        alternatingActionArrays[1][degree-1] = 0;
+    }
+
+    transpositions = [
+        new aljabr.Permutor(alternatingActionArrays[0]),
+        new aljabr.Permutor(alternatingActionArrays[1])
+    ];
 
     alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions);
 

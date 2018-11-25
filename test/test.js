@@ -345,7 +345,7 @@ aljabr.test.testSymmetryGroups = function() {
 
 aljabr.test.testAlternatingGroups = function() {
     'use strict';
-    var g1, g2, g3, g4, g5;
+    var g1, g2, g3, g4, g5, g12, g22, g32, g42, g52;
 
     console.log('\n\n***** Alternating Group Test *****');
 
@@ -353,12 +353,24 @@ aljabr.test.testAlternatingGroups = function() {
     g2 = aljabr.buildAlternatingGroup(2);
     g3 = aljabr.buildAlternatingGroup(3);
     g4 = aljabr.buildAlternatingGroup(4);
-    // g5 = aljabr.buildAlternatingGroup(5);  // order 60
+    g5 = aljabr.buildAlternatingGroup(5);  // order 60
+
+    g12 = aljabr.buildAlternatingGroup2(1);
+    g22 = aljabr.buildAlternatingGroup2(2);
+    g32 = aljabr.buildAlternatingGroup2(3);
+    g42 = aljabr.buildAlternatingGroup2(4);
+    g52 = aljabr.buildAlternatingGroup2(5);  // order 60
+
     console.log(g1.toStr());
+    // console.log(g12.toStr());
     console.log(g2.toStr());
+    // console.log(g22.toStr());
     console.log(g3.toStr());
+    // console.log(g32.toStr());
     console.log(g4.toStr());
-    // console.log(g5.toStr());
+    console.log(g42.toStr());
+    console.log(g5.toStr());
+    console.log(g52.toStr());
 };
 
 
@@ -434,7 +446,7 @@ aljabr.test.testFieldBuilder = function() {
 // aljabr.test.testArithmetic();
 // aljabr.test.testCyclicGroups();
 // aljabr.test.testDihedralGroups();
-aljabr.test.testSymmetryGroups();
-// aljabr.test.testAlternatingGroups();
+// aljabr.test.testSymmetryGroups();
+aljabr.test.testAlternatingGroups();
 // aljabr.test.testGroupBuilders();
 // aljabr.test.testFieldBuilder();
