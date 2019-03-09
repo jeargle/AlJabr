@@ -2,7 +2,7 @@
 
 /**
  * John Eargle (mailto: jeargle at gmail.com)
- * 2007-2016
+ * 2007-2019
  * aljabr
  */
 
