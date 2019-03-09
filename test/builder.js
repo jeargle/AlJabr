@@ -17,7 +17,7 @@ aljabr.builder.SettingsView = aljabr.Class({
               symmetry: 'S'},
     init: function(id) {
         'use strict'
-        var view
+        let view
 
         view = this
         view.id = id
@@ -39,7 +39,7 @@ aljabr.builder.SettingsView = aljabr.Class({
 
         view.el.select('#group-type-menu')
             .on('change', function() {
-                var oldGroupType
+                let oldGroupType
                 console.log('type change')
                 oldGroupType = view.groupType
                 view.groupType = view.nameMap[d3.event.target.value]
@@ -68,7 +68,7 @@ aljabr.builder.SettingsView = aljabr.Class({
     },
     buildOrderMenu: function() {
         'use strict'
-        var view, orderMenu, start, i
+        let view, orderMenu, start, i
 
         view = this
         orderMenu = view.el.select('#group-order-menu')
@@ -95,7 +95,7 @@ aljabr.builder.SettingsView = aljabr.Class({
     },
     render: function() {
         'use strict'
-        var view, order
+        let view, order
 
         view = this
 
@@ -137,7 +137,7 @@ aljabr.builder.SettingsView = aljabr.Class({
      */
     attachNewGroup: function() {
         'use strict'
-        var view, builder, groupType, order
+        let view, builder, groupType, order
 
         view = this
         builder = aljabr.builder
@@ -185,7 +185,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     entries: null,
     init: function(id) {
         'use strict'
-        var view
+        let view
 
         view = this
         view.id = id
@@ -197,7 +197,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
     },
     render: function() {
         'use strict'
-        var view, svg, boxSize, order, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels
+        let view, svg, boxSize, order, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels
 
         view = this
         view.el.html('')
@@ -270,7 +270,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
             .attr('height', boxSize)
             .style('stroke', 'black')
             .on('click', function(b) {
-                var tempNode
+                let tempNode
                 if (b.open) {
                     view.model.setElement(b.row, b.col, view.activeNode)
                     if (view.model.isComplete()) {
@@ -363,7 +363,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
      */
     toggleNodes: function(index) {
         'use strict'
-        var view, order, i, j, openEntries
+        let view, order, i, j, openEntries
 
         view = this
         order = view.model.order
@@ -410,7 +410,7 @@ aljabr.builder.CayleyTableView = aljabr.Class({
      */
     attach: function(model) {
         'use strict'
-        var view, order, i, j
+        let view, order, i, j
 
         view = this
         view.model = model
@@ -444,7 +444,7 @@ aljabr.builder.ElementView = aljabr.Class({
     height: 0,
     init: function(id) {
         'use strict'
-        var view
+        let view
 
         view = this
         view.id = id
@@ -456,7 +456,7 @@ aljabr.builder.ElementView = aljabr.Class({
     },
     render: function() {
         'use strict'
-        var view, svg
+        let view, svg
 
         view = this
         svg = view.el.append('svg')
@@ -467,7 +467,7 @@ aljabr.builder.ElementView = aljabr.Class({
     },
     attach: function(model) {
         'use strict'
-        var view
+        let view
 
         view = this
         view.model = model
@@ -488,7 +488,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     layout: 'circle',
     init: function(id) {
         'use strict'
-        var view
+        let view
 
         view = this
         view.id = id
@@ -503,7 +503,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
     },
     render: function() {
         'use strict'
-        var view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels
+        let view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels
 
         view = this
         view.el.html('')
@@ -660,7 +660,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     renderGraph: function() {
         'use strict'
-        var view, svg, order, colorStep, radius, i, j, points, pointPairs, index, element, edges, nodes, labels, selectors, sLabels
+        let view, svg, order, colorStep, radius, i, j, points, pointPairs, index, element, edges, nodes, labels, selectors, sLabels
 
         console.log('renderGraph()')
 
@@ -820,7 +820,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutCircle: function() {
         'use strict'
-        var view, order, radius, angle, i
+        let view, order, radius, angle, i
 
         console.log('layoutCircle()')
 
@@ -848,7 +848,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutNested: function(index, twist) {
         'use strict'
-        var view, cosets, elIndex, elOrder, radiusDiff, radius, angle, i, j
+        let view, cosets, elIndex, elOrder, radiusDiff, radius, angle, i, j
 
         console.log('layoutNested()')
 
@@ -884,7 +884,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     layoutSeparate: function(index) {
         'use strict'
-        var view, cosets, elIndex, elOrder, radius, angle, i, j
+        let view, cosets, elIndex, elOrder, radius, angle, i, j
 
         console.log('layoutSeparate()')
 
@@ -915,7 +915,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     toggleEdges: function(index) {
         'use strict'
-        var view, i
+        let view, i
 
         view = this
 
@@ -945,7 +945,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
      */
     attach: function(model) {
         'use strict'
-        var view, order, i, j, element
+        let view, order, i, j, element
 
         view = this
         view.model = model
@@ -978,7 +978,7 @@ aljabr.builder.cayleyGraphView = null
 
 $(document).ready(function() {
     'use strict'
-    var builder, group, elements, testSet, group
+    let builder, group, elements, testSet
 
     builder = aljabr.builder
 

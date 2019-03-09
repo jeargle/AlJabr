@@ -16,7 +16,7 @@ var aljabr = aljabr || {}
  */
 aljabr.Class = function(methods) {
     'use strict'
-    var obj, i
+    let obj, i
 
     obj = function() {
         this.init.apply(this, arguments)
@@ -42,7 +42,7 @@ aljabr.Class = function(methods) {
  */
 aljabr.alphaElements = function(order) {
     'use strict'
-    var i, alpha, elements
+    let i, alpha, elements
 
     if (order > 26) {
         console.warn('Error - order larger than 26')
@@ -66,7 +66,7 @@ aljabr.alphaElements = function(order) {
  */
 aljabr.numElements = function(order, identityOne) {
     'use strict'
-    var i, elements, identity
+    let i, elements, identity
 
     if (identityOne === undefined) {
         identityOne = false
@@ -108,7 +108,7 @@ aljabr.OperatorTable = aljabr.Class({
      */
     init: function(order) {
         'use strict'
-        var model, i, j
+        let model, i, j
 
         model = this
         model.order = order
@@ -129,7 +129,7 @@ aljabr.OperatorTable = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict'
-        var model
+        let model
 
         model = this
 
@@ -190,7 +190,7 @@ aljabr.Group = aljabr.Class({
      */
     init: function(elements, table) {
         'use strict'
-        var model
+        let model
 
         model =  this
         model.elements = elements
@@ -222,7 +222,7 @@ aljabr.Group = aljabr.Class({
      */
     elementOrder: function(el) {
         'use strict'
-        var model, order, elPower
+        let model, order, elPower
 
         model = this
 
@@ -257,7 +257,7 @@ aljabr.Group = aljabr.Class({
      */
     elementIndex: function(el) {
         'use strict'
-        var model, order
+        let model, order
 
         model = this
         if (el === 0) {
@@ -283,7 +283,7 @@ aljabr.Group = aljabr.Class({
      */
     elementSubgroup: function(el) {
         'use strict'
-        var model, nextEl, elements
+        let model, nextEl, elements
 
         model = this
         nextEl = 0
@@ -306,7 +306,7 @@ aljabr.Group = aljabr.Class({
      */
     cosets: function(el, left) {
         'use strict'
-        var model, elements, index, cosets, multElements, cosetElements, i, multiplier, coset, tempEl
+        let model, elements, index, cosets, multElements, cosetElements, i, multiplier, coset, tempEl
 
         model = this
         if (left === undefined) {
@@ -367,7 +367,7 @@ aljabr.Group = aljabr.Class({
      */
     toStr: function() {
         'use strict'
-        var model, colWidth, outString, i, j
+        let model, colWidth, outString, i, j
 
         console.log('Group.toStr()')
 
@@ -437,7 +437,7 @@ aljabr.Field = aljabr.Class({
      */
     init: function(elements, addGroup, multGroup) {
         'use strict'
-        var model
+        let model
 
         model =  this
         model.elements = elements
@@ -452,7 +452,7 @@ aljabr.Field = aljabr.Class({
      */
     getIdentity: function(tableType) {
         'use strict'
-        var model, identity
+        let model, identity
 
         model = this
 
@@ -474,7 +474,7 @@ aljabr.Field = aljabr.Class({
      */
     getElement: function(i, j, tableType) {
         'use strict'
-        var model, el
+        let model, el
 
         model = this
 
@@ -495,7 +495,7 @@ aljabr.Field = aljabr.Class({
      */
     elementOrder: function(elIdx, tableType) {
         'use strict'
-        var model, order
+        let model, order
 
         model = this
 
@@ -516,7 +516,7 @@ aljabr.Field = aljabr.Class({
      */
     elementIndex: function(elIdx, tableType) {
         'use strict'
-        var model, index
+        let model, index
 
         model = this
 
@@ -535,7 +535,7 @@ aljabr.Field = aljabr.Class({
      */
     toStr: function() {
         'use strict'
-        var model, colWidth, outString, i, j
+        let model, colWidth, outString, i, j
 
         console.log('Field.toStr()')
 
@@ -568,7 +568,7 @@ aljabr.OpenTable = aljabr.Class({
      */
     init: function(order) {
         'use strict'
-        var model, i, j, k
+        let model, i, j, k
 
         model = this
         model.order = order
@@ -627,7 +627,7 @@ aljabr.OpenTable = aljabr.Class({
      */
     clear: function(row, col) {
         'use strict'
-        var model, i
+        let model, i
 
         model = this
         model.table[row][col] = []
@@ -653,7 +653,7 @@ aljabr.OpenTable = aljabr.Class({
      */
     remove: function(row, col, element) {
         'use strict'
-        var model, elIndex
+        let model, elIndex
 
         model = this
 
@@ -690,7 +690,7 @@ aljabr.OpenTable = aljabr.Class({
      */
     findNextPos: function() {
         'use strict'
-        var model, el, row, col
+        let model, el, row, col
 
         model = this
         if (model.nextPos !== null) {
@@ -718,7 +718,7 @@ aljabr.OpenTable = aljabr.Class({
      */
     printOpenTable: function() {
         'use strict'
-        var model, i, j
+        let model, i, j
 
         model = this
 
@@ -755,7 +755,7 @@ aljabr.AssociationTable = aljabr.Class({
      */
     init: function(order, builder) {
         'use strict'
-        var model, i, j, k
+        let model, i, j, k
 
         model = this
         model.order = order
@@ -786,7 +786,7 @@ aljabr.AssociationTable = aljabr.Class({
      */
     checkAssociativityRules: function(row, col) {
         'use strict'
-        var model, r, firstFlag
+        let model, r, firstFlag
 
         model = this
         firstFlag = true
@@ -810,7 +810,7 @@ aljabr.AssociationTable = aljabr.Class({
      */
     addAssociativityRules: function(row, col, el) {
         'use strict'
-        var model, builder, tempEl1, tempEl2
+        let model, builder, tempEl1, tempEl2
 
         model = this
         builder = model.builder
@@ -903,7 +903,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     init: function(elements) {
         'use strict'
-        var model, i, j, k
+        let model, i, j, k
 
         model = this
         model.elements = elements
@@ -960,7 +960,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     setElement: function(i, j, element) {
         'use strict'
-        var model, openTable, openList, assTable, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos, error
+        let model, openTable, openList, assTable, tempEl, markQueue, head, row, col, el, x, assRules, assRow, assCol, assEl, nextPos, error
 
         // console.log('GroupBuilder.setElement(' + i + ', ' + j + ', ' + element + ')')
 
@@ -1083,7 +1083,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     elementOrder: function(el, rightSide) {
         'use strict'
-        var model, order, seqs, i
+        let model, order, seqs, i
 
         model = this
 
@@ -1126,7 +1126,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     subsequences: function(el, rightSide) {
         'use strict'
-        var model, subseqs, starts, i, product
+        let model, subseqs, starts, i, product
 
         model = this
         subseqs = []
@@ -1173,7 +1173,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     subsequence: function(el1, el2, rightSide) {
         'use strict'
-        var model, subseq, elPower, prevPower
+        let model, subseq, elPower, prevPower
 
         model = this
         subseq = []
@@ -1232,7 +1232,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict'
-        var model
+        let model
 
         model = this
         // Identity was set in initialize()
@@ -1250,7 +1250,7 @@ aljabr.GroupBuilder = aljabr.Class({
      */
     toStr: function() {
         'use strict'
-        var model, elements, colWidth, i, j, outStr
+        let model, elements, colWidth, i, j, outStr
 
         model = this
         elements = model.elements
@@ -1322,7 +1322,7 @@ aljabr.Permutor = aljabr.Class({
      */
     init: function(actionArray) {
         'use strict'
-        var model, i
+        let model, i
 
         // console.log('Permutor.init()')
 
@@ -1354,7 +1354,7 @@ aljabr.Permutor = aljabr.Class({
      */
     operate: function(permutor) {
         'use strict'
-        var model, tempActionArray, i, perm
+        let model, tempActionArray, i, perm
 
         model = this
 
@@ -1384,7 +1384,7 @@ aljabr.Permutor = aljabr.Class({
      */
     toStr2: function() {
         'use strict'
-        var model, str, i
+        let model, str, i
 
         model = this
         str = '['
@@ -1402,7 +1402,7 @@ aljabr.Permutor = aljabr.Class({
      */
     toStr: function() {
         'use strict'
-        var model, str, markArray, i, j
+        let model, str, markArray, i, j
 
         model = this
         str = ''
@@ -1447,7 +1447,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     init: function(generators) {
         'use strict'
-        var model
+        let model
 
         // console.log('PermutationGroupBuilder.init()')
 
@@ -1475,7 +1475,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     findElements: function() {
         'use strict'
-        var model, identityActionArray, i, j, tempPermutor
+        let model, identityActionArray, i, j, tempPermutor
 
         model = this
 
@@ -1501,7 +1501,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict'
-        var model, elementArray, elements, groupBuilder, i, j
+        let model, elementArray, elements, groupBuilder, i, j
 
         model = this
         if (model.permutors.length === 0) {
@@ -1549,7 +1549,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     getGroup: function() {
         'use strict'
-        var model
+        let model
 
         model = this
         if (model.group === null) {
@@ -1562,7 +1562,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     printPermutors: function() {
         'use strict'
-        var model, i
+        let model, i
 
         model = this
 
@@ -1575,7 +1575,7 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
      */
     permutorIndex: function(permutor) {
         'use strict'
-        var model, index, i
+        let model, index, i
 
         model = this
         index = -1
@@ -1607,7 +1607,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     init: function(elements, operator, modulo) {
         'use strict'
-        var model
+        let model
 
         // console.log('ArithmeticGroupBuilder.init()')
 
@@ -1636,7 +1636,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     buildGroup: function() {
         'use strict'
-        var model, elements, numElements, elementSet, elementIdxs, groupBuilder, i, j
+        let model, elements, numElements, elementSet, elementIdxs, groupBuilder, i, j
 
         model = this
         elements = model.elements
@@ -1681,7 +1681,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      */
     getGroup: function() {
         'use strict'
-        var model
+        let model
 
         model = this
         if (model.group === null) {
@@ -1700,7 +1700,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
  */
 aljabr.buildCyclicGroup = function(order) {
     'use strict'
-    var cycleActionArray, i, cycle, cyclicGroupBuilder
+    let cycleActionArray, i, cycle, cyclicGroupBuilder
 
     if (order <= 0) {
         return null
@@ -1734,7 +1734,7 @@ aljabr.buildCyclicGroup = function(order) {
  */
 aljabr.buildDihedralGroup = function(degree) {
     'use strict'
-    var dihedralActionArray1, dihedralActionArray2, i, dihed1, dihed2, dihedralGroupBuilder
+    let dihedralActionArray1, dihedralActionArray2, i, dihed1, dihed2, dihedralGroupBuilder
 
     if (degree <= 0) {
         return null
@@ -1775,7 +1775,7 @@ aljabr.buildDihedralGroup = function(degree) {
  */
 aljabr.buildSymmetryGroup = function(degree) {
     'use strict'
-    var baseActionArray, numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
+    let baseActionArray, numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
 
     if (degree <= 0) {
         return null
@@ -1827,7 +1827,7 @@ aljabr.buildSymmetryGroup = function(degree) {
  */
 aljabr.buildSymmetryGroup2 = function(degree) {
     'use strict'
-    var baseActionArray, numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
+    let baseActionArray, numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
 
     if (degree <= 0) {
         return null
@@ -1872,7 +1872,7 @@ aljabr.buildSymmetryGroup2 = function(degree) {
  */
 aljabr.buildSymmetryGroup3 = function(degree) {
     'use strict'
-    var numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
+    let numActionArrays, symmetryActionArrays, num1, num2, i, transpositions, symmetryGroupBuilder
 
     if (degree <= 0) {
         return null
@@ -1912,7 +1912,7 @@ aljabr.buildSymmetryGroup3 = function(degree) {
  */
 aljabr.buildAlternatingGroup = function(degree) {
     'use strict'
-    var numActionArrays, alternatingActionArrays, i, j, k, arrayCount, transpositions, alternatingGroupBuilder
+    let numActionArrays, alternatingActionArrays, i, j, k, arrayCount, transpositions, alternatingGroupBuilder
 
     if (degree >= 1 && degree <= 3) {
         return aljabr.buildCyclicGroup(degree)
@@ -1962,7 +1962,7 @@ aljabr.buildAlternatingGroup = function(degree) {
  */
 aljabr.buildAlternatingGroup2 = function(degree) {
     'use strict'
-    var i, alternatingActionArrays, transpositions, alternatingGroupBuilder
+    let i, alternatingActionArrays, transpositions, alternatingGroupBuilder
 
     if (degree >= 1 && degree <= 3) {
         return aljabr.buildCyclicGroup(degree)
@@ -2005,7 +2005,7 @@ aljabr.buildAlternatingGroup2 = function(degree) {
  */
 aljabr.buildProductGroup = function(group1, group2) {
     'use strict'
-    var elArray, elCount, backMap, backMap2, i, j, elements, productBuilder, el1, el2
+    let elArray, elCount, backMap, backMap2, i, j, elements, productBuilder, el1, el2
 
     elArray = []
     elCount = 0
@@ -2049,7 +2049,7 @@ aljabr.buildProductGroup = function(group1, group2) {
  */
 aljabr.buildField = function(order) {
     'use strict'
-    var i, elements1, elements2, agb1, group1, agb2, group2, field
+    let i, elements1, elements2, agb1, group1, agb2, group2, field
 
     if (order <= 0) {
         return null
@@ -2085,7 +2085,7 @@ aljabr.buildField = function(order) {
  */
 aljabr.rJust = function(inStr, justLen, fillChar) {
     'use strict'
-    var outStr, i
+    let outStr, i
 
     outStr = inStr
 
@@ -2109,7 +2109,7 @@ aljabr.rJust = function(inStr, justLen, fillChar) {
  */
 aljabr.factors = function(num) {
     'use strict'
-    var primeFactors, factor, primeCount, i, powers, factors
+    let primeFactors, factor, primeCount, i, powers, factors
 
     primeFactors = aljabr.primeFactors(num)
 
@@ -2150,7 +2150,7 @@ aljabr.factors = function(num) {
  */
 aljabr.primeFactors = function(num, factors) {
     'use strict'
-    var root, x
+    let root, x
 
     root = Math.sqrt(num)
     if (factors === undefined) {
@@ -2177,7 +2177,7 @@ aljabr.primeFactors = function(num, factors) {
  */
 aljabr.powers = function(num, count) {
     'use strict'
-    var i, powers, tempNum
+    let i, powers, tempNum
 
     powers = []
     tempNum = 1
@@ -2198,7 +2198,7 @@ aljabr.powers = function(num, count) {
  */
 aljabr.cartProduct = function(nums1, nums2) {
     'use strict'
-    var products, i, j
+    let products, i, j
 
     products = []
     for (i=0; i<nums1.length; i++) {
@@ -2230,7 +2230,7 @@ aljabr.numCompare = function(a, b) {
  */
 aljabr.factorial = function(num) {
     'use strict'
-    var result, i
+    let result, i
 
     result = 1
     for (i=2; i<=num; i++)
@@ -2255,7 +2255,7 @@ aljabr.factorial = function(num) {
  */
 function extend(ns, nsString) {
     'use strict'
-    var parts, parent, pl, i
+    let parts, parent, pl, i
 
     parts = nsString.split('.')
     parent = ns

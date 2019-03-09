@@ -5,7 +5,7 @@ extend(aljabr, 'test')
 
 aljabr.test.testOperatorTable = function() {
     'use strict'
-    var table
+    let table
 
     console.log('\n\n***** OperatorTable Test *****\n')
 
@@ -25,7 +25,7 @@ aljabr.test.testOperatorTable = function() {
 
 aljabr.test.testGroupBuilder = function() {
     'use strict'
-    var e, a, testSet1, groupBuilder1, b, c, d, testSet2, groupBuilder2, o, om, i, im, j, jm, k, km, testSet3, groupBuilder3
+    let e, a, testSet1, groupBuilder1, b, c, d, testSet2, groupBuilder2, o, om, i, im, j, jm, k, km, testSet3, groupBuilder3
 
     console.log('\n\n***** GroupBuilder Test *****\n')
     e = 'e'
@@ -153,7 +153,7 @@ aljabr.test.testGroupBuilder = function() {
 
 aljabr.test.testPermutor = function() {
     'use strict'
-    var a, e, x, y, z, perm1, perm2, perm3, perm4, pgb1, pgb2, pgb3, g1, g2, g3
+    let a, e, x, y, z, perm1, perm2, perm3, perm4, pgb1, pgb2, pgb3, g1, g2, g3
 
     console.log('\n\n***** Permutor Test *****')
     a = new aljabr.Permutor([0, 1, 2, 3, 4, 5])
@@ -214,7 +214,7 @@ aljabr.test.testPermutor = function() {
 
 aljabr.test.testArithmetic = function() {
     'use strict'
-    var ar1, ar2, ar3, agb1, agb2, agb3, g1, g2, g3
+    let ar1, ar2, ar3, agb1, agb2, agb3, g1, g2, g3
 
     console.log('\n\n***** ArithmeticGroupBuilder Test *****')
 
@@ -237,7 +237,7 @@ aljabr.test.testArithmetic = function() {
 
 aljabr.test.testGroupBuilders = function() {
     'use strict'
-    var g13, g7, g3, g4, g2, g2x2, g2x3
+    let g13, g7, g3, g4, g2, g2x2, g2x3
 
     console.log('\n\n***** Group Builder Function Tests *****')
 
@@ -272,7 +272,7 @@ aljabr.test.testGroupBuilders = function() {
 
 aljabr.test.testCyclicGroups = function() {
     'use strict'
-    var g1, g2, g3, g4, g5, g10, g20, g30, g40
+    let g1, g2, g3, g4, g5, g10, g20, g30, g40
 
     console.log('\n\n***** Cyclic Group Test *****')
 
@@ -297,7 +297,7 @@ aljabr.test.testCyclicGroups = function() {
 
 aljabr.test.testDihedralGroups = function() {
     'use strict'
-    var g1, g2, g3, g4, g5, g6, g7
+    let g1, g2, g3, g4, g5, g6, g7
 
     console.log('\n\n***** Dihedral Group Test *****')
 
@@ -320,7 +320,7 @@ aljabr.test.testDihedralGroups = function() {
 
 aljabr.test.testSymmetryGroups = function() {
     'use strict'
-    var g1, g2, g3, g4, g5, g12, g22, g32, g42
+    let g1, g2, g3, g4, g5, g12, g22, g32, g42
 
     console.log('\n\n***** Symmetry Group Test *****')
 
@@ -345,7 +345,7 @@ aljabr.test.testSymmetryGroups = function() {
 
 aljabr.test.testAlternatingGroups = function() {
     'use strict'
-    var g1, g2, g3, g4, g5, g12, g22, g32, g42, g52
+    let g1, g2, g3, g4, g5, g12, g22, g32, g42, g52
 
     console.log('\n\n***** Alternating Group Test *****')
 
@@ -376,7 +376,7 @@ aljabr.test.testAlternatingGroups = function() {
 
 aljabr.test.boolTableToStr = function(table) {
     'use strict'
-    var order, colWidth, outStr, i, j
+    let order, colWidth, outStr, i, j
 
     // Set column width to size of largest element symbol
     order = table.length
@@ -413,7 +413,7 @@ aljabr.test.boolTableToStr = function(table) {
 
 aljabr.test.testFieldBuilder = function() {
     'use strict'
-    var f3, f5, f11
+    let f3, f5, f11
 
     console.log('\n\n***** Field Builder Tests *****')
 
