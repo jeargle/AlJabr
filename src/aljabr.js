@@ -1313,14 +1313,15 @@ aljabr.GroupBuilder = aljabr.Class({
 /**
  * Permutation representation of a group element from the symmetric group.
  */
-aljabr.Permutor = aljabr.Class({
-    actionArray: undefined,
-    order: 0,
+aljabr.Permutor = class {
+    actionArray = undefined
+    order = 0
+
     /**
      * Initialize the class.
      * @param actionArray - permutor representation
      */
-    init: function(actionArray) {
+    constructor(actionArray) {
         'use strict'
         let model, i
 
@@ -1339,20 +1340,22 @@ aljabr.Permutor = aljabr.Class({
             }
         }
         model.actionArray = actionArray
-    },
+    }
+
     /**
      * Equality (was '===')
      * @param permutor - permutor to compare against
      */
-    eq: function(permutor) {
+    eq(permutor) {
         'use strict'
         return (this.toStr() === permutor.toStr())
-    },
+    }
+
     /**
      *
      * @param permutor -
      */
-    operate: function(permutor) {
+    operate(permutor) {
         'use strict'
         let model, tempActionArray, i, perm
 
@@ -1368,21 +1371,23 @@ aljabr.Permutor = aljabr.Class({
         perm = new aljabr.Permutor(tempActionArray)
 
         return perm
-    },
+    }
+
     /**
      * Return an element of actionArray.
      * @param num - index into actionArray
      */
-    op: function(num) {
+    op(num) {
         'use strict'
 
         //puts 'op num: ' + num.toStr()
         return this.actionArray[num]
-    },
+    }
+
     /**
      * Return a string representation of actionArray.
      */
-    toStr2: function() {
+    toStr2() {
         'use strict'
         let model, str, i
 
@@ -1396,11 +1401,12 @@ aljabr.Permutor = aljabr.Class({
         str += ']'
 
         return str
-    },
+    }
+
     /**
      * Return a string representation of actionArray.
      */
-    toStr: function() {
+    toStr() {
         'use strict'
         let model, str, markArray, i, j
 
@@ -1432,20 +1438,21 @@ aljabr.Permutor = aljabr.Class({
 
         return str
     }
-})
+}
 
 
-aljabr.PermutationGroupBuilder = aljabr.Class({
-    generators: undefined,
-    permutors: undefined,
-    group: undefined,
-    permutorOrder: 0,
+aljabr.PermutationGroupBuilder = class {
+    generators = undefined
+    permutors = undefined
+    group = undefined
+    permutorOrder = 0
+
     /**
      * Initialize the class.
      * Pass in array of Permutors
      * @param generators - array of generators represented as +Permutors+
      */
-    init: function(generators) {
+    constructor(generators) {
         'use strict'
         let model
 
@@ -1458,22 +1465,24 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         model.group = null
         // XXX - getValidGenerators
         model.permutorOrder = model.generators[0].order
-    },
+    }
+
     /**
      * Return a hash from generators to booleans (whether they're valid or not)
      * A generator is valid if it has the largest order of a set of conflicting
      * generators (e.g. r is valid compared with r^2 and r^3).
      */
-    getValidGenerators: function() {
+    getValidGenerators() {
         'use strict'
 
-    },
+    }
+
     /**
      * Create a list of all elements with which to build the Group
      * Breadth-first search using the generators and starting with the identity
      * element.
      */
-    findElements: function() {
+    findElements() {
         'use strict'
         let model, identityActionArray, i, j, tempPermutor
 
@@ -1495,11 +1504,12 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
                 }
             }
         }
-    },
+    }
+
     /**
      * Build a group from a set of permutor generators.
      */
-    buildGroup: function() {
+    buildGroup() {
         'use strict'
         let model, elementArray, elements, groupBuilder, i, j
 
@@ -1542,12 +1552,13 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
 
         model.group = groupBuilder.buildGroup()
         return model.group
-    },
+    }
+
     /**
      * Retrieve the current group.
      * @returns Group
      */
-    getGroup: function() {
+    getGroup() {
         'use strict'
         let model
 
@@ -1556,11 +1567,12 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
             model.buildGroup()
         }
         return model.group
-    },
+    }
+
     /**
      * Print the permutors that generate the group.
      */
-    printPermutors: function() {
+    printPermutors() {
         'use strict'
         let model, i
 
@@ -1569,11 +1581,12 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
         for (i=0; i<model.permutors.length; i++) {
             console.log(i + ': ' + model.permutors[i].toStr())
         }
-    },
+    }
+
     /**
      * Find the index of permutor in model.permutors
      */
-    permutorIndex: function(permutor) {
+    permutorIndex(permutor) {
         'use strict'
         let model, index, i
 
@@ -1589,15 +1602,16 @@ aljabr.PermutationGroupBuilder = aljabr.Class({
 
         return index
     }
-})
+}
 
 
 
-aljabr.ArithmeticGroupBuilder = aljabr.Class({
-    elements: undefined,
-    operator: undefined,
-    group: undefined,
-    modulo: 1,
+aljabr.ArithmeticGroupBuilder = class {
+    elements = undefined
+    operator = undefined
+    group = undefined
+    modulo = 1
+
     /**
      * Initialize the class.
      * Pass in the list of elements (integers) and the operation used
@@ -1605,7 +1619,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
      * @param elements {list} - array of elements
      * @param operator {string} - '+' or '*'
      */
-    init: function(elements, operator, modulo) {
+    constructor(elements, operator, modulo) {
         'use strict'
         let model
 
@@ -1630,11 +1644,12 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         else {
             console.error('Error - unknown operator: ' + operator)
         }
-    },
+    }
+
     /**
      * Build a group from a set of integers and an arithmetic operator.
      */
-    buildGroup: function() {
+    buildGroup() {
         'use strict'
         let model, elements, numElements, elementSet, elementIdxs, groupBuilder, i, j
 
@@ -1674,12 +1689,13 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         model.group = groupBuilder.buildGroup()
 
         return model.group
-    },
+    }
+
     /**
      * Retrieve the current group.
      * @returns Group
      */
-    getGroup: function() {
+    getGroup() {
         'use strict'
         let model
 
@@ -1689,7 +1705,7 @@ aljabr.ArithmeticGroupBuilder = aljabr.Class({
         }
         return model.group
     }
-})
+}
 
 
 
