@@ -5,17 +5,20 @@
 extend(aljabr, 'builder')
 
 
-aljabr.builder.SettingsView = aljabr.Class({
-    width: 0,
-    height: 0,
-    groupType: 'E',
-    subscript: '1',
-    nameMap: {empty: 'E',
-              cyclic: 'C',
-              dihedral: 'D',
-              alternating: 'A',
-              symmetry: 'S'},
-    init: function(id) {
+aljabr.builder.SettingsView = class {
+    width = 0
+    height = 0
+    groupType = 'E'
+    subscript = '1'
+    nameMap = {
+        empty: 'E',
+        cyclic: 'C',
+        dihedral: 'D',
+        alternating: 'A',
+        symmetry: 'S'
+    }
+
+    constructor(id) {
         'use strict'
         let view
 
@@ -65,8 +68,9 @@ aljabr.builder.SettingsView = aljabr.Class({
         view.buildOrderMenu()
 
         view.render()
-    },
-    buildOrderMenu: function() {
+    }
+
+    buildOrderMenu() {
         'use strict'
         let view, orderMenu, start, i
 
@@ -92,8 +96,9 @@ aljabr.builder.SettingsView = aljabr.Class({
         }
 
         orderMenu.property('value', view.subscript)
-    },
-    render: function() {
+    }
+
+    render() {
         'use strict'
         let view, order
 
@@ -125,17 +130,19 @@ aljabr.builder.SettingsView = aljabr.Class({
             .text(order)
 
         return view
-    },
+    }
+
     /**
      * Select the group type.
      */
-    select: function() {
-    },
+    select() {
+    }
+
     /**
      * Attach the selected group type to the CayleyTableView and
      * CayleyGraphView.
      */
-    attachNewGroup: function() {
+    attachNewGroup() {
         'use strict'
         let view, builder, groupType, order
 
@@ -170,20 +177,21 @@ aljabr.builder.SettingsView = aljabr.Class({
 
         return
     }
-})
+}
 
 aljabr.builder.settingsView = null
 
 
-aljabr.builder.CayleyTableView = aljabr.Class({
-    model: undefined,
-    width: 0,
-    height: 0,
-    activeNode: null,
-    activeNodes: null,
-    elements: null,
-    entries: null,
-    init: function(id) {
+aljabr.builder.CayleyTableView = class {
+    model = undefined
+    width = 0
+    height = 0
+    activeNode = null
+    activeNodes = null
+    elements = null
+    entries = null
+
+    constructor(id) {
         'use strict'
         let view
 
@@ -194,8 +202,9 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         view.height = 400
 
         view.render()
-    },
-    render: function() {
+    }
+
+    render() {
         'use strict'
         let view, svg, boxSize, order, i, j, colorStep, colLabels, rowLabels, boxLabels, boxes, selectors, sLabels
 
@@ -355,13 +364,14 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         sLabels.exit().remove()
 
         return view
-    },
+    }
+
     /**
      * Turn nodes on or off.  No more than one node may be active
      * at the same time.
      * @param {number} index - index of element to toggle
      */
-    toggleNodes: function(index) {
+    toggleNodes(index) {
         'use strict'
         let view, order, i, j, openEntries
 
@@ -403,12 +413,13 @@ aljabr.builder.CayleyTableView = aljabr.Class({
         }
 
         view.render()
-    },
+    }
+
     /**
      * Attach view to a Group or GroupBuilder.
      * @param model - Group or GroupBuilder
      */
-    attach: function(model) {
+    attach(model) {
         'use strict'
         let view, order, i, j
 
@@ -434,15 +445,16 @@ aljabr.builder.CayleyTableView = aljabr.Class({
 
         view.render()
     }
-})
+}
 
 aljabr.builder.cayleyTableView = null
 
 
-aljabr.builder.ElementView = aljabr.Class({
-    width: 0,
-    height: 0,
-    init: function(id) {
+aljabr.builder.ElementView = class {
+    width = 0
+    height = 0
+
+    constructor(id) {
         'use strict'
         let view
 
@@ -453,8 +465,9 @@ aljabr.builder.ElementView = aljabr.Class({
         view.height = 100
 
         view.render()
-    },
-    render: function() {
+    }
+
+    render() {
         'use strict'
         let view, svg
 
@@ -464,29 +477,31 @@ aljabr.builder.ElementView = aljabr.Class({
             .attr('height', view.height)
 
         return view
-    },
-    attach: function(model) {
+    }
+
+    attach(model) {
         'use strict'
         let view
 
         view = this
         view.model = model
     }
-})
+}
 
 aljabr.builder.elementView = null
 
 
-aljabr.builder.CayleyGraphView = aljabr.Class({
-    width: 0,
-    height: 0,
-    duration: 400,
-    points: [],
-    pointPairs: [],
-    activeEdges: [],
-    activeEdge: 1,
-    layout: 'circle',
-    init: function(id) {
+aljabr.builder.CayleyGraphView = class {
+    width = 0
+    height = 0
+    duration = 400
+    points = []
+    pointPairs = []
+    activeEdges = []
+    activeEdge = 1
+    layout = 'circle'
+
+    constructor(id) {
         'use strict'
         let view
 
@@ -500,8 +515,9 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.baseY = 200
 
         view.render()
-    },
-    render: function() {
+    }
+
+    render() {
         'use strict'
         let view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels
 
@@ -654,11 +670,12 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             .text('S')
 
         return view
-    },
+    }
+
     /**
      * Render the nodes, edges, and node labels.
      */
-    renderGraph: function() {
+    renderGraph() {
         'use strict'
         let view, svg, order, colorStep, radius, i, j, points, pointPairs, index, element, edges, nodes, labels, selectors, sLabels
 
@@ -814,11 +831,12 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
             //     return view.model.elements[i]
             // })
         labels.exit().remove()
-    },
+    }
+
     /**
      * Place nodes in one circle.
      */
-    layoutCircle: function() {
+    layoutCircle() {
         'use strict'
         let view, order, radius, angle, i
 
@@ -840,13 +858,14 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-circle')
             .attr('fill', 'yellow')
         view.renderGraph()
-    },
+    }
+
     /**
      * Place nodes in concentric circles.
      * @param {number} index - index of element to toggle
      * @param {number} twist - angle to rotate interior circles clockwise (default 0)
      */
-    layoutNested: function(index, twist) {
+    layoutNested(index, twist) {
         'use strict'
         let view, cosets, elIndex, elOrder, radiusDiff, radius, angle, i, j
 
@@ -877,12 +896,13 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-nested')
             .attr('fill', 'yellow')
         view.renderGraph()
-    },
+    }
+
     /**
      * Place nodes in adjacent circles.
      * @param {number} index - index of element to toggle
      */
-    layoutSeparate: function(index) {
+    layoutSeparate(index) {
         'use strict'
         let view, cosets, elIndex, elOrder, radius, angle, i, j
 
@@ -908,12 +928,13 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         d3.select('#layout-sel-separate')
             .attr('fill', 'yellow')
         view.renderGraph()
-    },
+    }
+
     /**
      * Turn sets of edges on or off.
      * @param {number} index - index of element to toggle
      */
-    toggleEdges: function(index) {
+    toggleEdges(index) {
         'use strict'
         let view, i
 
@@ -938,12 +959,13 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.activeEdges[index] = !view.activeEdges[index]
 
         view.renderGraph()
-    },
+    }
+
     /**
      * Attach view to a Group or GroupBuilder.
      * @param model - Group or GroupBuilder
      */
-    attach: function(model) {
+    attach(model) {
         'use strict'
         let view, order, i, j, element
 
@@ -970,7 +992,7 @@ aljabr.builder.CayleyGraphView = aljabr.Class({
         view.render()
         view.layoutCircle()
     }
-})
+}
 
 aljabr.builder.cayleyGraphView = null
 
@@ -979,6 +1001,8 @@ aljabr.builder.cayleyGraphView = null
 $(document).ready(function() {
     'use strict'
     let builder, group, elements, testSet
+
+    console.log('ready')
 
     builder = aljabr.builder
 
