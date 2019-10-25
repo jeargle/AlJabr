@@ -374,6 +374,57 @@ aljabr.test.testAlternatingGroups = function() {
 }
 
 
+aljabr.test.testCosets = function() {
+    'use strict'
+    let g1, g2, g3, g4, groups
+
+    console.log('\n\n***** Cosets Test *****')
+
+    g1 = aljabr.buildCyclicGroup(5)
+    g2 = aljabr.buildDihedralGroup(5)
+    g3 = aljabr.buildSymmetryGroup(3)
+    g4 = aljabr.buildAlternatingGroup(4)
+
+    groups = [g1, g2, g3, g4]
+
+    for (let i=0; i<groups.length; i++) {
+        console.log('*** group ' + (i+1))
+        console.log(groups[i].cosets(1))
+        console.log(groups[i].cosets(2))
+        console.log(groups[i].cosets(4))
+    }
+}
+
+
+aljabr.test.testFieldBuilder = function() {
+    'use strict'
+    let f3, f5, f11
+
+    console.log('\n\n***** Field Builder Tests *****')
+
+    f3 = aljabr.buildField(3)
+    console.log('f3 order 1 (+): ' + f3.elementOrder(1, '+'))
+    console.log('f3 index 1 (+): ' + f3.elementIndex(1, '+'))
+    console.log('f3 order 1 (*): ' + f3.elementOrder(1, '*'))
+    console.log('f3 index 1 (*): ' + f3.elementIndex(1, '*'))
+    console.log(f3.toStr())
+
+    f5 = aljabr.buildField(5)
+    console.log('f5 order 1 (+): ' + f5.elementOrder(1, '+'))
+    console.log('f5 index 1 (+): ' + f5.elementIndex(1, '+'))
+    console.log('f5 order 1 (*): ' + f5.elementOrder(1, '*'))
+    console.log('f5 index 1 (*): ' + f5.elementIndex(1, '*'))
+    console.log(f5.toStr())
+
+    // f11 = aljabr.buildField(11)
+    // console.log('f11 order 1 (+): ' + f11.elementOrder(1, '+'))
+    // console.log('f11 index 1 (+): ' + f11.elementIndex(1, '+'))
+    // console.log('f11 order 1 (*): ' + f11.elementOrder(1, '*'))
+    // console.log('f11 index 1 (*): ' + f11.elementIndex(1, '*'))
+    // console.log(f11.toStr())
+}
+
+
 aljabr.test.boolTableToStr = function(table) {
     'use strict'
     let order, colWidth, outStr, i, j
@@ -411,35 +462,6 @@ aljabr.test.boolTableToStr = function(table) {
 }
 
 
-aljabr.test.testFieldBuilder = function() {
-    'use strict'
-    let f3, f5, f11
-
-    console.log('\n\n***** Field Builder Tests *****')
-
-    f3 = aljabr.buildField(3)
-    console.log('f3 order 1 (+): ' + f3.elementOrder(1, '+'))
-    console.log('f3 index 1 (+): ' + f3.elementIndex(1, '+'))
-    console.log('f3 order 1 (*): ' + f3.elementOrder(1, '*'))
-    console.log('f3 index 1 (*): ' + f3.elementIndex(1, '*'))
-    console.log(f3.toStr())
-
-    f5 = aljabr.buildField(5)
-    console.log('f5 order 1 (+): ' + f5.elementOrder(1, '+'))
-    console.log('f5 index 1 (+): ' + f5.elementIndex(1, '+'))
-    console.log('f5 order 1 (*): ' + f5.elementOrder(1, '*'))
-    console.log('f5 index 1 (*): ' + f5.elementIndex(1, '*'))
-    console.log(f5.toStr())
-
-    // f11 = aljabr.buildField(11)
-    // console.log('f11 order 1 (+): ' + f11.elementOrder(1, '+'))
-    // console.log('f11 index 1 (+): ' + f11.elementIndex(1, '+'))
-    // console.log('f11 order 1 (*): ' + f11.elementOrder(1, '*'))
-    // console.log('f11 index 1 (*): ' + f11.elementIndex(1, '*'))
-    // console.log(f11.toStr())
-}
-
-
 // aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilder()
 // aljabr.test.testPermutor()
@@ -448,5 +470,6 @@ aljabr.test.testFieldBuilder = function() {
 // aljabr.test.testDihedralGroups()
 // aljabr.test.testSymmetryGroups()
 // aljabr.test.testAlternatingGroups()
-aljabr.test.testGroupBuilders()
-aljabr.test.testFieldBuilder()
+// aljabr.test.testGroupBuilders()
+aljabr.test.testCosets()
+// aljabr.test.testFieldBuilder()
