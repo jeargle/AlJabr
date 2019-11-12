@@ -389,9 +389,12 @@ aljabr.test.testCosets = function() {
 
     for (let i=0; i<groups.length; i++) {
         console.log('*** group ' + (i+1))
-        console.log(groups[i].cosets(1))
-        console.log(groups[i].cosets(2))
-        console.log(groups[i].cosets(4))
+        console.log(groups[i].cosets([1]))
+        console.log(groups[i].cosets([1], false))
+        console.log(groups[i].cosets([2]))
+        console.log(groups[i].cosets([2], false))
+        console.log(groups[i].cosets([4]))
+        console.log(groups[i].cosets([4], false))
     }
 }
 
