@@ -382,19 +382,29 @@ aljabr.test.testCosets = function() {
 
     g1 = aljabr.buildCyclicGroup(5)
     g2 = aljabr.buildDihedralGroup(5)
-    g3 = aljabr.buildSymmetryGroup(3)
-    g4 = aljabr.buildAlternatingGroup(4)
+    g3 = aljabr.buildSymmetryGroup(4)
+    g4 = aljabr.buildAlternatingGroup(5)
 
     groups = [g1, g2, g3, g4]
 
     for (let i=0; i<groups.length; i++) {
         console.log('*** group ' + (i+1))
+        console.log(groups[i].toStr())
+        console.log('cosets 1')
         console.log(groups[i].cosets([1]))
         console.log(groups[i].cosets([1], false))
+        console.log('cosets 2')
         console.log(groups[i].cosets([2]))
         console.log(groups[i].cosets([2], false))
+        console.log('cosets 4')
         console.log(groups[i].cosets([4]))
         console.log(groups[i].cosets([4], false))
+        console.log('cosets 1 2')
+        console.log(groups[i].cosets([1, 2]))
+        console.log(groups[i].cosets([1, 2], false))
+        console.log('cosets 1 3')
+        console.log(groups[i].cosets([1, 3]))
+        console.log(groups[i].cosets([1, 3], false))
     }
 }
 

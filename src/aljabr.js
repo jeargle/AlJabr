@@ -268,19 +268,36 @@ aljabr.Group = class {
      */
     subgroupElements(generatorIdxs) {
         'use strict'
-        let model, nextEl, elements
+        let model, nextEl, elements, newElements
+
+        if (generatorIdxs.length < 1) {
+            console.error('Error: must include at least one generator')
+        }
 
         model = this
         elements = []
 
-        // Loop through powers of generators
-        elements.push(0)
-        for (let i=0; i<generatorIdxs.length; i++) {
-            nextEl = 0
-            do {
-                nextEl = model.table.getElement(nextEl, generatorIdxs[i])
-                elements.push(nextEl)
-            } while (nextEl != null && nextEl !== 0)
+        // Loop through powers of first generator
+        nextEl = 0
+        do {
+            elements.push(nextEl)
+            nextEl = model.table.getElement(nextEl, generatorIdxs[0])
+        } while (nextEl != null && nextEl !== 0)
+
+        // Loop through powers of remaining generators
+        for (let i=1; i<generatorIdxs.length; i++) {
+            newElements = []
+            for (let j=0; j<elements.length; j++) {
+                nextEl = elements[j]
+                do {
+                    nextEl = model.table.getElement(nextEl, generatorIdxs[i])
+                    if (!elements.includes(nextEl)) {
+                        newElements.push(nextEl)
+                    }
+                } while (nextEl != null && nextEl !== elements[j])
+            }
+            elements = elements.concat(newElements)
+            generatorIdxs = generatorIdxs.concat(newElements)
         }
 
         return [...new Set(elements)]
