@@ -409,6 +409,10 @@ aljabr.test.testCosets = function() {
 }
 
 
+aljabr.test.testSubgroups = function() {
+    'use strict'
+}
+
 aljabr.test.testFieldBuilder = function() {
     'use strict'
     let f3, f5, f11
@@ -485,4 +489,5 @@ aljabr.test.boolTableToStr = function(table) {
 // aljabr.test.testAlternatingGroups()
 // aljabr.test.testGroupBuilders()
 aljabr.test.testCosets()
+aljabr.test.testSubgroups()
 // aljabr.test.testFieldBuilder()

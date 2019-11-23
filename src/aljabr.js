@@ -365,6 +365,28 @@ aljabr.Group = class {
     }
 
     /**
+     * Build a subgroup from all combinations of the identity and
+     * a set of generators.
+     * @param {[number]} generatorIdxs - indexes into element array
+     */
+    subgroup(generatorIdxs) {
+        let model, elementIdxs, elements, table
+
+        model = this
+
+        // Subgroup elements
+        elementIdxs = model.subgroupElements(generatorIdxs)
+        elements = []
+        for (let i=0; elementIdxs.length; i++) {
+            elements.push(model.elements[elementIdxs[i]])
+        }
+
+        // Subgroup table
+
+        return new aljabr.Group(elements, table)
+    }
+
+    /**
      * Create a String representation of the current operator table.
      * @returns string representation of the operator table
      */
