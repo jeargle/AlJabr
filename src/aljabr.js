@@ -365,6 +365,25 @@ aljabr.Group = class {
     }
 
     /**
+     * Sort each coset and then sort the list of cosets by each one's
+     * first element.
+     * @param {[[number]]} cosets - list of cosets
+     */
+    sortCosets(cosets) {
+        let sortedCosets, sortedCoset
+
+        sortedCosets = []
+        for (let i=0; i<cosets.length; i++) {
+            sortedCoset = [...cosets[i]]
+            sortedCoset.sort((a, b)=>{return a-b})
+            sortedCosets.push(sortedCoset)
+        }
+        sortedCosets.sort((a, b)=>{return a[0]-b[0]})
+
+        return sortedCosets
+    }
+
+    /**
      * Build a subgroup from all combinations of the identity and
      * a set of generators.
      * @param {[number]} generatorIdxs - indexes into element array

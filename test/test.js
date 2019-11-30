@@ -374,9 +374,25 @@ aljabr.test.testAlternatingGroups = function() {
 }
 
 
+aljabr.test.printCosets = function(group, generatorIdxs) {
+    let cosets, sortedCosets
+
+    console.log('  left:')
+    cosets = group.cosets(generatorIdxs)
+    sortedCosets = group.sortCosets(cosets)
+    console.log(cosets)
+    console.log(sortedCosets)
+
+    console.log('  right:')
+    cosets = group.cosets(generatorIdxs, false)
+    sortedCosets = group.sortCosets(cosets)
+    console.log(cosets)
+    console.log(sortedCosets)
+}
+
 aljabr.test.testCosets = function() {
     'use strict'
-    let g1, g2, g3, g4, groups
+    let g1, g2, g3, g4, groups, group, cosets, sortedCosets
 
     console.log('\n\n***** Cosets Test *****')
 
@@ -388,23 +404,19 @@ aljabr.test.testCosets = function() {
     groups = [g1, g2, g3, g4]
 
     for (let i=0; i<groups.length; i++) {
+        group = groups[i]
         console.log('*** group ' + (i+1))
-        console.log(groups[i].toStr())
+        console.log(group.toStr())
         console.log('cosets 1')
-        console.log(groups[i].cosets([1]))
-        console.log(groups[i].cosets([1], false))
+        aljabr.test.printCosets(group, [1])
         console.log('cosets 2')
-        console.log(groups[i].cosets([2]))
-        console.log(groups[i].cosets([2], false))
+        aljabr.test.printCosets(group, [2])
         console.log('cosets 4')
-        console.log(groups[i].cosets([4]))
-        console.log(groups[i].cosets([4], false))
+        aljabr.test.printCosets(group, [4])
         console.log('cosets 1 2')
-        console.log(groups[i].cosets([1, 2]))
-        console.log(groups[i].cosets([1, 2], false))
+        aljabr.test.printCosets(group, [1, 2])
         console.log('cosets 1 3')
-        console.log(groups[i].cosets([1, 3]))
-        console.log(groups[i].cosets([1, 3], false))
+        aljabr.test.printCosets(group, [1, 3])
     }
 }
 
@@ -489,5 +501,5 @@ aljabr.test.boolTableToStr = function(table) {
 // aljabr.test.testAlternatingGroups()
 // aljabr.test.testGroupBuilders()
 aljabr.test.testCosets()
-aljabr.test.testSubgroups()
+// aljabr.test.testSubgroups()
 // aljabr.test.testFieldBuilder()
