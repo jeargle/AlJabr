@@ -384,6 +384,27 @@ aljabr.Group = class {
     }
 
     /**
+     * @param {[[number]]} cosets1 - list of cosets
+     * @param {[[number]]} cosets2 - list of cosets
+     */
+    cosetsEqual(cosets1, cosets2) {
+
+        if (cosets1.length !== cosets2.length) {
+            return false
+        }
+
+        for (let i=0; i<cosets1.length; i++) {
+            for (let j=0; j<cosets1[i].length; j++) {
+                if (cosets1[i][j] !== cosets2[i][j]) {
+                    return false
+                }
+            }
+        }
+
+        return true
+    }
+
+    /**
      * Build a subgroup from all combinations of the identity and
      * a set of generators.
      * @param {[number]} generatorIdxs - indexes into element array

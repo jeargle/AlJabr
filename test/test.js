@@ -375,19 +375,21 @@ aljabr.test.testAlternatingGroups = function() {
 
 
 aljabr.test.printCosets = function(group, generatorIdxs) {
-    let cosets, sortedCosets
+    let cosets1, sortedCosets1, cosets2, sortedCosets2
 
     console.log('  left:')
-    cosets = group.cosets(generatorIdxs)
-    sortedCosets = group.sortCosets(cosets)
-    console.log(cosets)
-    console.log(sortedCosets)
+    cosets1 = group.cosets(generatorIdxs)
+    sortedCosets1 = group.sortCosets(cosets1)
+    console.log(cosets1)
+    console.log(sortedCosets1)
 
     console.log('  right:')
-    cosets = group.cosets(generatorIdxs, false)
-    sortedCosets = group.sortCosets(cosets)
-    console.log(cosets)
-    console.log(sortedCosets)
+    cosets2 = group.cosets(generatorIdxs, false)
+    sortedCosets2 = group.sortCosets(cosets2)
+    console.log(cosets2)
+    console.log(sortedCosets2)
+
+    console.log('  normal subgroup: ' + group.cosetsEqual(sortedCosets1, sortedCosets2))
 }
 
 aljabr.test.testCosets = function() {
