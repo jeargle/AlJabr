@@ -872,7 +872,7 @@ aljabr.builder.CayleyGraphView = class {
         console.log('layoutNested()')
 
         view = this
-        cosets = view.model.cosets(index)
+        cosets = view.model.cosets([index])
         elIndex = cosets.length
         radiusDiff = view.baseRadius/elIndex
         elOrder = cosets[0].length
@@ -909,7 +909,7 @@ aljabr.builder.CayleyGraphView = class {
         console.log('layoutSeparate()')
 
         view = this
-        cosets = view.model.cosets(index)
+        cosets = view.model.cosets([index])
         elIndex = cosets.length
         elOrder = cosets[0].length
         radius = view.baseRadius/elIndex
