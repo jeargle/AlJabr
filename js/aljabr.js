@@ -410,18 +410,29 @@ aljabr.Group = class {
      * @param {[number]} generatorIdxs - indexes into element array
      */
     subgroup(generatorIdxs) {
-        let model, elementIdxs, elements, table
+        let model, elementIdxs, elements, oldElementIdxToNew, table
 
         model = this
 
         // Subgroup elements
         elementIdxs = model.subgroupElements(generatorIdxs)
         elements = []
-        for (let i=0; elementIdxs.length; i++) {
+        oldElementIdxToNew = {}
+        for (let i=0; i<elementIdxs.length; i++) {
             elements.push(model.elements[elementIdxs[i]])
+            oldElementIdxToNew[elementIdxs[i]] = i
         }
 
         // Subgroup table
+        table = new aljabr.OperatorTable(elements.length)
+        for (let i=0; i<elementIdxs.length; i++) {
+            for (let j=0; j<elementIdxs.length; j++) {
+                table.setElement(
+                    i, j,
+                    oldElementIdxToNew[model.getElement(elementIdxs[i], elementIdxs[j])]
+                )
+            }
+        }
 
         return new aljabr.Group(elements, table)
     }
@@ -433,8 +444,6 @@ aljabr.Group = class {
     toStr() {
         'use strict'
         let model, colWidth, outString, i, j
-
-        console.log('Group.toStr()')
 
         model = this
 

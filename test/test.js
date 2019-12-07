@@ -394,16 +394,16 @@ aljabr.test.printCosets = function(group, generatorIdxs) {
 
 aljabr.test.testCosets = function() {
     'use strict'
-    let g1, g2, g3, g4, groups, group, cosets, sortedCosets
+    let groups, group, cosets, sortedCosets
 
     console.log('\n\n***** Cosets Test *****')
 
-    g1 = aljabr.buildCyclicGroup(5)
-    g2 = aljabr.buildDihedralGroup(5)
-    g3 = aljabr.buildSymmetryGroup(4)
-    g4 = aljabr.buildAlternatingGroup(5)
-
-    groups = [g1, g2, g3, g4]
+    groups = [
+        aljabr.buildCyclicGroup(6),
+        aljabr.buildDihedralGroup(5),
+        aljabr.buildSymmetryGroup(4),
+        aljabr.buildAlternatingGroup(5)
+    ]
 
     for (let i=0; i<groups.length; i++) {
         group = groups[i]
@@ -425,6 +425,28 @@ aljabr.test.testCosets = function() {
 
 aljabr.test.testSubgroups = function() {
     'use strict'
+    let groupTests, group, generatorIdxs, subgroup
+
+    // [ [group1, [ [generatorIdxs1], ... ] ], ... ]
+    groupTests = [
+        [aljabr.buildCyclicGroup(6), [[2], [3]]],
+        [aljabr.buildDihedralGroup(5), [[1], [2]]],
+        [aljabr.buildSymmetryGroup(4), [[1], [2]]]
+        // [aljabr.buildAlternatingGroup(5), []]
+    ]
+
+    for (let i=0; i<groupTests.length; i++) {
+        group = groupTests[i][0]
+        console.log('*** group ' + (i+1))
+        console.log(group.toStr())
+        for (let j=0; j<groupTests[i][1].length; j++) {
+            generatorIdxs = groupTests[i][1][j]
+            subgroup = group.subgroup(generatorIdxs)
+            console.log('***** subgroup ' + (j+1))
+            console.log(subgroup.toStr())
+        }
+    }
+
 }
 
 aljabr.test.testFieldBuilder = function() {
@@ -502,6 +524,6 @@ aljabr.test.boolTableToStr = function(table) {
 // aljabr.test.testSymmetryGroups()
 // aljabr.test.testAlternatingGroups()
 // aljabr.test.testGroupBuilders()
-aljabr.test.testCosets()
-// aljabr.test.testSubgroups()
+// aljabr.test.testCosets()
+aljabr.test.testSubgroups()
 // aljabr.test.testFieldBuilder()
