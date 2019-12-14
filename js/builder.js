@@ -395,7 +395,7 @@ aljabr.builder.CayleyTableView = class {
                 for (j=0; j<order; j++) {
                     view.entries.push({row: i,
                                        col: j,
-                                       el: view.model.getElement(i,j),
+                                       el: view.model.getElementIdx(i,j),
                                        open: openEntries[i][j]})
                 }
             }
@@ -406,7 +406,7 @@ aljabr.builder.CayleyTableView = class {
                 for (j=0; j<order; j++) {
                     view.entries.push({row: i,
                                        col: j,
-                                       el: view.model.getElement(i,j),
+                                       el: view.model.getElementIdx(i,j),
                                        open: false})
                 }
             }
@@ -434,11 +434,11 @@ aljabr.builder.CayleyTableView = class {
         view.elements = []
         view.entries = []
         for (i=0; i<order; i++) {
-            view.elements.push(view.model.getElement(i,0))
+            view.elements.push(view.model.getElementIdx(i,0))
             for (j=0; j<order; j++) {
                 view.entries.push({row: i,
                                    col: j,
-                                   el: view.model.getElement(i,j),
+                                   el: view.model.getElementIdx(i,j),
                                    open: false})
             }
         }
@@ -692,7 +692,7 @@ aljabr.builder.CayleyGraphView = class {
         for (i=0; i<order; i++) {
             for (j=0; j<order; j++) {
                 index = (i*order)+j
-                element = view.model.getElement(i,j)
+                element = view.model.getElementIdx(i,j)
                 if (element !== null &&
                     pointPairs[index][1] === null) {
                     pointPairs[index][1] = element
@@ -982,7 +982,7 @@ aljabr.builder.CayleyGraphView = class {
         view.pointPairs = []
         for (i=0; i<order; i++) {
             for (j=0; j<order; j++) {
-                element = view.model.getElement(i,j)
+                element = view.model.getElementIdx(i,j)
                 if (element !== null) {
                     view.pointPairs.push([j, element, view.activeEdges[i]])
                 }

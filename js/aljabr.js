@@ -26,7 +26,7 @@ aljabr.alphaElements = function(order) {
     alpha = ['e', 'a', 'b', 'c', 'd', 'f', 'g', 'h', 'i', 'j', 'k',
              'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
              'w', 'x', 'y', 'z']
-    elements = alpha.slice(0,order)
+    elements = alpha.slice(0, order)
 
     return elements
 }
@@ -101,9 +101,9 @@ aljabr.OperatorTable = class {
      * Set the element for a given position in the table.
      * @param i - row
      * @param j - column
-     * @param element - value to set the element to (int)
+     * @param elementIdx - value to set the elementIdx to (int)
      */
-    setElement(i, j, element) {
+    setElement(i, j, elementIdx) {
         'use strict'
         let model
 
@@ -111,11 +111,11 @@ aljabr.OperatorTable = class {
 
         if (0 <= i && i < model.order &&
             0 <= j && j < model.order &&
-            0 <= element && element < model.order) {
+            0 <= elementIdx && elementIdx < model.order) {
             if (model.table[i][j] === null) {
                 model.emptyCellCount -= 1
             }
-            model.table[i][j] = element
+            model.table[i][j] = elementIdx
         }
         // XXX - else throw exception
     }
@@ -124,9 +124,9 @@ aljabr.OperatorTable = class {
      * Get element index from the table.
      * @param i - row
      * @param j - column
-     * @returns element at (i,j) in the table
+     * @returns elementIdx at (i,j) in the table
      */
-    getElement(i, j) {
+    getElementIdx(i, j) {
         'use strict'
 
         return this.table[i][j]
@@ -184,7 +184,7 @@ aljabr.Group = class {
      */
     getIdentity() {
         'use strict'
-        return this.table.getElement(0, 0)
+        return this.table.getElementIdx(0, 0)
     }
 
     /**
@@ -193,9 +193,9 @@ aljabr.Group = class {
      * @param j - column
      * @returns the element at position (i, j)
      */
-    getElement(i, j) {
+    getElementIdx(i, j) {
         'use strict'
-        return this.table.getElement(i, j)
+        return this.table.getElementIdx(i, j)
     }
 
     /**
@@ -221,7 +221,7 @@ aljabr.Group = class {
         elPower = el
         // Loop through powers of el
         while (elPower !== null && elPower !== 0) {
-            elPower = model.table.getElement(elPower, el)
+            elPower = model.table.getElementIdx(elPower, el)
             order += 1
         }
 
@@ -281,7 +281,7 @@ aljabr.Group = class {
         nextEl = 0
         do {
             elements.push(nextEl)
-            nextEl = model.table.getElement(nextEl, generatorIdxs[0])
+            nextEl = model.table.getElementIdx(nextEl, generatorIdxs[0])
         } while (nextEl != null && nextEl !== 0)
 
         // Loop through powers of remaining generators
@@ -290,7 +290,7 @@ aljabr.Group = class {
             for (let j=0; j<elements.length; j++) {
                 nextEl = elements[j]
                 do {
-                    nextEl = model.table.getElement(nextEl, generatorIdxs[i])
+                    nextEl = model.table.getElementIdx(nextEl, generatorIdxs[i])
                     if (!elements.includes(nextEl)) {
                         newElements.push(nextEl)
                     }
@@ -343,10 +343,10 @@ aljabr.Group = class {
             multElements[multiplier] = false
             for (i=0; i<elements.length; i++) {
                 if (left) {
-                    tempEl = model.table.getElement(elements[i], multiplier)
+                    tempEl = model.table.getElementIdx(elements[i], multiplier)
                 }
                 else {
-                    tempEl = model.table.getElement(multiplier, elements[i])
+                    tempEl = model.table.getElementIdx(multiplier, elements[i])
                 }
                 if (cosetElements[tempEl]) {
                     coset.push(tempEl)
@@ -429,7 +429,7 @@ aljabr.Group = class {
             for (let j=0; j<elementIdxs.length; j++) {
                 table.setElement(
                     i, j,
-                    oldElementIdxToNew[model.getElement(elementIdxs[i], elementIdxs[j])]
+                    oldElementIdxToNew[model.getElementIdx(elementIdxs[i], elementIdxs[j])]
                 )
             }
         }
@@ -475,14 +475,14 @@ aljabr.Group = class {
                              colWidth) +
                 ' |'
             for (j=0; j<model.order; j++) {
-                // outString += ' #{model.elements.element(model.table.getElement(i, j)).symbol.aljabr.rJust(colWidth)} |'
-                if (model.table.getElement(i, j) === null) {
+                // outString += ' #{model.elements.element(model.table.getElementIdx(i, j)).symbol.aljabr.rJust(colWidth)} |'
+                if (model.table.getElementIdx(i, j) === null) {
 	            outString += ' ' + aljabr.rJust('.', colWidth) + ' |'
                 }
                 else {
 	            outString += ' ' +
                         aljabr.rJust(
-                            model.elements[model.table.getElement(i, j)],
+                            model.elements[model.table.getElementIdx(i, j)],
                             colWidth) +
                         ' |'
                 }
@@ -549,17 +549,17 @@ aljabr.Field = class {
      * @param tableType {string} - '+' or '*'
      * @returns the element at position (i, j)
      */
-    getElement(i, j, tableType) {
+    getElementIdx(i, j, tableType) {
         'use strict'
         let model, el
 
         model = this
 
         if (tableType === '+') {
-            el = model.addGroup.getElement(i, j)
+            el = model.addGroup.getElementIdx(i, j)
         }
         else if (tableType === '*') {
-            el = model.multGroup.getElement(i, j)
+            el = model.multGroup.getElementIdx(i, j)
         }
 
         return el
@@ -917,8 +917,8 @@ aljabr.AssociationTable = class {
             }
         }
         else {
-            if (el === builder.getElement(row, col) &&
-                el === builder.getElement(col, row)) {
+            if (el === builder.getElementIdx(row, col) &&
+                el === builder.getElementIdx(col, row)) {
                 // row: a, col: b, el: c
                 // a(ba) = (ab)a
                 // ba = c, ab = c (a and b commute)
@@ -937,8 +937,8 @@ aljabr.AssociationTable = class {
                 // aa = c, ba = d, ab = f
                 // => bc = da, af = cb
                 // row: a, col: b, el: f, tempEl1: c, tempEl2: d
-                tempEl1 = builder.getElement(row, row)
-                tempEl2 = builder.getElement(col, row)
+                tempEl1 = builder.getElementIdx(row, row)
+                tempEl2 = builder.getElementIdx(col, row)
                 if (tempEl1 !== null && tempEl2 !== null) {
                     // bc = da
                     model.table[col][tempEl1][tempEl2] = row
@@ -949,8 +949,8 @@ aljabr.AssociationTable = class {
                 }
 
                 // row: b, col: a, el: d, tempEl1: c, tempEl2: f
-                tempEl1 = builder.getElement(col, col)
-                tempEl2 = builder.getElement(col, row)
+                tempEl1 = builder.getElementIdx(col, col)
+                tempEl2 = builder.getElementIdx(col, row)
                 if (tempEl1 !== null && tempEl2 !== null) {
                     // bc = da
                     model.table[row][tempEl1][el] = col
@@ -1041,9 +1041,9 @@ aljabr.GroupBuilder = class {
      * @param j - column
      * @returns the element at position (i, j)
      */
-    getElement(i, j) {
+    getElementIdx(i, j) {
         'use strict'
-        return this.table.getElement(i, j)
+        return this.table.getElementIdx(i, j)
     }
 
     /**
@@ -1062,7 +1062,7 @@ aljabr.GroupBuilder = class {
         openTable = model.openTable
         assTable = model.associationTable
 
-        tempEl = model.getElement(i, j)
+        tempEl = model.getElementIdx(i, j)
         if (tempEl !== null) {
             if (tempEl === element) {
                 console.log('element already exists at this position')
@@ -1081,10 +1081,10 @@ aljabr.GroupBuilder = class {
             0 <= element && element < model.order) {
 
             if (openTable.allowedList(i, j).length === 0) {
-                if (element !== model.table.getElement(i, j)) {
+                if (element !== model.table.getElementIdx(i, j)) {
                     console.warn('Error: cannot change (' + i +
                                  ', ' + j + '): ' +
-                                 model.table.getElement(i, j) +
+                                 model.table.getElementIdx(i, j) +
                                  ' to ' + element)
                 }
                 else {
@@ -1120,7 +1120,7 @@ aljabr.GroupBuilder = class {
                 if (assRules.length !== 0) {
                     for (assRow in assRules) {
                         assCol = assRules[assRow]
-                        assEl = model.getElement(assRow, assCol)
+                        assEl = model.getElementIdx(assRow, assCol)
                         if (assEl === null) {
                             markQueue.push([assRow, assCol, el])
                         }
@@ -1238,10 +1238,10 @@ aljabr.GroupBuilder = class {
 
         for (i=0; i<model.order; i++) {
             if (rightSide) {
-                product = model.table.getElement(i, el)
+                product = model.table.getElementIdx(i, el)
             }
             else {
-                product = model.table.getElement(el, i)
+                product = model.table.getElementIdx(el, i)
             }
 
             if (product === null) {
@@ -1290,18 +1290,18 @@ aljabr.GroupBuilder = class {
         subseq.push(el2)
         // Loop through powers of el
         if (rightSide) {
-            elPower = model.table.getElement(el2, el1)
+            elPower = model.table.getElementIdx(el2, el1)
             console.log('elPower: ' + elPower)
             while (elPower !== null && elPower !== el2) {
                 subseq.push(elPower)
-                elPower = model.table.getElement(elPower, el1)
+                elPower = model.table.getElementIdx(elPower, el1)
             }
         }
         else {
-            elPower = model.table.getElement(el1, el2)
+            elPower = model.table.getElementIdx(el1, el2)
             while (elPower !== null && elPower !== el2) {
                 subseq.push(elPower)
-                elPower = model.table.getElement(el1, elPower)
+                elPower = model.table.getElementIdx(el1, elPower)
             }
         }
 
@@ -1382,13 +1382,13 @@ aljabr.GroupBuilder = class {
                 aljabr.rJust(elements[i], colWidth) +
                 ' |'
             for (j=0; j<model.order; j++) {
-                if (model.table.getElement(i, j) === null) {
+                if (model.table.getElementIdx(i, j) === null) {
 	            outStr += ' ' + aljabr.rJust('.', colWidth) + ' |'
                 }
                 else {
 	            outStr += ' ' +
                         aljabr.rJust(
-                            elements[model.table.getElement(i, j)],
+                            elements[model.table.getElementIdx(i, j)],
                             colWidth
                         ) +
                         ' |'
@@ -2150,8 +2150,8 @@ aljabr.buildProductGroup = function(group1, group2) {
     // Loop through Groups
     for (i=0; i<productBuilder.order; i++) {
         for (j=0; j<productBuilder.order; j++) {
-            el1 = group1.getElement(backMap2[i][0], backMap2[j][0])
-            el2 = group2.getElement(backMap2[i][1], backMap2[j][1])
+            el1 = group1.getElementIdx(backMap2[i][0], backMap2[j][0])
+            el2 = group2.getElementIdx(backMap2[i][1], backMap2[j][1])
             productBuilder.setElement(i, j, backMap[el1][el2])
         }
     }

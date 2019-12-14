@@ -10,16 +10,16 @@ aljabr.test.testOperatorTable = function() {
     console.log('\n\n***** OperatorTable Test *****\n')
 
     table = new aljabr.OperatorTable(2)
-    console.log('table.getElement(0, 0): ' + table.getElement(0, 0))
+    console.log('table.getElementIdx(0, 0): ' + table.getElementIdx(0, 0))
 
     table.setElement(0, 0, 0)
     table.setElement(0, 1, 1)
     table.setElement(1, 0, 1)
     table.setElement(1, 1, 0)
-    console.log('table.getElement(0, 0): ' + table.getElement(0, 0))
-    console.log('table.getElement(0, 1): ' + table.getElement(0, 1))
-    console.log('table.getElement(1, 0): ' + table.getElement(1, 0))
-    console.log('table.getElement(1, 1): ' + table.getElement(1, 1))
+    console.log('table.getElementIdx(0, 0): ' + table.getElementIdx(0, 0))
+    console.log('table.getElementIdx(0, 1): ' + table.getElementIdx(0, 1))
+    console.log('table.getElementIdx(1, 0): ' + table.getElementIdx(1, 0))
+    console.log('table.getElementIdx(1, 1): ' + table.getElementIdx(1, 1))
 }
 
 
@@ -515,7 +515,7 @@ aljabr.test.boolTableToStr = function(table) {
 }
 
 
-// aljabr.test.testOperatorTable()
+aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilder()
 // aljabr.test.testPermutor()
 // aljabr.test.testArithmetic()
