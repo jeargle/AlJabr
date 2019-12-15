@@ -9,6 +9,61 @@
 
 var aljabr = aljabr || {}
 
+
+/**
+ * Immutable, validated Group.
+ */
+aljabr.Elements = class {
+
+    elements = []
+    elementToIdx = {}
+
+    /**
+     * Initialize the class.
+     * @param elements - list of strings
+     */
+    constructor(elements) {
+        let model
+
+        model = this
+
+        model.elements = elements
+        for (let i=0; i<model.elements.length; i++) {
+            model.elementToIdx[model.elements[i]] = i
+        }
+    }
+
+    /**
+     *
+     */
+    getElementIdx(element) {
+        return this.elementToIdx[element]
+    }
+
+    /**
+     *
+     */
+    getElement(elementIdx) {
+        return this.elements[elementIdx]
+    }
+
+    /**
+     *
+     */
+    setElement(elementIdx, element) {
+        let model, oldElement
+
+        model = this
+
+        oldElement = model.elements[elementIdx]
+        delete model.elementToIdx[oldElement]
+
+        model.elements[elementIdx] = element
+        model.elementToIdx[element] = elementIdx
+    }
+
+}
+
 /**
  * Build an alphabet using latin characters where 'e' is the identity
  * element.
@@ -19,7 +74,7 @@ aljabr.alphaElements = function(order) {
     let i, alpha, elements
 
     if (order > 26) {
-        console.warn('Error - order larger than 26')
+        console.error('Error - order larger than 26')
         return null
     }
 
@@ -159,7 +214,8 @@ aljabr.OperatorTable = class {
  */
 aljabr.Group = class {
     cls = 'Group'
-    elements = null   // array of strings
+    elements = null     // Elements
+    elementIdxs = null  // array of idxs into elements
     order = 0
     table = null
 
@@ -168,14 +224,24 @@ aljabr.Group = class {
      * @param elements - list of strings representing group elements
      * @param table - OperatorTable for the Group
      */
-    constructor(elements, table) {
-        'use strict'
+    constructor(elements, table, elementIdxs = null) {
         let model
 
         model =  this
         model.elements = elements
-        model.order = model.elements.length
         model.table = table
+        model.order = model.table.order
+
+        if (elementIdxs == null) {
+            model.elementIdxs = []
+            for (let i=0; i<model.order; i++) {
+                model.elementIdxs.push(i)
+            }
+        } else if (elementIdxs.length !== model.order) {
+
+        } else {
+            model.elementIdxs = elementIdxs
+        }
     }
 
     /**
@@ -213,7 +279,7 @@ aljabr.Group = class {
             return 1
         }
         else if (el >= model.order) {
-            console.log("Error: element index too large")
+            console.error("Error: element index too large")
             return 0
         }
 
@@ -226,8 +292,8 @@ aljabr.Group = class {
         }
 
         if (elPower === null) {
-            console.warn('Error - element order is broken for element ' +
-                         model.elements[el])
+            console.error('Error - element order is broken for element ' +
+                          model.elements[el])
             return 0
         }
 
@@ -248,13 +314,13 @@ aljabr.Group = class {
             return model.order
         }
         else if (el >= model.order) {
-            console.log("Error: element index too large")
+            console.error("Error: element index too large")
             return 0
         }
 
         order = model.elementOrder(el)
         if (order === 0) {
-            console.log("Error: element order is 0")
+            console.error("Error: element order is 0")
         }
 
         return model.order/order
@@ -722,7 +788,7 @@ aljabr.OpenTable = class {
         if (model.nextPos !== null &&
             model.nextPos.row === row &&
             model.nextPos.col === col) {
-            console.warn('cleared nextPos')
+            console.error('cleared nextPos')
             model.nextPos = null
         }
 
@@ -752,7 +818,7 @@ aljabr.OpenTable = class {
             model.nextPos.el === element &&
             model.nextPos.row === row &&
             model.nextPos.col === col) {
-            console.warn('removed nextPos')
+            console.error('removed nextPos')
             model.nextPos = null
         }
 
@@ -1065,12 +1131,12 @@ aljabr.GroupBuilder = class {
         tempEl = model.getElementIdx(i, j)
         if (tempEl !== null) {
             if (tempEl === element) {
-                console.log('element already exists at this position')
+                console.warn('element already exists at this position')
             }
             else {
-                console.warn('Error: element already set to ' +
-                             'another value, (' + i + ', ' + j +
-                             ') = ' + tempEl)
+                console.error('Error: element already set to ' +
+                              'another value, (' + i + ', ' + j +
+                              ') = ' + tempEl)
             }
             return null
         }
@@ -1082,13 +1148,13 @@ aljabr.GroupBuilder = class {
 
             if (openTable.allowedList(i, j).length === 0) {
                 if (element !== model.table.getElementIdx(i, j)) {
-                    console.warn('Error: cannot change (' + i +
-                                 ', ' + j + '): ' +
-                                 model.table.getElementIdx(i, j) +
-                                 ' to ' + element)
+                    console.error('Error: cannot change (' + i +
+                                  ', ' + j + '): ' +
+                                  model.table.getElementIdx(i, j) +
+                                  ' to ' + element)
                 }
                 else {
-                    console.warn('Error: already set')
+                    console.error('Error: already set')
                 }
                 return null
             }
@@ -1101,7 +1167,7 @@ aljabr.GroupBuilder = class {
                 _.each(openTable.allowedList(i, j), function(x) {
                     error += x + ' '
                 })
-                console.warn(error)
+                console.error(error)
                 return null
             }
 
@@ -1130,7 +1196,7 @@ aljabr.GroupBuilder = class {
                                 el + '\n'
                             error += '  (' + assRow + ', ' + assCol +
                                 '): ' + assEl
-                            console.warn(error)
+                            console.error(error)
                         }
                     }
                 }
@@ -1163,8 +1229,8 @@ aljabr.GroupBuilder = class {
             }
         }
         else {
-            console.log('Error: parameter exceeds group order ' + model.order)
-            console.log('  setElement(' + i + ', ' + j + ', ' + element + ')')
+            console.error('Error: parameter exceeds group order ' + model.order)
+            console.error('  setElement(' + i + ', ' + j + ', ' + element + ')')
         }
     }
 
@@ -1186,7 +1252,7 @@ aljabr.GroupBuilder = class {
             return 1
         }
         else if (el >= model.order) {
-            console.log('Error: element index too large')
+            console.error('Error: element index too large')
             return 0
         }
 
@@ -1279,7 +1345,7 @@ aljabr.GroupBuilder = class {
             return [0]
         }
         else if (el1 >= model.order) {
-            console.log('Error: element index too large')
+            console.error('Error: element index too large')
             return [0]
         }
 
@@ -1438,7 +1504,7 @@ aljabr.Permutor = class {
         // the array is a map from integer i to the integer actionArray[i]
         for (i=0; i<model.order; i++) {
             if (actionArray.indexOf(i) === -1) {
-                console.log('Error: bad actionArray')
+                console.error('Error: bad actionArray')
             }
         }
         model.actionArray = actionArray
@@ -1649,7 +1715,7 @@ aljabr.PermutationGroupBuilder = class {
         // puts 'group:'
         // puts groupBuilder
         if (!groupBuilder.isComplete()) {
-            console.log('Error: groupBuilder is not complete')
+            console.error('Error: groupBuilder is not complete')
         }
 
         model.group = groupBuilder.buildGroup()
@@ -1785,7 +1851,7 @@ aljabr.ArithmeticGroupBuilder = class {
         }
 
         if (!groupBuilder.isComplete()) {
-            console.log('Error: groupBuilder is not complete')
+            console.error('Error: groupBuilder is not complete')
         }
 
         model.group = groupBuilder.buildGroup()
