@@ -515,7 +515,7 @@ aljabr.test.boolTableToStr = function(table) {
 }
 
 
-aljabr.test.testOperatorTable()
+// aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilder()
 // aljabr.test.testPermutor()
 // aljabr.test.testArithmetic()
@@ -526,4 +526,4 @@ aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilders()
 // aljabr.test.testCosets()
 aljabr.test.testSubgroups()
-// aljabr.test.testFieldBuilder()
+aljabr.test.testFieldBuilder()

@@ -269,31 +269,31 @@ aljabr.Group = class {
      * @param el - element index
      * @returns order of the element
      */
-    elementOrder(el) {
+    elementOrder(elIdx) {
         'use strict'
         let model, order, elPower
 
         model = this
 
-        if (el === 0) {
+        if (elIdx === 0) {
             return 1
         }
-        else if (el >= model.order) {
+        else if (elIdx >= model.order) {
             console.error("Error: element index too large")
             return 0
         }
 
         order = 1
-        elPower = el
-        // Loop through powers of el
+        elPower = elIdx
+        // Loop through powers of elIdx
         while (elPower !== null && elPower !== 0) {
-            elPower = model.table.getElementIdx(elPower, el)
+            elPower = model.table.getElementIdx(elPower, elIdx)
             order += 1
         }
 
         if (elPower === null) {
             console.error('Error: element order is broken for element ' +
-                          model.elements[el])
+                          model.elements.getElement(elIdx))
             return 0
         }
 
@@ -485,7 +485,7 @@ aljabr.Group = class {
         elements = []
         oldElementIdxToNew = {}
         for (let i=0; i<elementIdxs.length; i++) {
-            elements.push(model.elements[elementIdxs[i]])
+            elements.push(model.elements.getElement(elementIdxs[i]))
             oldElementIdxToNew[elementIdxs[i]] = i
         }
 
@@ -500,7 +500,7 @@ aljabr.Group = class {
             }
         }
 
-        return new aljabr.Group(elements, table)
+        return new aljabr.Group(new aljabr.Elements(elements), table)
     }
 
     /**
@@ -516,15 +516,15 @@ aljabr.Group = class {
         // Set column width to size of largest element symbol
         colWidth = 0
         for (i=0; i<model.order; i++) {
-            if (colWidth < model.elements[i].length) {
-	        colWidth = model.elements[i].length
+            if (colWidth < model.elements.getElement(i).length) {
+	        colWidth = model.elements.getElement(i).length
             }
         }
 
         outString = ' ' + aljabr.rJust(' ', colWidth) + ' |'
         for (i=0; i<model.order; i++) {
             outString += ' ' +
-                aljabr.rJust(model.elements[i],
+                aljabr.rJust(model.elements.getElement(i),
                              colWidth) +
                 ' |'
         }
@@ -537,18 +537,17 @@ aljabr.Group = class {
 
         for (i=0; i<model.order; i++) {
             outString += ' ' +
-                aljabr.rJust(model.elements[i],
+                aljabr.rJust(model.elements.getElement(i),
                              colWidth) +
                 ' |'
             for (j=0; j<model.order; j++) {
-                // outString += ' #{model.elements.element(model.table.getElementIdx(i, j)).symbol.aljabr.rJust(colWidth)} |'
                 if (model.table.getElementIdx(i, j) === null) {
 	            outString += ' ' + aljabr.rJust('.', colWidth) + ' |'
                 }
                 else {
 	            outString += ' ' +
                         aljabr.rJust(
-                            model.elements[model.table.getElementIdx(i, j)],
+                            model.elements.getElement(model.table.getElementIdx(i, j)),
                             colWidth) +
                         ' |'
                 }
@@ -1058,7 +1057,7 @@ aljabr.GroupBuilder = class {
 
     /**
      * Initialize the class.
-     * @param elements - ElementSet with all the group elements
+     * @param elements - Elements
      */
     constructor(elements) {
         'use strict'
@@ -1408,7 +1407,7 @@ aljabr.GroupBuilder = class {
 
         // Must have full OperatorTable
         if (model.isComplete()) {
-            return new aljabr.Group(model.elements, model.table)
+            return new aljabr.Group(new aljabr.Elements(model.elements), model.table)
         }
     }
 
@@ -2201,9 +2200,9 @@ aljabr.buildProductGroup = function(group1, group2) {
         backMap[i] = []
         for (j=0; j<group2.order; j++) {
             elArray.push('(' +
-                         group1.elements[i] +
+                         group1.elements.getElement(i) +
                          ',' +
-                         group2.elements[j] +
+                         group2.elements.getElement(j) +
                          ')')
             backMap[i][j] = elCount
             elCount += 1
