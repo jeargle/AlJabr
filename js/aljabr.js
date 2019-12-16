@@ -74,7 +74,7 @@ aljabr.alphaElements = function(order) {
     let i, alpha, elements
 
     if (order > 26) {
-        console.error('Error - order larger than 26')
+        console.error('Error: order larger than 26')
         return null
     }
 
@@ -238,7 +238,7 @@ aljabr.Group = class {
                 model.elementIdxs.push(i)
             }
         } else if (elementIdxs.length !== model.order) {
-
+            console.error('Error: table order is different from elementIdxs order')
         } else {
             model.elementIdxs = elementIdxs
         }
@@ -292,7 +292,7 @@ aljabr.Group = class {
         }
 
         if (elPower === null) {
-            console.error('Error - element order is broken for element ' +
+            console.error('Error: element order is broken for element ' +
                           model.elements[el])
             return 0
         }
@@ -566,7 +566,8 @@ aljabr.Group = class {
  */
 aljabr.Field = class {
     cls = 'Field'
-    elements = null   // array of strings
+    elements = null     // Elements
+    elementIdxs = null  // list of idxs into elements
     order = 0
     table = null
 
@@ -1810,7 +1811,7 @@ aljabr.ArithmeticGroupBuilder = class {
             }
         }
         else {
-            console.error('Error - unknown operator: ' + operator)
+            console.error('Error: unknown operator: ' + operator)
         }
     }
 
