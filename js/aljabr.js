@@ -218,6 +218,7 @@ aljabr.Group = class {
     elementIdxs = null  // array of idxs into elements
     order = 0
     table = null
+    subgroups = []      // array of created subgroups
 
     /**
      * Initialize the class.
@@ -384,13 +385,16 @@ aljabr.Group = class {
      * elements.
      * @param {[number]} generatorIdxs - indexes into element array
      * @param {boolean} left - true left, false right; default true
+     * @param [number] elements - array of element indices
      * @returns array of elements
      */
-    cosets(generatorIdxs, left=true) {
-        let model, elements, index, cosets, multElements, cosetElements, i, multiplier, coset, tempEl
+    cosets(generatorIdxs=null, left=true, elements=null) {
+        let model, index, cosets, multElements, cosetElements, i, multiplier, coset, tempEl
 
         model = this
-        elements = model.subgroupElements(generatorIdxs)
+        if (generatorIdxs != null && elements == null) {
+            elements = model.subgroupElements(generatorIdxs)
+        }
         index = model.order/elements.length
         cosets = [elements]
 
@@ -486,7 +490,7 @@ aljabr.Group = class {
      * @param {[number]} generatorIdxs - indexes into element array
      */
     subgroup(generatorIdxs) {
-        let model, elementIdxs, elements, oldElementIdxToNew, table
+        let model, elementIdxs, elements, oldElementIdxToNew, table, leftCosets, rightCosets, normal, subgroup
 
         model = this
 
@@ -510,7 +514,17 @@ aljabr.Group = class {
             }
         }
 
-        return new aljabr.Group(new aljabr.Elements(elements), table)
+        leftCosets = model.sortCosets(model.cosets(generatorIdxs, true, elementIdxs))
+        rightCosets = model.sortCosets(model.cosets(generatorIdxs, false, elementIdxs))
+        normal = model.cosetsEqual(leftCosets, rightCosets)
+        subgroup = new aljabr.Group(new aljabr.Elements(elements), table)
+        model.subgroups.push({
+            group: subgroup,
+            generatorIdxs,
+            normal: normal
+        })
+
+        return subgroup
     }
 
     /**
