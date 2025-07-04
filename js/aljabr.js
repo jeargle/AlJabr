@@ -2,7 +2,6 @@
 
 /**
  * John Eargle (mailto: jeargle at gmail.com)
- * 2007-2019
  * aljabr
  */
 
@@ -11,7 +10,7 @@ var aljabr = aljabr || {}
 
 
 /**
- * Immutable, validated Group.
+ * Mutable list of Elements to be used by a Group.
  */
 aljabr.Elements = class {
 
@@ -590,7 +589,8 @@ aljabr.Field = class {
     elements = null     // Elements
     elementIdxs = null  // list of idxs into elements
     order = 0
-    table = null
+    addGroup = null
+    multGroup = null
 
     /**
      * Initialize the class.
@@ -1795,108 +1795,81 @@ aljabr.PermutationGroupBuilder = class {
 }
 
 
+/**
+ * Build a Group from modular arithmetic.
+ * @param modulus - arithmetic modulus
+ * @param operator {string} - '+' or '*'
+ * @returns built cyclic group
+ */
+aljabr.buildArithmeticGroup = function(modulus, operator = '+') {
+    // 'use strict'
+    let order, op, i, j;
 
-aljabr.ArithmeticGroupBuilder = class {
-    elements = undefined
-    operator = undefined
-    group = undefined
-    modulo = 1
+    let elements = [];
 
-    /**
-     * Initialize the class.
-     * Pass in the list of elements (integers) and the operation used
-     * to build the Group.
-     * @param elements {list} - array of elements
-     * @param operator {string} - '+' or '*'
-     */
-    constructor(elements, operator, modulo) {
-        'use strict'
-        let model
+    if (operator === '+') {
+        order = modulus;
 
-        // console.log('ArithmeticGroupBuilder.init()')
-
-        model = this
-
-        model.elements = elements
-        model.modulo = modulo
-        model.group = null
-
-        if (operator === '+') {
-            model.operator = function(x, y) {
-                return x+y
-            }
+        for (i=0; i < modulus; i++) {
+            elements.push(i);
         }
-        else if (operator === '*') {
-            model.operator = function(x, y) {
-                return x*y
-            }
+
+        op = function(x, y) {
+            return x+y;
         }
-        else {
-            console.error('Error: unknown operator: ' + operator)
+    } else if (operator === '*') {
+        order = modulus - 1;
+
+        for (i=1; i < modulus; i++) {
+            elements.push(i);
         }
+
+        op = function(x, y) {
+            return x*y;
+        }
+    } else {
+        console.error('Error: unknown operator: ' + operator);
     }
 
-    /**
-     * Build a group from a set of integers and an arithmetic operator.
-     */
-    buildGroup() {
-        'use strict'
-        let model, elements, numElements, elementSet, elementIdxs, groupBuilder, i, j
+    if (order <= 0) {
+        return null;
+    }
 
-        model = this
-        elements = model.elements
-        numElements = model.elements.length
+    // Loop through elements and fill out GroupBuilder
+    let elementSet = [];
+    let elementIdxs = {};
 
-        // Loop through elements and fill out GroupBuilder
-        elementSet = []
-        elementIdxs = {}
-        for (i=0; i<numElements; i++) {
-            elementSet.push(elements[i].toString())
-            elementIdxs[elements[i]] = i
-        }
-        groupBuilder = new aljabr.GroupBuilder(elementSet)
+    for (i=0; i<order; i++) {
+        elementSet.push(elements[i].toString());
+        elementIdxs[elements[i]] = i;
+    }
 
-        for (i=1; i<numElements; i++) {
-            for (j=1; j<numElements; j++) {
-                groupBuilder.setElement(
-                    i, j, elementIdxs[model.operator(elements[i], elements[j])%model.modulo]
-                )
-                if (groupBuilder.isComplete()) {
-                    console.log('COMPLETE\n')
-                    break
-                }
-            }
+    let groupBuilder = new aljabr.GroupBuilder(elementSet);
+
+    for (i=1; i<order; i++) {
+        for (j=1; j<order; j++) {
+            groupBuilder.setElement(
+                i, j, elementIdxs[op(elements[i], elements[j]) % modulus]
+            );
+
             if (groupBuilder.isComplete()) {
-                console.log('COMPLETE\n')
-                break
+                // console.log('COMPLETE\n');
+                break;
             }
         }
 
-        if (!groupBuilder.isComplete()) {
-            console.error('Error: groupBuilder is not complete')
+        if (groupBuilder.isComplete()) {
+            // console.log('COMPLETE\n');
+            break;
         }
-
-        model.group = groupBuilder.buildGroup()
-
-        return model.group
     }
 
-    /**
-     * Retrieve the current group.
-     * @returns Group
-     */
-    getGroup() {
-        'use strict'
-        let model
-
-        model = this
-        if (model.group === null) {
-            model.buildGroup()
-        }
-        return model.group
+    if (!groupBuilder.isComplete()) {
+        console.error('Error: groupBuilder is not complete');
     }
+
+    return groupBuilder.buildGroup();
 }
-
 
 
 /**
@@ -2255,30 +2228,20 @@ aljabr.buildProductGroup = function(group1, group2) {
  */
 aljabr.buildField = function(order) {
     'use strict'
-    let i, elements1, elements2, agb1, group1, agb2, group2, field
 
-    if (order <= 0) {
+    if (order <= 1) {
         return null
     }
 
-    elements1 = []
-    for (i=0; i<order; i++) {
-        elements1.push(i)
+    let elements1 = [];
+    for (let i=0; i<order; i++) {
+        elements1.push(i);
     }
 
-    elements2 = []
-    for (i=1; i<order; i++) {
-        elements2.push(i)
-    }
+    let group1 = aljabr.buildArithmeticGroup(order, '+');
+    let group2 = aljabr.buildArithmeticGroup(order, '*');
 
-    agb1 = new aljabr.ArithmeticGroupBuilder(elements1, '+', 5)
-    group1 = agb1.buildGroup()
-
-    agb2 = new aljabr.ArithmeticGroupBuilder(elements2, '*', 5)
-    group2 = agb2.buildGroup()
-
-    field = new aljabr.Field(elements1, group1, group2)
-    return field
+    return new aljabr.Field(elements1, group1, group2);
 }
 
 
