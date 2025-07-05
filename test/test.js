@@ -449,9 +449,16 @@ aljabr.test.testSubgroups = function() {
 
 aljabr.test.testFieldBuilder = function() {
     'use strict'
-    let f2, f3, f5, f7, f11, f13;
+    let f1, f2, f3, f4, f5, f7, f11, f13, f15;
 
     console.log('\n\n***** Field Builder Test *****');
+
+    const printFieldInfo = (name, field) => {
+        console.log(`${name} order 1 (+): ` + field.elementOrder(1, '+'));
+        console.log(`${name} index 1 (+): ` + field.elementIndex(1, '+'));
+        console.log(`${name} order 1 (*): ` + field.elementOrder(1, '*'));
+        console.log(`${name} index 1 (*): ` + field.elementIndex(1, '*'));
+    }
 
     f2 = aljabr.buildField(2);
     console.log('f2 order 1 (+): ' + f2.elementOrder(1, '+'));
@@ -461,39 +468,42 @@ aljabr.test.testFieldBuilder = function() {
     console.log(f2.toStr());
 
     f3 = aljabr.buildField(3);
-    console.log('f3 order 1 (+): ' + f3.elementOrder(1, '+'));
-    console.log('f3 index 1 (+): ' + f3.elementIndex(1, '+'));
-    console.log('f3 order 1 (*): ' + f3.elementOrder(1, '*'));
-    console.log('f3 index 1 (*): ' + f3.elementIndex(1, '*'));
+    printFieldInfo('f3', f3);
     console.log(f3.toStr());
 
     f5 = aljabr.buildField(5);
-    console.log('f5 order 1 (+): ' + f5.elementOrder(1, '+'));
-    console.log('f5 index 1 (+): ' + f5.elementIndex(1, '+'));
-    console.log('f5 order 1 (*): ' + f5.elementOrder(1, '*'));
-    console.log('f5 index 1 (*): ' + f5.elementIndex(1, '*'));
+    printFieldInfo('f5', f5);
     console.log(f5.toStr());
 
     f7 = aljabr.buildField(7);
-    console.log('f7 order 1 (+): ' + f7.elementOrder(1, '+'));
-    console.log('f7 index 1 (+): ' + f7.elementIndex(1, '+'));
-    console.log('f7 order 1 (*): ' + f7.elementOrder(1, '*'));
-    console.log('f7 index 1 (*): ' + f7.elementIndex(1, '*'));
+    printFieldInfo('f7', f7);
     console.log(f7.toStr());
 
     f11 = aljabr.buildField(11);
-    console.log('f11 order 1 (+): ' + f11.elementOrder(1, '+'));
-    console.log('f11 index 1 (+): ' + f11.elementIndex(1, '+'));
-    console.log('f11 order 1 (*): ' + f11.elementOrder(1, '*'));
-    console.log('f11 index 1 (*): ' + f11.elementIndex(1, '*'));
+    printFieldInfo('f11', f11);
     console.log(f11.toStr());
 
     f13 = aljabr.buildField(13);
-    console.log('f13 order 1 (+): ' + f13.elementOrder(1, '+'));
-    console.log('f13 index 1 (+): ' + f13.elementIndex(1, '+'));
-    console.log('f13 order 1 (*): ' + f13.elementOrder(1, '*'));
-    console.log('f13 index 1 (*): ' + f13.elementIndex(1, '*'));
+    printFieldInfo('f13', f13);
     console.log(f13.toStr());
+
+    try {
+        f1 = aljabr.buildField(1);
+    } catch (err) {
+        console.error(err);
+    }
+
+    try {
+        f4 = aljabr.buildField(4);
+    } catch (err) {
+        console.error(err);
+    }
+
+    try {
+        f15 = aljabr.buildField(15);
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 
@@ -537,7 +547,7 @@ aljabr.test.boolTableToStr = function(table) {
 // aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilder()
 // aljabr.test.testPermutor()
-aljabr.test.testArithmeticGroups()
+// aljabr.test.testArithmeticGroups()
 // aljabr.test.testCyclicGroups()
 // aljabr.test.testDihedralGroups()
 // aljabr.test.testSymmetryGroups()

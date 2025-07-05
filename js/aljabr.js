@@ -2230,7 +2230,12 @@ aljabr.buildField = function(order) {
     'use strict'
 
     if (order <= 1) {
-        return null
+        throw new Error('There are no fields with order <= 1.');
+    }
+
+    let primeFactors = aljabr.primeFactors(order);
+    if (primeFactors.length !== 1) {
+        throw new Error(`Field order must be a prime number.  Prime factors: ${primeFactors}`);
     }
 
     let elements1 = [];
@@ -2319,23 +2324,23 @@ aljabr.factors = function(num) {
  */
 aljabr.primeFactors = function(num, factors) {
     'use strict'
-    let root, x
 
-    root = Math.sqrt(num)
+    let root = Math.sqrt(num);
+    let x = 2;
+
     if (factors === undefined) {
-        factors = []
+        factors = [];
     }
-    x = 2
 
     if (num % x) {
-        x = 3
+        x = 3;
         while ((num % x) && ((x = x + 2) < root)) {}
     }
 
-    x = (x <= root) ? x : num
-    factors.push(x)
+    x = (x <= root) ? x : num;
+    factors.push(x);
 
-    return (x === num) ? factors : aljabr.primeFactors(num/x, factors)
+    return (x === num) ? factors : aljabr.primeFactors(num/x, factors);
 }
 
 /**
