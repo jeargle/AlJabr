@@ -41,6 +41,8 @@ AlJabr runs in web browsers and needs to be hosted by a webserver.  To host it, 
 
 This will start a server exposing that directory on port 8000.  You can then access the program by pointing your web browser to the URL `http://localhost:8000/test/builder.html`.
 
+Similarly, you can run the tests by visiting `http://localhost:8000/test/test.html`.  Check out the javascript console for the test results.
+
 
 Dependencies
 ------------
