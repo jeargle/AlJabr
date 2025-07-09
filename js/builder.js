@@ -313,8 +313,12 @@ aljabr.builder.CayleyTableView = class {
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(b) {
+                // console.log(b)
+                // console.log(view.model.elements)
                 if (b.el !== null) {
-                    return view.model.elements[b.el]
+                    // console.log(view.model.elements[b.el])
+                    // return view.model.elements.elements[b.el]
+                    return view.model.elements.elements ? view.model.elements.elements[b.el] : view.model.elements[b.el]
                 }
                 return b.el
             })
@@ -359,7 +363,8 @@ aljabr.builder.CayleyTableView = class {
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return view.model.elements[i]
+                // return view.model.elements[i]
+                return view.model.elements.elements ? view.model.elements.elements[i] : view.model.elements[i]
             })
         sLabels.exit().remove()
 
@@ -434,12 +439,14 @@ aljabr.builder.CayleyTableView = class {
         view.elements = []
         view.entries = []
         for (i=0; i<order; i++) {
-            view.elements.push(view.model.getElementIdx(i,0))
+            view.elements.push(view.model.getElementIdx(i,0));
             for (j=0; j<order; j++) {
-                view.entries.push({row: i,
-                                   col: j,
-                                   el: view.model.getElementIdx(i,j),
-                                   open: false})
+                view.entries.push({
+                    row: i,
+                    col: j,
+                    el: view.model.getElementIdx(i,j),
+                    open: false
+                });
             }
         }
 
