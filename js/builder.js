@@ -457,45 +457,53 @@ aljabr.builder.CayleyTableView = class {
 aljabr.builder.cayleyTableView = null
 
 
+/**
+ * Visualization of information for a selected Element.
+ */
 aljabr.builder.ElementView = class {
     width = 0
     height = 0
 
+    /**
+     * Construct the ElementView.
+     */
     constructor(id) {
-        'use strict'
-        let view
+        'use strict';
+        let view = this;
+        view.id = id;
+        view.el = d3.select('#' + view.id);
+        view.width = 300;
+        view.height = 100;
 
-        view = this
-        view.id = id
-        view.el = d3.select('#' + view.id)
-        view.width = 300
-        view.height = 100
-
-        view.render()
+        view.render();
     }
 
+    /**
+     * Render the ElementView.
+     * @returns the ElementView
+     */
     render() {
-        'use strict'
-        let view, svg
-
-        view = this
-        svg = view.el.append('svg')
+        'use strict';
+        let view = this;
+        let svg = view.el.append('svg')
             .attr('width', view.width)
-            .attr('height', view.height)
+            .attr('height', view.height);
 
-        return view
+        return view;
     }
 
+    /**
+     * Attach view to a Group or GroupBuilder.
+     * @param model - Group or GroupBuilder
+     */
     attach(model) {
-        'use strict'
-        let view
-
-        view = this
-        view.model = model
+        'use strict';
+        let view = this
+        view.model = model;
     }
 }
 
-aljabr.builder.elementView = null
+aljabr.builder.elementView = null;
 
 
 /**
@@ -531,6 +539,7 @@ aljabr.builder.CayleyGraphView = class {
 
     /**
      * Render the CayleyGraphView.
+     * @returns the CayleyGraphView
      */
     render() {
         'use strict'
@@ -1009,4 +1018,4 @@ aljabr.builder.CayleyGraphView = class {
     }
 }
 
-aljabr.builder.cayleyGraphView = null
+aljabr.builder.cayleyGraphView = null;
