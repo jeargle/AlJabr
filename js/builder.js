@@ -543,10 +543,9 @@ aljabr.builder.CayleyGraphView = class {
      */
     render() {
         'use strict'
-        let order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels;
-
         let view = this;
         view.el.html('');
+
         let svg = view.el.append('svg')
             .attr('id', 'graph-svg')
             .attr('width', view.width)
@@ -555,8 +554,6 @@ aljabr.builder.CayleyGraphView = class {
         if (view.model === undefined) {
             return;
         }
-
-        // view.renderGraph()
 
         // Edge selectors
         let selectors = svg.selectAll('.edge-sel')
@@ -600,7 +597,7 @@ aljabr.builder.CayleyGraphView = class {
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return view.model.elements[i];
+                return view.model.elements.elements ? view.model.elements.elements[i] : view.model.elements[i];
             });
         sLabels.exit().remove()
 
@@ -700,19 +697,19 @@ aljabr.builder.CayleyGraphView = class {
      * Render the nodes, edges, and node labels.
      */
     renderGraph() {
-        'use strict'
-        let view, svg, order, colorStep, radius, i, j, points, pointPairs, index, element, edges, nodes, labels, selectors, sLabels
+        'use strict';
+        let i, j, index, element, selectors, sLabels;
 
-        console.log('renderGraph()')
+        console.log('renderGraph()');
 
-        view = this
-        svg = d3.select('#graph-svg')
-        order = view.model.order
-        colorStep = Math.floor(156/(order-1))
-        radius = 15
-        points = view.points
+        let view = this;
+        let svg = d3.select('#graph-svg');
+        const order = view.model.order;
+        const colorStep = Math.floor(156/(order-1));
+        const radius = 15;
+        let points = view.points;
+        let pointPairs = view.pointPairs;
 
-        pointPairs = view.pointPairs
         for (i=0; i<order; i++) {
             for (j=0; j<order; j++) {
                 index = (i*order)+j
@@ -726,126 +723,126 @@ aljabr.builder.CayleyGraphView = class {
         }
 
         // Edges
-        edges = svg.selectAll('line')
-            .data(pointPairs)
+        let edges = svg.selectAll('line')
+            .data(pointPairs);
         edges.enter()
             .append('line')
             .attr('x1', function(i) {
-                return view.points[i[0]][0]
+                return view.points[i[0]][0];
             })
             .attr('y1', function(i) {
-                return view.points[i[0]][1]
+                return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
                 if (i[1] === null) {
-                    return view.points[i[0]][0]
+                    return view.points[i[0]][0];
                 }
-                return view.points[i[1]][0]
+                return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
                 if (i[1] === null) {
-                    return view.points[i[0]][1]
+                    return view.points[i[0]][1];
                 }
-                return view.points[i[1]][1]
+                return view.points[i[1]][1];
             })
             .attr('stroke', 'black')
             .attr('stroke-width', '1')
             .style('visibility', function(i) {
                 if (i[2]) {
-                    return 'visible'
+                    return 'visible';
                 }
-                return 'hidden'
-            })
+                return 'hidden';
+            });
         edges.transition()
             .duration(view.duration)
             .attr('x1', function(i) {
-                return view.points[i[0]][0]
+                return view.points[i[0]][0];
             })
             .attr('y1', function(i) {
-                return view.points[i[0]][1]
+                return view.points[i[0]][1];
             })
             .attr('x2', function(i) {
                 if (i[1] === null) {
-                    return view.points[i[0]][0]
+                    return view.points[i[0]][0];
                 }
-                return view.points[i[1]][0]
+                return view.points[i[1]][0];
             })
             .attr('y2', function(i) {
                 if (i[1] === null) {
-                    return view.points[i[0]][1]
+                    return view.points[i[0]][1];
                 }
-                return view.points[i[1]][1]
+                return view.points[i[1]][1];
             })
             .style('visibility', function(i) {
                 if (i[2]) {
-                    return 'visible'
+                    return 'visible';
                 }
-                return 'hidden'
-            })
+                return 'hidden';
+            });
             // .attr('stroke', 'black')
             // .attr('stroke-width', '1')
-        edges.exit().remove()
+        edges.exit().remove();
 
         // Nodes
-        nodes = svg.selectAll('circle')
-            .data(points)
+        let nodes = svg.selectAll('circle')
+            .data(points);
         nodes.enter()
             .append('circle')
             .attr('cx', function(p) {
-                return p[0]
+                return p[0];
             })
             .attr('cy', function(p) {
-                return p[1]
+                return p[1];
             })
             .attr('r', radius)
             .attr('stroke', 'black')
             .attr('stroke-width', '1')
             .attr('fill', function(p, i) {
-                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)'
-            })
+                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
+            });
         nodes.transition()
             .duration(view.duration)
             .attr('cx', function(p) {
-                return p[0]
+                return p[0];
             })
             .attr('cy', function(p) {
-                return p[1]
-            })
+                return p[1];
+            });
             // .attr('r', radius)
             // .attr('stroke', 'black')
             // .attr('stroke-width', '1')
             // .attr('fill', function(p, i) {
             //     return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)'
             // })
-        nodes.exit().remove()
+        nodes.exit().remove();
 
         // Node labels
-        labels = svg.selectAll('.nLabel')
-            .data(points)
+        let labels = svg.selectAll('.nLabel')
+            .data(points);
         labels.enter()
             .append('text')
             .classed('nLabel', true)
             .attr('x', function(p) {
-                return p[0]
+                return p[0];
             })
             .attr('y', function(p) {
-                return p[1] + 5
+                return p[1] + 5;
             })
             .attr('fill', 'black')
             .attr('text-anchor', 'middle')
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(p, i) {
-                return view.model.elements[i]
-            })
+                return view.model.elements.elements ? view.model.elements.elements[i] : view.model.elements[i];
+            });
         labels.transition()
             .duration(view.duration)
             // .classed('nLabel', true)
             .attr('x', function(p) {
-                return p[0]
+                return p[0];
             })
             .attr('y', function(p) {
-                return p[1] + 5
+                return p[1] + 5;
             })
             // .attr('fill', 'black')
             // .attr('text-anchor', 'middle')
@@ -854,7 +851,7 @@ aljabr.builder.CayleyGraphView = class {
             // .text(function(p, i) {
             //     return view.model.elements[i]
             // })
-        labels.exit().remove()
+        labels.exit().remove();
     }
 
     /**
