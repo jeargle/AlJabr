@@ -498,61 +498,69 @@ aljabr.builder.ElementView = class {
 aljabr.builder.elementView = null
 
 
+/**
+ * CayleyGraphView is a Cayley Graph visualization tool.
+ */
 aljabr.builder.CayleyGraphView = class {
-    width = 0
-    height = 0
-    duration = 400
-    points = []
-    pointPairs = []
-    activeEdges = []
-    activeEdge = 1
-    layout = 'circle'
+    width = 0;
+    height = 0;
+    duration = 400;
+    points = [];
+    pointPairs = [];
+    activeEdges = [];
+    activeEdge = 1;
+    layout = 'circle';
 
+    /**
+     * Construct the CayleyGraphView.
+     * @param {string} id - element id for this component
+     */
     constructor(id) {
         'use strict'
-        let view
+        let view = this;
+        view.id = id;
+        view.el = d3.select('#' + view.id);
+        view.width = 1000;
+        view.height = 400;
+        view.baseRadius = 150;
+        view.baseX = 200;
+        view.baseY = 200;
 
-        view = this
-        view.id = id
-        view.el = d3.select('#' + view.id)
-        view.width = 1000
-        view.height = 400
-        view.baseRadius = 150
-        view.baseX = 200
-        view.baseY = 200
-
-        view.render()
+        view.render();
     }
 
+    /**
+     * Render the CayleyGraphView.
+     */
     render() {
         'use strict'
-        let view, svg, order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels, selectors, sLabels
+        let order, colorStep, radius, i, j, points, pointPairs, element, edges, nodes, labels;
 
-        view = this
-        view.el.html('')
-        svg = view.el.append('svg')
+        let view = this;
+        view.el.html('');
+        let svg = view.el.append('svg')
             .attr('id', 'graph-svg')
             .attr('width', view.width)
-            .attr('height', view.height)
+            .attr('height', view.height);
 
         if (view.model === undefined) {
-            return
+            return;
         }
 
         // view.renderGraph()
 
         // Edge selectors
-        selectors = svg.selectAll('.edge-sel')
-            .data(view.activeEdges)
+        let selectors = svg.selectAll('.edge-sel')
+            .data(view.activeEdges);
         selectors.enter()
             .append('rect')
             .attr('id', function(d, i) {
-                return 'edge-sel-' + i
+                return 'edge-sel-' + i;
             })
             .classed('edge-sel', true)
             .attr('x', view.width-50)
             .attr('y', function(s, i) {
-                return i*20 + 50
+                return i*20 + 50;
             })
             .attr('width', 20)
             .attr('height', 20)
@@ -560,38 +568,38 @@ aljabr.builder.CayleyGraphView = class {
             .attr('stroke-width', '1')
             .attr('fill', function(s) {
                 if (s) {
-                    return 'yellow'
+                    return 'yellow';
                 }
-                return 'cyan'
+                return 'cyan';
             })
             .on('click', function(s, i) {
-                view.toggleEdges(i)
-            })
-        selectors.exit().remove()
+                view.toggleEdges(i);
+            });
+        selectors.exit().remove();
 
-        sLabels = svg.selectAll('.sLabel')
-            .data(view.activeEdges)
+        let sLabels = svg.selectAll('.sLabel')
+            .data(view.activeEdges);
         sLabels.enter()
             .append('text')
             .classed('sLabel', true)
             .attr('x', view.width-40)
             .attr('y', function(s, i) {
-                return i*20 + 65
+                return i*20 + 65;
             })
             .attr('fill', 'black')
             .attr('text-anchor', 'middle')
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
             .text(function(s, i) {
-                return view.model.elements[i]
-            })
+                return view.model.elements[i];
+            });
         sLabels.exit().remove()
 
         // Layout selectors
         svg.selectAll('.layout-sel')
-            .remove()
+            .remove();
         svg.selectAll('.lLabel')
-            .remove()
+            .remove();
         svg.append('rect')
             .attr('id', 'layout-sel-circle')
             .classed('layout-sel', true)
@@ -603,13 +611,13 @@ aljabr.builder.CayleyGraphView = class {
             .attr('stroke-width', '1')
             .attr('fill', function() {
                 if (view.layout === 'circle') {
-                    return 'yellow'
+                    return 'yellow';
                 }
-                return 'magenta'
+                return 'magenta';
             })
             .on('click', function(s, i) {
-                view.layoutCircle()
-            })
+                view.layoutCircle();
+            });
         svg.append('text')
             .classed('lLabel', true)
             .attr('x', view.width-15)
@@ -618,7 +626,7 @@ aljabr.builder.CayleyGraphView = class {
             .attr('text-anchor', 'middle')
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
-            .text('C')
+            .text('C');
 
         svg.append('rect')
             .attr('id', 'layout-sel-nested')
@@ -631,13 +639,13 @@ aljabr.builder.CayleyGraphView = class {
             .attr('stroke-width', '1')
             .attr('fill', function() {
                 if (view.layout === 'nested') {
-                    return 'yellow'
+                    return 'yellow';
                 }
-                return 'magenta'
+                return 'magenta';
             })
             .on('click', function(s, i) {
-                view.layoutNested(view.activeEdge, Math.PI/5.0)
-            })
+                view.layoutNested(view.activeEdge, Math.PI/5.0);
+            });
         svg.append('text')
             .classed('lLabel', true)
             .attr('x', view.width-15)
@@ -646,7 +654,7 @@ aljabr.builder.CayleyGraphView = class {
             .attr('text-anchor', 'middle')
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
-            .text('N')
+            .text('N');
 
         svg.append('rect')
             .attr('id', 'layout-sel-separate')
@@ -659,13 +667,13 @@ aljabr.builder.CayleyGraphView = class {
             .attr('stroke-width', '1')
             .attr('fill', function() {
                 if (view.layout === 'separate') {
-                    return 'yellow'
+                    return 'yellow';
                 }
-                return 'magenta'
+                return 'magenta';
             })
             .on('click', function(s, i) {
                 view.layoutSeparate(view.activeEdge)
-            })
+            });
         svg.append('text')
             .classed('lLabel', true)
             .attr('x', view.width-15)
@@ -674,9 +682,9 @@ aljabr.builder.CayleyGraphView = class {
             .attr('text-anchor', 'middle')
             .attr('font-size', '16')
             .attr('pointer-events', 'none')
-            .text('S')
+            .text('S');
 
-        return view
+        return view;
     }
 
     /**
@@ -974,30 +982,30 @@ aljabr.builder.CayleyGraphView = class {
      */
     attach(model) {
         'use strict'
-        let view, order, i, j, element
+        let i, j, element;
 
-        view = this
-        view.model = model
-        order = view.model.order
+        let view = this;
+        view.model = model;
+        let order = view.model.order;
 
-        view.activeEdges = []
+        view.activeEdges = [];
         for (i=0; i<order; i++) {
-            view.activeEdges[i] = false
+            view.activeEdges[i] = false;
         }
 
-        view.points = []
-        view.pointPairs = []
+        view.points = [];
+        view.pointPairs = [];
         for (i=0; i<order; i++) {
             for (j=0; j<order; j++) {
-                element = view.model.getElementIdx(i,j)
+                element = view.model.getElementIdx(i,j);
                 if (element !== null) {
-                    view.pointPairs.push([j, element, view.activeEdges[i]])
+                    view.pointPairs.push([j, element, view.activeEdges[i]]);
                 }
             }
         }
 
-        view.render()
-        view.layoutCircle()
+        view.render();
+        view.layoutCircle();
     }
 }
 
