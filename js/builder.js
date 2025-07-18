@@ -507,7 +507,7 @@ aljabr.builder.elementView = null;
 
 
 /**
- * CayleyGraphView is a Cayley Graph visualization tool.
+ * CayleyGraphView is a Cayley graph visualization tool.
  */
 aljabr.builder.CayleyGraphView = class {
     width = 0;
@@ -1016,3 +1016,371 @@ aljabr.builder.CayleyGraphView = class {
 }
 
 aljabr.builder.cayleyGraphView = null;
+
+
+/**
+ * CycleGraphView is a cycle graph visualization tool.
+ */
+aljabr.builder.CycleGraphView = class {
+    width = 0;
+    height = 0;
+    duration = 400;
+    points = [];
+    pointPairs = [];
+    activeEdges = [];
+    activeEdge = 1;
+    layout = 'circle';
+
+    /**
+     * Construct the CycleGraphView.
+     * @param {string} id - element id for this component
+     */
+    constructor(id) {
+        'use strict'
+        let view = this;
+        view.id = id;
+        view.el = d3.select('#' + view.id);
+        view.width = 1000;
+        view.height = 400;
+        view.baseRadius = 150;
+        view.baseX = 200;
+        view.baseY = 200;
+
+        view.render();
+    }
+
+    /**
+     * Render the CycleGraphView.
+     * @returns the CycleGraphView
+     */
+    render() {
+        'use strict'
+        let view = this;
+        view.el.html('');
+
+        let svg = view.el.append('svg')
+            .attr('id', 'cycle-graph-svg')
+            .attr('width', view.width)
+            .attr('height', view.height);
+
+        if (view.model === undefined) {
+            return;
+        }
+
+        // Edge selectors
+        let selectors = svg.selectAll('.edge-sel')
+            .data(view.activeEdges);
+        selectors.enter()
+            .append('rect')
+            .attr('id', function(d, i) {
+                return 'edge-sel-' + i;
+            })
+            .classed('edge-sel', true)
+            .attr('x', view.width-50)
+            .attr('y', function(s, i) {
+                return i*20 + 50;
+            })
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function(s) {
+                if (s) {
+                    return 'yellow';
+                }
+                return 'cyan';
+            })
+            .on('click', function(s, i) {
+                view.toggleEdges(i);
+            });
+        selectors.exit().remove();
+
+        let sLabels = svg.selectAll('.sLabel')
+            .data(view.activeEdges);
+        sLabels.enter()
+            .append('text')
+            .classed('sLabel', true)
+            .attr('x', view.width-40)
+            .attr('y', function(s, i) {
+                return i*20 + 65;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(s, i) {
+                return view.model.elements.elements ? view.model.elements.elements[i] : view.model.elements[i];
+            });
+        sLabels.exit().remove()
+
+        // Layout selectors
+        svg.selectAll('.layout-sel')
+            .remove();
+        svg.selectAll('.lLabel')
+            .remove();
+        svg.append('rect')
+            .attr('id', 'layout-sel-circle')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 50)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'circle') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutCircle();
+            });
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 65)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('C');
+
+        svg.append('rect')
+            .attr('id', 'layout-sel-nested')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 70)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'nested') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutNested(view.activeEdge, Math.PI/5.0);
+            });
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 85)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('N');
+
+        svg.append('rect')
+            .attr('id', 'layout-sel-separate')
+            .classed('layout-sel', true)
+            .attr('x', view.width-25)
+            .attr('y', 90)
+            .attr('width', 20)
+            .attr('height', 20)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function() {
+                if (view.layout === 'separate') {
+                    return 'yellow';
+                }
+                return 'magenta';
+            })
+            .on('click', function(s, i) {
+                view.layoutSeparate(view.activeEdge)
+            });
+        svg.append('text')
+            .classed('lLabel', true)
+            .attr('x', view.width-15)
+            .attr('y', 105)
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text('S');
+
+        return view;
+    }
+
+    /**
+     * Render the nodes, edges, and node labels.
+     */
+    renderGraph() {
+        'use strict';
+        let i, j, index, element, selectors, sLabels;
+
+        console.log('renderGraph()');
+
+        let view = this;
+        let svg = d3.select('#cycle-graph-svg');
+        const order = view.model.order;
+        const colorStep = Math.floor(156/(order-1));
+        const radius = 15;
+        let points = view.points;
+        let pointPairs = view.pointPairs;
+
+        for (i=0; i<order; i++) {
+            for (j=0; j<order; j++) {
+                index = (i*order)+j
+                element = view.model.getElementIdx(i,j)
+                if (element !== null &&
+                    pointPairs[index][1] === null) {
+                    pointPairs[index][1] = element
+                }
+                pointPairs[index][2] = view.activeEdges[i]
+            }
+        }
+
+        // Edges
+        let edges = svg.selectAll('line')
+            .data(pointPairs);
+        edges.enter()
+            .append('line')
+            .attr('x1', function(i) {
+                return view.points[i[0]][0];
+            })
+            .attr('y1', function(i) {
+                return view.points[i[0]][1];
+            })
+            .attr('x2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][0];
+                }
+                return view.points[i[1]][0];
+            })
+            .attr('y2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][1];
+                }
+                return view.points[i[1]][1];
+            })
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .style('visibility', function(i) {
+                if (i[2]) {
+                    return 'visible';
+                }
+                return 'hidden';
+            });
+        edges.transition()
+            .duration(view.duration)
+            .attr('x1', function(i) {
+                return view.points[i[0]][0];
+            })
+            .attr('y1', function(i) {
+                return view.points[i[0]][1];
+            })
+            .attr('x2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][0];
+                }
+                return view.points[i[1]][0];
+            })
+            .attr('y2', function(i) {
+                if (i[1] === null) {
+                    return view.points[i[0]][1];
+                }
+                return view.points[i[1]][1];
+            })
+            .style('visibility', function(i) {
+                if (i[2]) {
+                    return 'visible';
+                }
+                return 'hidden';
+            });
+        edges.exit().remove();
+
+        // Nodes
+        let nodes = svg.selectAll('circle')
+            .data(points);
+        nodes.enter()
+            .append('circle')
+            .attr('cx', function(p) {
+                return p[0];
+            })
+            .attr('cy', function(p) {
+                return p[1];
+            })
+            .attr('r', radius)
+            .attr('stroke', 'black')
+            .attr('stroke-width', '1')
+            .attr('fill', function(p, i) {
+                return 'rgb(' + ((i*colorStep)+100) + ',' + ((i*colorStep)+100) + ',0)';
+            });
+        nodes.transition()
+            .duration(view.duration)
+            .attr('cx', function(p) {
+                return p[0];
+            })
+            .attr('cy', function(p) {
+                return p[1];
+            });
+        nodes.exit().remove();
+
+        // Node labels
+        let labels = svg.selectAll('.nLabel')
+            .data(points);
+        labels.enter()
+            .append('text')
+            .classed('nLabel', true)
+            .attr('x', function(p) {
+                return p[0];
+            })
+            .attr('y', function(p) {
+                return p[1] + 5;
+            })
+            .attr('fill', 'black')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16')
+            .attr('pointer-events', 'none')
+            .text(function(p, i) {
+                return view.model.elements.elements ? view.model.elements.elements[i] : view.model.elements[i];
+            });
+        labels.transition()
+            .duration(view.duration)
+            .attr('x', function(p) {
+                return p[0];
+            })
+            .attr('y', function(p) {
+                return p[1] + 5;
+            })
+        labels.exit().remove();
+    }
+
+    /**
+     * Attach view to a Group or GroupBuilder.
+     * @param model - Group or GroupBuilder
+     */
+    attach(model) {
+        'use strict'
+        let i, j, element;
+
+        let view = this;
+        view.model = model;
+        let order = view.model.order;
+
+        view.activeEdges = [];
+        for (i=0; i<order; i++) {
+            view.activeEdges[i] = false;
+        }
+
+        view.points = [];
+        view.pointPairs = [];
+        for (i=0; i<order; i++) {
+            for (j=0; j<order; j++) {
+                element = view.model.getElementIdx(i,j);
+                if (element !== null) {
+                    view.pointPairs.push([j, element, view.activeEdges[i]]);
+                }
+            }
+        }
+
+        view.render();
+        view.layoutCircle();
+    }
+}
+
+aljabr.builder.cycleGraphView = null;
