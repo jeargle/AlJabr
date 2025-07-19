@@ -262,26 +262,26 @@ aljabr.test.testGroupBuilders = function() {
 
 aljabr.test.testCyclicGroups = function() {
     'use strict'
-    let g1, g2, g3, g4, g5, g10, g20, g30, g40
+    let g1, g2, g3, g4, g5, g10, g20, g30, g40;
 
-    console.log('\n\n***** Cyclic Group Test *****')
+    console.log('\n\n***** Cyclic Group Test *****');
 
-    g1 = aljabr.buildCyclicGroup(1)
-    g2 = aljabr.buildCyclicGroup(2)
-    g3 = aljabr.buildCyclicGroup(3)
-    g4 = aljabr.buildCyclicGroup(4)
-    g5 = aljabr.buildCyclicGroup(5)
-    g10 = aljabr.buildCyclicGroup(10)
-    g20 = aljabr.buildCyclicGroup(20)
-    // g30 = aljabr.buildCyclicGroup(30)  // order 30
-    // g40 = aljabr.buildCyclicGroup(40)  // order 40
-    console.log(g1.toStr())
-    console.log(g2.toStr())
-    console.log(g3.toStr())
-    console.log(g4.toStr())
-    console.log(g5.toStr())
-    console.log(g10.toStr())
-    console.log(g20.toStr())
+    g1 = aljabr.buildCyclicGroup(1);
+    g2 = aljabr.buildCyclicGroup(2);
+    g3 = aljabr.buildCyclicGroup(3);
+    g4 = aljabr.buildCyclicGroup(4);
+    g5 = aljabr.buildCyclicGroup(5);
+    g10 = aljabr.buildCyclicGroup(10);
+    g20 = aljabr.buildCyclicGroup(20);
+    // g30 = aljabr.buildCyclicGroup(30);  // order 30
+    // g40 = aljabr.buildCyclicGroup(40);  // order 40
+    console.log(g1.toStr());
+    console.log(g2.toStr());
+    console.log(g3.toStr());
+    console.log(g4.toStr());
+    console.log(g5.toStr());
+    console.log(g10.toStr());
+    console.log(g20.toStr());
 }
 
 
@@ -543,12 +543,12 @@ aljabr.test.boolTableToStr = function(table) {
 // aljabr.test.testOperatorTable()
 // aljabr.test.testGroupBuilder()
 aljabr.test.testPermutor()
-// aljabr.test.testArithmeticGroups()
-// aljabr.test.testCyclicGroups()
-// aljabr.test.testDihedralGroups()
-// aljabr.test.testSymmetryGroups()
-// aljabr.test.testAlternatingGroups()
-// aljabr.test.testGroupBuilders()
+aljabr.test.testArithmeticGroups()
+aljabr.test.testCyclicGroups()
+aljabr.test.testDihedralGroups()
+aljabr.test.testSymmetryGroups()
+aljabr.test.testAlternatingGroups()
+aljabr.test.testGroupBuilders()
 // aljabr.test.testCosets()
 // aljabr.test.testSubgroups()
 // aljabr.test.testFieldBuilder()

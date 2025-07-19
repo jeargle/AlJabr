@@ -1889,9 +1889,9 @@ aljabr.buildCyclicGroup = function(order) {
         cycleActionArray[order-1] = 0
     }
     cycle = new aljabr.Permutor(cycleActionArray)
-    cyclicGroupBuilder = new aljabr.PermutationGroupBuilder([cycle])
+    cyclicGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return cyclicGroupBuilder.buildGroup()
+    return cyclicGroupBuilder.buildGroup([cycle])
 }
 
 
@@ -1929,9 +1929,9 @@ aljabr.buildDihedralGroup = function(degree) {
 
     dihed1 = new aljabr.Permutor(dihedralActionArray1)
     dihed2 = new aljabr.Permutor(dihedralActionArray2)
-    dihedralGroupBuilder = new aljabr.PermutationGroupBuilder([dihed1, dihed2])
+    dihedralGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return dihedralGroupBuilder.buildGroup()
+    return dihedralGroupBuilder.buildGroup([dihed1, dihed2])
 }
 
 
@@ -1981,9 +1981,9 @@ aljabr.buildSymmetryGroup = function(degree) {
         transpositions[i] = new aljabr.Permutor(symmetryActionArrays[i])
     }
 
-    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
+    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return symmetryGroupBuilder.buildGroup()
+    return symmetryGroupBuilder.buildGroup(transpositions)
 }
 
 
@@ -2026,9 +2026,9 @@ aljabr.buildSymmetryGroup2 = function(degree) {
         transpositions[i] = new aljabr.Permutor(symmetryActionArrays[i])
     }
 
-    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
+    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return symmetryGroupBuilder.buildGroup()
+    return symmetryGroupBuilder.buildGroup(transpositions)
 }
 
 
@@ -2066,9 +2066,9 @@ aljabr.buildSymmetryGroup3 = function(degree) {
         new aljabr.Permutor(symmetryActionArrays[1])
     ]
 
-    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
+    symmetryGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return symmetryGroupBuilder.buildGroup()
+    return symmetryGroupBuilder.buildGroup(transpositions)
 }
 
 
@@ -2116,9 +2116,9 @@ aljabr.buildAlternatingGroup = function(degree) {
         transpositions[i] = new aljabr.Permutor(alternatingActionArrays[i])
     }
 
-    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
+    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return alternatingGroupBuilder.buildGroup()
+    return alternatingGroupBuilder.buildGroup(transpositions)
 }
 
 
@@ -2159,9 +2159,9 @@ aljabr.buildAlternatingGroup2 = function(degree) {
         new aljabr.Permutor(alternatingActionArrays[1])
     ]
 
-    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
+    alternatingGroupBuilder = new aljabr.PermutationGroupBuilder()
 
-    return alternatingGroupBuilder.buildGroup()
+    return alternatingGroupBuilder.buildGroup(transpositions)
 }
 
 
