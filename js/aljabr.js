@@ -1632,29 +1632,27 @@ aljabr.Permutor = class {
 
 
 aljabr.PermutationGroupBuilder = class {
-    generators = undefined
-    permutors = undefined
-    group = undefined
-    permutorOrder = 0
+    generators = undefined;
+    permutors = undefined;
+    group = undefined;
+    permutorOrder = 0;
 
     /**
      * Initialize the class.
      * Pass in array of Permutors
-     * @param generators - array of generators represented as +Permutors+
      */
-    constructor(generators) {
+    constructor() {
         'use strict'
-        let model
 
         // console.log('PermutationGroupBuilder.init()')
 
-        model = this
+        let model = this;
 
-        model.generators = generators
-        model.permutors = []
-        model.group = null
+        model.generators = [];
+        model.permutors = [];
+        model.group = null;
         // XXX - getValidGenerators
-        model.permutorOrder = model.generators[0].order
+        model.permutorOrder = 0;
     }
 
     /**
@@ -1674,23 +1672,23 @@ aljabr.PermutationGroupBuilder = class {
      */
     findElements() {
         'use strict'
-        let model, identityActionArray, i, j, tempPermutor
+        let i, j, tempPermutor;
 
-        model = this
+        let model = this;
 
         // Walk each generator down the Permutor array, multiplying by the current
         // permutor and adding any new results to the end of the array.
-        identityActionArray = []
+        let identityActionArray = [];
         for (i=0; i<model.permutorOrder; i++) {
-            identityActionArray.push(i)
+            identityActionArray.push(i);
         }
-        model.permutors.push(new aljabr.Permutor(identityActionArray))
+        model.permutors.push(new aljabr.Permutor(identityActionArray));
 
         for (i=0; i<model.permutors.length; i++) {
             for (j=0; j<model.generators.length; j++) {
-	        tempPermutor = model.generators[j].operate(model.permutors[i])
+	        tempPermutor = model.generators[j].operate(model.permutors[i]);
                 if (model.permutorIndex(tempPermutor) === -1) {
-                    model.permutors.push(tempPermutor)
+                    model.permutors.push(tempPermutor);
                 }
             }
         }
@@ -1698,51 +1696,56 @@ aljabr.PermutationGroupBuilder = class {
 
     /**
      * Build a group from a set of permutor generators.
+     * @param generators - array of generators represented as +Permutors+
      * @returns built permutation group
      */
-    buildGroup() {
+    buildGroup(generators) {
         'use strict'
-        let model, elementArray, elements, groupBuilder, i, j
+        let i, j;
 
-        model = this
-        if (model.permutors.length === 0) {
-            model.findElements()
-        }
+        let model = this;
+
+        model.generators = generators;
+        model.permutors = [];
+        model.permutorOrder = model.generators[0].order;
+        model.group = null;
+
+        model.findElements();
 
         // Create ElementSet corresponding to permutors
-        elementArray = []
+        let elements = [];
         for (i=0; i<model.permutors.length; i++) {
-            elementArray.push(i.toString())
+            elements.push(i.toString());
         }
-        elements = elementArray
 
         // Loop through elements and fill out GroupBuilder
-        groupBuilder = new aljabr.GroupBuilder(elements)
+        let groupBuilder = new aljabr.GroupBuilder(elements)
         for (i=0; i<model.permutors.length; i++) {
             for (j=0; j<model.permutors.length; j++) {
                 groupBuilder.setElement(i, j,
                                         model.permutorIndex(
                                             model.permutors[j].operate(model.permutors[i])
-                                        ))
+                                        ));
                 // model.permutors.index(model.permutors[j].operate(model.permutors[i])))
                 if (groupBuilder.isComplete()) {
                     // console.log('COMPLETE\n')
-                    break
+                    break;
                 }
             }
             if (groupBuilder.isComplete()) {
                 // console.log('COMPLETE\n')
-                break
+                break;
             }
         }
+
         // puts 'group:'
         // puts groupBuilder
         if (!groupBuilder.isComplete()) {
-            console.error('Error: groupBuilder is not complete')
+            console.error('Error: groupBuilder is not complete');
         }
 
-        model.group = groupBuilder.buildGroup()
-        return model.group
+        model.group = groupBuilder.buildGroup();
+        return model.group;
     }
 
     /**

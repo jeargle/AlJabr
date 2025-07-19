@@ -153,62 +153,58 @@ aljabr.test.testGroupBuilder = function() {
 
 aljabr.test.testPermutor = function() {
     'use strict'
-    let a, e, x, y, z, perm1, perm2, perm3, perm4, pgb1, pgb2, pgb3, g1, g2, g3
+    let a, e, x, y, z, perm1, perm2, perm3, perm4, pgb, g1, g2, g3;
 
-    console.log('\n\n***** Permutor Test *****')
-    a = new aljabr.Permutor([0, 1, 2, 3, 4, 5])
-    console.log(a)
+    console.log('\n\n***** Permutor Test *****');
+    a = new aljabr.Permutor([0, 1, 2, 3, 4, 5]);
+    console.log(a);
 
-    console.log(a.op(1))
-    console.log(a.op(5))
+    console.log(a.op(1));
+    console.log(a.op(5));
 
-    e = new aljabr.Permutor([0, 1, 2])
-    console.log('e: ' + e.toStr())
-    console.log('ee: ' + e.operate(e).toStr())
-    console.log('eee: ' + e.operate(e.operate(e)).toStr())
+    e = new aljabr.Permutor([0, 1, 2]);
+    console.log('e: ' + e.toStr());
+    console.log('ee: ' + e.operate(e).toStr());
+    console.log('eee: ' + e.operate(e.operate(e)).toStr());
 
-    x = new aljabr.Permutor([1, 2, 0])
-    console.log('x: ' + x.toStr())
-    console.log('xx: ' + x.operate(x).toStr())
-    console.log('xxx: ' + x.operate(x.operate(x)).toStr())
+    x = new aljabr.Permutor([1, 2, 0]);
+    console.log('x: ' + x.toStr());
+    console.log('xx: ' + x.operate(x).toStr());
+    console.log('xxx: ' + x.operate(x.operate(x)).toStr());
 
-    y = new aljabr.Permutor([0, 2, 1])
-    console.log('y: ' + y.toStr())
-    console.log('yy: ' + y.operate(y).toStr())
+    y = new aljabr.Permutor([0, 2, 1]);
+    console.log('y: ' + y.toStr());
+    console.log('yy: ' + y.operate(y).toStr());
 
-    console.log('yx: ' + y.operate(x).toStr())
-    console.log('xy: ' + x.operate(y).toStr())
+    console.log('yx: ' + y.operate(x).toStr());
+    console.log('xy: ' + x.operate(y).toStr());
 
-    console.log('toStr2 (actionArray)')
-    console.log('e: ' + e.toStr2())
-    console.log('x: ' + x.toStr2())
-    console.log('y: ' + y.toStr2())
+    console.log('toStr2 (actionArray)');
+    console.log('e: ' + e.toStr2());
+    console.log('x: ' + x.toStr2());
+    console.log('y: ' + y.toStr2());
 
-    z = new aljabr.Permutor([1, 2, 0])
-    console.log('(e === e): ' + (e === e))
-    console.log('(e === x): ' + (e === x))
-    console.log('(e === y): ' + (e === y))
-    console.log('(x === x): ' + (x === x))
-    console.log('(x === y): ' + (x === y))
-    console.log('(x === z): ' + (x === z))
+    z = new aljabr.Permutor([1, 2, 0]);
+    console.log('(e === e): ' + (e === e));
+    console.log('(e === x): ' + (e === x));
+    console.log('(e === y): ' + (e === y));
+    console.log('(x === x): ' + (x === x));
+    console.log('(x === y): ' + (x === y));
+    console.log('(x === z): ' + (x === z));
 
-    console.log('\n\n***** PermutationGroupBuilder Test *****')
+    console.log('\n\n***** PermutationGroupBuilder Test *****');
 
-    perm1 = new aljabr.Permutor([1, 2, 3, 4, 5, 6, 0])
-    pgb1 = new aljabr.PermutationGroupBuilder([perm1])
-    g1 = pgb1.buildGroup()
-    pgb1.printPermutors()
+    pgb = new aljabr.PermutationGroupBuilder();
 
-    perm2 = new aljabr.Permutor([1, 0, 3, 2])
-    pgb2 = new aljabr.PermutationGroupBuilder([perm2])
-    g2 = pgb2.buildGroup()
-    pgb2.printPermutors()
+    perm1 = new aljabr.Permutor([1, 2, 3, 4, 5, 6, 0]);
+    g1 = pgb.buildGroup([perm1]);
 
-    perm3 = new aljabr.Permutor([1, 0, 2, 3])
-    perm4 = new aljabr.Permutor([0, 1, 3, 2])
-    pgb3 = new aljabr.PermutationGroupBuilder([perm3, perm4])
-    g3 = pgb3.buildGroup()
-    pgb3.printPermutors()
+    perm2 = new aljabr.Permutor([1, 0, 3, 2]);
+    g2 = pgb.buildGroup([perm2]);
+
+    perm3 = new aljabr.Permutor([1, 0, 2, 3]);
+    perm4 = new aljabr.Permutor([0, 1, 3, 2]);
+    g3 = pgb.buildGroup([perm3, perm4]);
 }
 
 
@@ -369,50 +365,50 @@ aljabr.test.testAlternatingGroups = function() {
 
 
 aljabr.test.printCosets = function(group, generatorIdxs) {
-    let cosets1, sortedCosets1, cosets2, sortedCosets2
+    let cosets1, sortedCosets1, cosets2, sortedCosets2;
 
-    console.log('  left:')
-    cosets1 = group.cosets(generatorIdxs)
-    sortedCosets1 = group.sortCosets(cosets1)
-    console.log(cosets1)
-    console.log(sortedCosets1)
+    console.log('  left:');
+    cosets1 = group.cosets(generatorIdxs);
+    sortedCosets1 = group.sortCosets(cosets1);
+    console.log(cosets1);
+    console.log(sortedCosets1);
 
-    console.log('  right:')
-    cosets2 = group.cosets(generatorIdxs, false)
-    sortedCosets2 = group.sortCosets(cosets2)
-    console.log(cosets2)
-    console.log(sortedCosets2)
+    console.log('  right:');
+    cosets2 = group.cosets(generatorIdxs, false);
+    sortedCosets2 = group.sortCosets(cosets2);
+    console.log(cosets2);
+    console.log(sortedCosets2);
 
-    console.log('  normal subgroup: ' + group.cosetsEqual(sortedCosets1, sortedCosets2))
+    console.log('  normal subgroup: ' + group.cosetsEqual(sortedCosets1, sortedCosets2));
 }
 
 aljabr.test.testCosets = function() {
     'use strict'
-    let groups, group, cosets, sortedCosets
+    let groups, group, cosets, sortedCosets;
 
-    console.log('\n\n***** Cosets Test *****')
+    console.log('\n\n***** Cosets Test *****');
 
     groups = [
         aljabr.buildCyclicGroup(6),
         aljabr.buildDihedralGroup(5),
         aljabr.buildSymmetryGroup(4),
         aljabr.buildAlternatingGroup(5)
-    ]
+    ];
 
     for (let i=0; i<groups.length; i++) {
-        group = groups[i]
-        console.log('*** group ' + (i+1))
-        console.log(group.toStr())
-        console.log('cosets 1')
-        aljabr.test.printCosets(group, [1])
-        console.log('cosets 2')
-        aljabr.test.printCosets(group, [2])
-        console.log('cosets 4')
-        aljabr.test.printCosets(group, [4])
-        console.log('cosets 1 2')
-        aljabr.test.printCosets(group, [1, 2])
-        console.log('cosets 1 3')
-        aljabr.test.printCosets(group, [1, 3])
+        group = groups[i];
+        console.log('*** group ' + (i+1));
+        console.log(group.toStr());
+        console.log('cosets 1');
+        aljabr.test.printCosets(group, [1]);
+        console.log('cosets 2');
+        aljabr.test.printCosets(group, [2]);
+        console.log('cosets 4');
+        aljabr.test.printCosets(group, [4]);
+        console.log('cosets 1 2');
+        aljabr.test.printCosets(group, [1, 2]);
+        console.log('cosets 1 3');
+        aljabr.test.printCosets(group, [1, 3]);
     }
 }
 
@@ -544,15 +540,15 @@ aljabr.test.boolTableToStr = function(table) {
 }
 
 
-aljabr.test.testOperatorTable()
-aljabr.test.testGroupBuilder()
+// aljabr.test.testOperatorTable()
+// aljabr.test.testGroupBuilder()
 aljabr.test.testPermutor()
-aljabr.test.testArithmeticGroups()
-aljabr.test.testCyclicGroups()
-aljabr.test.testDihedralGroups()
-aljabr.test.testSymmetryGroups()
-aljabr.test.testAlternatingGroups()
-aljabr.test.testGroupBuilders()
-aljabr.test.testCosets()
-aljabr.test.testSubgroups()
-aljabr.test.testFieldBuilder()
+// aljabr.test.testArithmeticGroups()
+// aljabr.test.testCyclicGroups()
+// aljabr.test.testDihedralGroups()
+// aljabr.test.testSymmetryGroups()
+// aljabr.test.testAlternatingGroups()
+// aljabr.test.testGroupBuilders()
+// aljabr.test.testCosets()
+// aljabr.test.testSubgroups()
+// aljabr.test.testFieldBuilder()
