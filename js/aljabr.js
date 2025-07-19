@@ -1698,6 +1698,7 @@ aljabr.PermutationGroupBuilder = class {
 
     /**
      * Build a group from a set of permutor generators.
+     * @returns built permutation group
      */
     buildGroup() {
         'use strict'
@@ -1741,21 +1742,6 @@ aljabr.PermutationGroupBuilder = class {
         }
 
         model.group = groupBuilder.buildGroup()
-        return model.group
-    }
-
-    /**
-     * Retrieve the current group.
-     * @returns Group
-     */
-    getGroup() {
-        'use strict'
-        let model
-
-        model = this
-        if (model.group === null) {
-            model.buildGroup()
-        }
         return model.group
     }
 
@@ -1902,7 +1888,7 @@ aljabr.buildCyclicGroup = function(order) {
     cycle = new aljabr.Permutor(cycleActionArray)
     cyclicGroupBuilder = new aljabr.PermutationGroupBuilder([cycle])
 
-    return cyclicGroupBuilder.getGroup()
+    return cyclicGroupBuilder.buildGroup()
 }
 
 
@@ -1942,7 +1928,7 @@ aljabr.buildDihedralGroup = function(degree) {
     dihed2 = new aljabr.Permutor(dihedralActionArray2)
     dihedralGroupBuilder = new aljabr.PermutationGroupBuilder([dihed1, dihed2])
 
-    return dihedralGroupBuilder.getGroup()
+    return dihedralGroupBuilder.buildGroup()
 }
 
 
@@ -1994,7 +1980,7 @@ aljabr.buildSymmetryGroup = function(degree) {
 
     symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
 
-    return symmetryGroupBuilder.getGroup()
+    return symmetryGroupBuilder.buildGroup()
 }
 
 
@@ -2039,7 +2025,7 @@ aljabr.buildSymmetryGroup2 = function(degree) {
 
     symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
 
-    return symmetryGroupBuilder.getGroup()
+    return symmetryGroupBuilder.buildGroup()
 }
 
 
@@ -2079,7 +2065,7 @@ aljabr.buildSymmetryGroup3 = function(degree) {
 
     symmetryGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
 
-    return symmetryGroupBuilder.getGroup()
+    return symmetryGroupBuilder.buildGroup()
 }
 
 
@@ -2129,7 +2115,7 @@ aljabr.buildAlternatingGroup = function(degree) {
 
     alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
 
-    return alternatingGroupBuilder.getGroup()
+    return alternatingGroupBuilder.buildGroup()
 }
 
 
@@ -2172,7 +2158,7 @@ aljabr.buildAlternatingGroup2 = function(degree) {
 
     alternatingGroupBuilder = new aljabr.PermutationGroupBuilder(transpositions)
 
-    return alternatingGroupBuilder.getGroup()
+    return alternatingGroupBuilder.buildGroup()
 }
 
 
